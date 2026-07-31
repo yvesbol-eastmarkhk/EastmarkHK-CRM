@@ -12,6 +12,8 @@ import '../utils/formatters.dart';
 import '../utils/responsive_form.dart';
 import '../widgets/dictation_field.dart';
 import '../widgets/jodit_editor.dart';
+import '../../modules/invoicing/invoicing_module.dart';
+import '../../platform/entitlement_service.dart';
 import '../../theme/app_theme.dart';
 
 /// Dialogue création / édition d'une opportunité (Jodit, relance, stade…).
@@ -358,6 +360,42 @@ Future<bool> showOpportunityDialog(
     ));
   } else if (existingFollowUpTask != null) {
     await AppDatabase.instance.softDeleteTask(existingFollowUpTask.id);
+  }
+
+  if (stage == 'won' && effectiveCompanyId != null && EntitlementService.instance.isActive('invoicing')) {
+    final oppForQuote = existing ??
+        Opportunity(
+          id: opportunityId,
+          companyId: effectiveCompanyId,
+          title: title.text.trim(),
+          amount: parseFormattedAmount(amount.text),
+          currency: CurrencySettings.instance.code,
+          stage: stage,
+          probability: probability,
+          expectedClose: expectedClose?.toUtc().toIso8601String(),
+          notes: finalNotes,
+          wonLost: stage,
+          closedAt: now,
+          createdAt: now,
+          updatedAt: now,
+          stageUpdatedAt: now,
+        );
+    if (context.mounted) {
+      final create = await showDialog<bool>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text('Opportunité gagnée'),
+          content: const Text('Créer un devis pré-rempli pour ce client ?'),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Plus tard')),
+            FilledButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Créer le devis')),
+          ],
+        ),
+      );
+      if (create == true && context.mounted) {
+        await InvoicingModule.createQuoteFromOpportunity(context, oppForQuote);
+      }
+    }
   }
 
   return true;

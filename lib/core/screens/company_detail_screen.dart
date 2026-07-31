@@ -10,7 +10,9 @@ import '../data/countries.dart';
 import '../data/messaging_platforms.dart';
 import '../db/app_database.dart';
 import '../models/models.dart';
+import '../modules/module_registry.dart';
 import '../services/pipeline_settings.dart';
+import '../../platform/entitlement_service.dart';
 import '../utils/formatters.dart';
 import '../utils/phone_formatter.dart';
 import '../utils/responsive_form.dart';
@@ -379,6 +381,16 @@ class _CompanyDetailScreenState extends State<CompanyDetailScreen> with SingleTi
             const Padding(padding: EdgeInsets.symmetric(vertical: 8), child: Text('Aucun contact'))
           else
             for (final p in _contacts) _contactTile(p),
+          if (EntitlementService.instance.isActive('invoicing')) ...[
+            const SizedBox(height: 20),
+            const Divider(),
+            const SizedBox(height: 12),
+            ...ModuleRegistry.instance.byId('invoicing')!.customerSections(
+                  context,
+                  c.id,
+                  _load,
+                ),
+          ],
         ],
       ));
 

@@ -4,7 +4,11 @@ import 'package:flutter/services.dart';
 import '../core/models/models.dart';
 import '../core/screens/company_detail_screen.dart';
 import '../core/screens/dashboard_screen.dart';
+import '../core/modules/module_registry.dart';
+import '../core/screens/modules_screen.dart';
 import '../core/screens/settings_screen.dart';
+import '../modules/invoicing/screens/invoicing_home_screen.dart';
+import '../platform/entitlement_service.dart';
 import '../core/screens/tasks_screen.dart';
 import '../core/services/current_session.dart';
 import '../core/services/remote_crm_sync_service.dart';
@@ -55,6 +59,8 @@ class _CrmShellState extends State<CrmShell> with WidgetsBindingObserver {
     _sync.refreshRemoteModeFlag();
     _loadLayout();
     WidgetsBinding.instance.addPostFrameCallback((_) => TaskAlarmService.instance.start());
+    // ignore: unawaited_futures
+    ModuleRegistry.instance.ensureInitialized();
   }
 
   @override
@@ -201,7 +207,9 @@ class _CrmShellState extends State<CrmShell> with WidgetsBindingObserver {
                     workspace: _workspace,
                     onRefresh: _refreshAll,
                   )
-                : selectedId != null
+                : _workspace.activeModuleId == 'invoicing'
+                    ? const InvoicingHomeScreen()
+                    : selectedId != null
                     ? CompanyDetailScreen(
                         key: ValueKey(selectedId),
                         companyId: selectedId,
@@ -222,7 +230,9 @@ class _CrmShellState extends State<CrmShell> with WidgetsBindingObserver {
         }
 
         // Desktop : rail + liste (sauf pipeline / dashboard plein) + panneau droit
-        final showList = section != CrmSection.pipeline && section != CrmSection.dashboard;
+        final showList = _workspace.activeModuleId == null &&
+            section != CrmSection.pipeline &&
+            section != CrmSection.dashboard;
         final showTodayAction = section == CrmSection.today &&
             selectedTaskId != null &&
             !todayFullRecord;
@@ -251,11 +261,17 @@ class _CrmShellState extends State<CrmShell> with WidgetsBindingObserver {
                         _IconRail(
                           width: _railWidth,
                           section: section,
+                          activeModuleId: _workspace.activeModuleId,
                           onSection: (s) {
                             _workspace.goTo(s);
                             if (s == CrmSection.pipeline) _workspace.clearSelection();
                           },
+                          onModule: _workspace.goToModule,
                           onCommandPalette: () => showCommandPalette(context, _workspace, _refreshAll),
+                          onModules: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (_) => const ModulesScreen()),
+                          ),
                           onSettings: () => Navigator.push(
                             context,
                             MaterialPageRoute(builder: (_) => const SettingsScreen()),
@@ -330,6 +346,10 @@ class _WorkspaceDetailPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final border = Theme.of(context).crmBorder;
+
+    if (workspace.activeModuleId == 'invoicing') {
+      return const InvoicingHomeScreen();
+    }
 
     if (section == CrmSection.dashboard && !showTodayAction && !showSplitRecord) {
       return DashboardScreen(
@@ -448,8 +468,11 @@ class _IconRail extends StatelessWidget {
   const _IconRail({
     required this.width,
     required this.section,
+    required this.activeModuleId,
     required this.onSection,
+    required this.onModule,
     required this.onCommandPalette,
+    required this.onModules,
     required this.onSettings,
     required this.onWider,
     required this.onNarrower,
@@ -459,8 +482,11 @@ class _IconRail extends StatelessWidget {
 
   final double width;
   final CrmSection section;
+  final String? activeModuleId;
   final ValueChanged<CrmSection> onSection;
+  final ValueChanged<String> onModule;
   final VoidCallback onCommandPalette;
+  final VoidCallback onModules;
   final VoidCallback onSettings;
   final VoidCallback onWider;
   final VoidCallback onNarrower;
@@ -480,56 +506,82 @@ class _IconRail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final border = Theme.of(context).crmBorder;
-    return Container(
-      width: width,
-      decoration: BoxDecoration(
-        color: Theme.of(context).crmSidebar,
-        border: Border(right: BorderSide(color: border)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const SizedBox(height: 12),
-          _RailButton(
-            width: width,
-            icon: Icons.search,
-            label: 'Rechercher',
-            expanded: _expanded,
-            selected: false,
-            onTap: onCommandPalette,
+    return ListenableBuilder(
+      listenable: ModuleRegistry.instance,
+      builder: (context, _) {
+        final activeModules = ModuleRegistry.instance.active;
+        return Container(
+          width: width,
+          decoration: BoxDecoration(
+            color: Theme.of(context).crmSidebar,
+            border: Border(right: BorderSide(color: border)),
           ),
-          const Divider(height: 1, indent: 8, endIndent: 8),
-          for (final item in _items)
-            _RailButton(
-              width: width,
-              icon: item.$2,
-              label: item.$3,
-              expanded: _expanded,
-              selected: section == item.$1,
-              onTap: () => onSection(item.$1),
-            ),
-          const Spacer(),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: _expanded ? 6 : 2, vertical: 4),
-            child: ColumnWidthControls(
-              compact: !_expanded,
-              onWider: onWider,
-              onNarrower: onNarrower,
-              canWider: canWider,
-              canNarrower: canNarrower,
-            ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const SizedBox(height: 12),
+              _RailButton(
+                width: width,
+                icon: Icons.search,
+                label: 'Rechercher',
+                expanded: _expanded,
+                selected: false,
+                onTap: onCommandPalette,
+              ),
+              const Divider(height: 1, indent: 8, endIndent: 8),
+              for (final item in _items)
+                _RailButton(
+                  width: width,
+                  icon: item.$2,
+                  label: item.$3,
+                  expanded: _expanded,
+                  selected: activeModuleId == null && section == item.$1,
+                  onTap: () => onSection(item.$1),
+                ),
+              if (activeModules.isNotEmpty) ...[
+                const Divider(height: 1, indent: 8, endIndent: 8),
+                for (final m in activeModules)
+                  _RailButton(
+                    width: width,
+                    icon: m.icon,
+                    label: m.title,
+                    expanded: _expanded,
+                    selected: activeModuleId == m.id,
+                    onTap: () => onModule(m.id),
+                  ),
+              ],
+              const Spacer(),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: _expanded ? 6 : 2, vertical: 4),
+                child: ColumnWidthControls(
+                  compact: !_expanded,
+                  onWider: onWider,
+                  onNarrower: onNarrower,
+                  canWider: canWider,
+                  canNarrower: canNarrower,
+                ),
+              ),
+              _RailButton(
+                width: width,
+                icon: Icons.extension_outlined,
+                label: 'Modules',
+                expanded: _expanded,
+                selected: false,
+                onTap: onModules,
+              ),
+              _RailButton(
+                width: width,
+                icon: Icons.settings_outlined,
+                label: 'Réglages',
+                expanded: _expanded,
+                selected: false,
+                onTap: onSettings,
+              ),
+              const SizedBox(height: 8),
+            ],
           ),
-          _RailButton(
-            width: width,
-            icon: Icons.settings_outlined,
-            label: 'Réglages',
-            expanded: _expanded,
-            selected: false,
-            onTap: onSettings,
-          ),
-          const SizedBox(height: 8),
-        ],
-      ),
+        );
+      },
     );
   }
 }
@@ -691,6 +743,9 @@ class _MobileList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (workspace.activeModuleId == 'invoicing') {
+      return const InvoicingHomeScreen();
+    }
     if (workspace.section == CrmSection.pipeline) {
       return PipelineBoard(workspace: workspace, onSelectCompany: onSelectCompany);
     }

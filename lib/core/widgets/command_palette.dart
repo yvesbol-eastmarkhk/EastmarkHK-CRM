@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../../state/crm_workspace_state.dart';
 import '../../theme/app_theme.dart';
 import '../../theme/crm_tokens.dart';
+import '../modules/crm_module.dart';
+import '../modules/module_registry.dart';
 import '../db/app_database.dart';
 import '../models/models.dart';
 import '../screens/company_detail_screen.dart';
@@ -38,6 +40,7 @@ class _CommandPaletteState extends State<_CommandPalette> {
   List<Opportunity> _opportunities = [];
   List<CrmTask> _tasks = [];
   List<Activity> _activities = [];
+  List<ModuleSearchHit> _moduleHits = [];
 
   @override
   void dispose() {
@@ -53,6 +56,7 @@ class _CommandPaletteState extends State<_CommandPalette> {
         _opportunities = [];
         _tasks = [];
         _activities = [];
+        _moduleHits = [];
       });
       return;
     }
@@ -62,6 +66,7 @@ class _CommandPaletteState extends State<_CommandPalette> {
     final opps = await db.searchOpportunities(q);
     final tasks = await db.searchTasks(q);
     final activities = await db.searchActivities(q);
+    final moduleHits = await ModuleRegistry.instance.searchAll(context, q);
     if (!mounted) return;
     setState(() {
       _companies = companies.take(6).toList();
@@ -69,6 +74,7 @@ class _CommandPaletteState extends State<_CommandPalette> {
       _opportunities = opps.take(6).toList();
       _tasks = tasks.take(6).toList();
       _activities = activities.take(6).toList();
+      _moduleHits = moduleHits.take(6).toList();
     });
   }
 
@@ -124,22 +130,16 @@ class _CommandPaletteState extends State<_CommandPalette> {
       child: Padding(
         padding: const EdgeInsets.only(top: 72),
         child: Material(
-          color: Colors.transparent,
-          child: Container(
-            width: 560,
-            constraints: const BoxConstraints(maxHeight: 480),
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surface,
-              borderRadius: BorderRadius.circular(CrmTokens.radiusLg),
-              border: Border.all(color: Theme.of(context).crmBorder),
-              boxShadow: [
-                BoxShadow(
-                  blurRadius: 40,
-                  color: Colors.black.withValues(alpha: 0.15),
-                  offset: const Offset(0, 12),
-                ),
-              ],
-            ),
+          color: Theme.of(context).colorScheme.surface,
+          elevation: 12,
+          shadowColor: Colors.black.withValues(alpha: 0.15),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(CrmTokens.radiusLg),
+            side: BorderSide(color: Theme.of(context).crmBorder),
+          ),
+          clipBehavior: Clip.antiAlias,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 560, maxHeight: 480),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -218,12 +218,21 @@ class _CommandPaletteState extends State<_CommandPalette> {
                             },
                           ),
                       ],
+                      if (hasSearch && _moduleHits.isNotEmpty) ...[
+                        _section('Facturation'),
+                        for (final h in _moduleHits)
+                          _action(h.icon, '${h.title} — ${h.subtitle}', () {
+                            _close();
+                            widget.workspace.goToModule(h.moduleId);
+                          }),
+                      ],
                       if (hasSearch &&
                           _companies.isEmpty &&
                           _contacts.isEmpty &&
                           _opportunities.isEmpty &&
                           _tasks.isEmpty &&
-                          _activities.isEmpty)
+                          _activities.isEmpty &&
+                          _moduleHits.isEmpty)
                         const Padding(
                           padding: EdgeInsets.all(24),
                           child: Text('Aucun résultat'),
@@ -245,11 +254,14 @@ class _CommandPaletteState extends State<_CommandPalette> {
       );
 
   Widget _action(IconData icon, String label, VoidCallback onTap) {
-    return ListTile(
-      dense: true,
-      leading: Icon(icon, size: 18),
-      title: Text(label, style: const TextStyle(fontSize: CrmTokens.bodySize)),
-      onTap: onTap,
+    return Material(
+      color: Colors.transparent,
+      child: ListTile(
+        dense: true,
+        leading: Icon(icon, size: 18),
+        title: Text(label, style: const TextStyle(fontSize: CrmTokens.bodySize)),
+        onTap: onTap,
+      ),
     );
   }
 }

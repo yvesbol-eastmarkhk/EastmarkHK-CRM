@@ -7,6 +7,8 @@ import 'core/services/company_logo_service.dart';
 import 'core/services/currency_settings.dart';
 import 'core/services/current_session.dart';
 import 'core/services/dictation_settings.dart';
+import 'core/modules/module_registry.dart';
+import 'platform/entitlement_service.dart';
 import 'core/services/pipeline_settings.dart';
 import 'core/services/remote_crm_sync_service.dart';
 
@@ -14,6 +16,8 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await AppDatabase.initPlatform();
   await PipelineSettings.instance.ensureLoaded();
+  await EntitlementService.instance.ensureLoaded();
+  await ModuleRegistry.instance.ensureInitialized();
   await AppLocaleSettings.instance.ensureLoaded();
   await DictationSettings.instance.ensureLoaded();
   await CurrencySettings.instance.ensureLoaded();

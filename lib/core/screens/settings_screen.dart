@@ -21,10 +21,11 @@ import '../widgets/dictation_field.dart';
 import '../widgets/dictation_language_picker.dart';
 import '../widgets/eastmark_logo.dart';
 import '../widgets/party_address_fields.dart';
-import '../widgets/crm_import_export_panel.dart';
-import '../widgets/pipeline_settings_dialog.dart';
 import '../widgets/password_field.dart';
+import '../widgets/pipeline_settings_dialog.dart';
+import '../widgets/crm_import_export_panel.dart';
 import 'login_screen.dart';
+import 'modules_screen.dart';
 import 'users_screen.dart';
 
 const _secureStorage = FlutterSecureStorage();
@@ -422,6 +423,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         ),
                       ),
                     ],
+                  ],
+                ),
+
+                const SizedBox(height: 20),
+
+                _SectionCard(
+                  icon: Icons.extension_outlined,
+                  title: 'Modules',
+                  subtitle: 'Facturation (e-Invoice), Scanner, Sync… — essai 7 jours ou activation licence.',
+                  children: [
+                    OutlinedButton.icon(
+                      onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const ModulesScreen()),
+                      ),
+                      icon: const Icon(Icons.storefront_outlined),
+                      label: const Text('Parcourir les modules'),
+                    ),
                   ],
                 ),
 

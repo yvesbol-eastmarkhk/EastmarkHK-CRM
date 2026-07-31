@@ -8,6 +8,8 @@ enum CrmSection { dashboard, today, clients, pipeline, tasks }
 /// État partagé du workspace — sélection client, tâche, section.
 class CrmWorkspaceState extends ChangeNotifier {
   CrmSection section = CrmSection.dashboard;
+  /// Module actif (ex. `invoicing`) — remplace la section cœur dans le panneau principal.
+  String? activeModuleId;
   String? selectedCompanyId;
   String? selectedTaskId;
   /// Sur « Aujourd'hui », ouvrir la fiche complète au lieu du panneau relance.
@@ -18,10 +20,18 @@ class CrmWorkspaceState extends ChangeNotifier {
 
   void goTo(CrmSection s) {
     section = s;
+    activeModuleId = null;
     if (s != CrmSection.today && s != CrmSection.dashboard) {
       selectedTaskId = null;
       todayFullRecord = false;
     }
+    notifyListeners();
+  }
+
+  void goToModule(String moduleId) {
+    activeModuleId = moduleId;
+    selectedTaskId = null;
+    todayFullRecord = false;
     notifyListeners();
   }
 

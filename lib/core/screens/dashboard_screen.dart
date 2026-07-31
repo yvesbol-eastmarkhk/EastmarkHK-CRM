@@ -10,6 +10,8 @@ import '../db/app_database.dart';
 import '../models/models.dart';
 import '../models/user_account.dart';
 import '../services/current_session.dart';
+import '../modules/module_registry.dart';
+import '../../platform/entitlement_service.dart';
 import '../services/pipeline_settings.dart';
 import '../utils/formatters.dart';
 import '../widgets/crm_import_export_panel.dart';
@@ -393,6 +395,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         ? () => _goToSection(CrmSection.tasks)
                         : () => _push(const TasksScreen()),
                   ),
+                  if (EntitlementService.instance.isActive('invoicing')) ...[
+                    const SizedBox(height: 24),
+                    ...ModuleRegistry.instance.byId('invoicing')!.dashboardCards(context, _load),
+                  ],
                   const SizedBox(height: 24),
                   if (topClients.isNotEmpty) ...[
                     Text('Top clients (pipeline ouvert)', style: Theme.of(context).textTheme.titleMedium),

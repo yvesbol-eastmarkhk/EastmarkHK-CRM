@@ -7,6 +7,7 @@ import 'package:uuid/uuid.dart';
 
 import '../models/models.dart';
 import '../models/user_account.dart';
+import '../../platform/entitlement_service.dart';
 import '../services/auth_service.dart';
 import '../services/remote_crm_sync_service.dart';
 
@@ -443,6 +444,46 @@ class AppDatabase {
     final dest = File(p.join(p.dirname(path), 'emhk_crm_backup_$stamp.db'));
     await src.copy(dest.path);
     return dest;
+  }
+
+  // ---- Entitlements (modules payants) --------------------------------------
+
+  Future<List<EntitlementRecord>> entitlements() async {
+    final db = await database;
+    final rows = await db.query('entitlements');
+    return rows.map((r) {
+      final src = r['source'] as String? ?? 'trial';
+      return EntitlementRecord(
+        moduleId: r['module_id'] as String,
+        source: EntitlementSource.values.firstWhere(
+          (s) => s.name == src,
+          orElse: () => EntitlementSource.trial,
+        ),
+        expiresAt: r['expires_at'] == null ? null : DateTime.tryParse(r['expires_at'] as String),
+        payload: r['payload'] as String?,
+      );
+    }).toList();
+  }
+
+  Future<void> upsertEntitlement(EntitlementRecord rec) async {
+    final db = await database;
+    await db.insert(
+      'entitlements',
+      {
+        'module_id': rec.moduleId,
+        'source': rec.source.name,
+        'expires_at': rec.expiresAt?.toUtc().toIso8601String(),
+        'payload': rec.payload,
+      },
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  Future<void> runModuleMigrations(List<String> sqlStatements) async {
+    final db = await database;
+    for (final sql in sqlStatements) {
+      await db.execute(sql);
+    }
   }
 
   // ---- Settings (clé/valeur) ------------------------------------------------
