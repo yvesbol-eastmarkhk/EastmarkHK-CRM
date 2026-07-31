@@ -1,0 +1,10 @@
+# Seul sync.php doit être accessible depuis le web — config.php et db.php
+# ne contiennent pas de secret exploitable s'ils sont chargés directement
+# (aucun echo), mais autant fermer la porte.
+<FilesMatch "^(config|db)\.php$">
+    Require all denied
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</FilesMatch>

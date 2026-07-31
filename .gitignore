@@ -1,0 +1,21 @@
+# Flutter / Dart
+.dart_tool/
+.packages
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+*.iml
+
+# Plateformes générées par `flutter create` (régénérables) — à versionner
+# une fois personnalisées (entitlements, icônes). Décommentez au besoin.
+# macos/  ios/  android/  windows/
+
+# Secrets — JAMAIS dans le dépôt
+*.env
+secrets.json
+**/credentials*
+
+# macOS
+.DS_Store
+.idea/
+.metadata

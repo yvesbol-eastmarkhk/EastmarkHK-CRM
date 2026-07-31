@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<link rel="stylesheet" href="jodit.fat.min.css">
+<script src="jodit.fat.min.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; height: 100%; background: #ffffff; }
+  .jodit-container { height: 100% !important; }
+  .jodit-placeholder { font-style: normal; opacity: 0.55; }
+</style>
+</head>
+<body>
+<textarea id="editor"></textarea>
+<script>
+  var jodit = Jodit.make('#editor', {
+    height: '100%',
+    toolbarAdaptive: false,
+    showCharsCounter: false,
+    showWordsCounter: false,
+    showXPathInStatusbar: false,
+    placeholder: 'Tapez ou collez ici — texte, tableaux, mise en forme…',
+    askBeforePasteHTML: false,
+    askBeforePasteFromWord: false,
+    defaultActionOnPaste: 'insert_as_html',
+    processPasteFromWord: true,
+    enableDragAndDrop: true,
+    buttons: [
+      'undo', 'redo', '|',
+      'bold', 'italic', 'underline', 'strikethrough', '|',
+      'font', 'fontsize', 'brush', 'paragraph', '|',
+      'align', 'ul', 'ol', 'outdent', 'indent', '|',
+      'table', 'link', '|',
+      'source'
+    ],
+  });
+
+  jodit.events.on('change', function () {
+    if (window.FlutterChange) { window.FlutterChange.postMessage(jodit.value); }
+  });
+
+  jodit.events.on('focus', function () {
+    if (window.FlutterFocus) { window.FlutterFocus.postMessage('focus'); }
+  });
+
+  jodit.events.on('blur', function () {
+    if (window.FlutterFocus) { window.FlutterFocus.postMessage('blur'); }
+  });
+
+  function setEditorContent(html) {
+    jodit.value = html;
+  }
+
+  function focusEditor() {
+    jodit.focus();
+  }
+
+  function escapePlainText(text) {
+    return text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/\n/g, '<br>');
+  }
+
+  function pasteAtCursor(plainText) {
+    if (!plainText) return;
+    jodit.selection.insertHTML(escapePlainText(plainText));
+  }
+
+  function copySelectionToClipboard() {
+    return JSON.stringify({
+      html: jodit.selection.html || '',
+      text: jodit.selection.text || ''
+    });
+  }
+
+  function cutSelection() {
+    var data = {
+      html: jodit.selection.html || '',
+      text: jodit.selection.text || ''
+    };
+    jodit.selection.remove();
+    return JSON.stringify(data);
+  }
+
+  function selectAllContent() {
+    jodit.execCommand('selectall');
+  }
+
+  if (window.FlutterReady) { window.FlutterReady.postMessage('ready'); }
+</script>
+</body>
+</html>

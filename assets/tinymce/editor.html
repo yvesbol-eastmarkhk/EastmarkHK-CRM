@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<style>
+  html, body { margin: 0; padding: 0; height: 100%; background: #ffffff; }
+  #editor-wrap { height: 100%; }
+</style>
+<script src="tinymce.min.js"></script>
+</head>
+<body>
+<div id="editor-wrap">
+  <textarea id="editor"></textarea>
+</div>
+<script>
+  tinymce.init({
+    selector: '#editor',
+    license_key: 'gpl',
+    promotion: false,
+    branding: false,
+    height: '100%',
+    resize: false,
+    menubar: false,
+    statusbar: true,
+    plugins: 'advlist autolink lists link table code wordcount searchreplace visualblocks',
+    toolbar: 'undo redo | blocks | bold italic underline strikethrough | forecolor backcolor | align bullist numlist | link table | code | searchreplace',
+    table_toolbar: 'tableprops tabledelete | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter tabledeletecol',
+    table_resize_bars: true,
+    object_resizing: 'table',
+    content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 14px; }',
+    setup: function (editor) {
+      editor.on('init', function () {
+        if (window.FlutterReady) { window.FlutterReady.postMessage('ready'); }
+      });
+      editor.on('change keyup undo redo NodeChange', function () {
+        if (window.FlutterChange) { window.FlutterChange.postMessage(editor.getContent()); }
+      });
+    }
+  });
+
+  // Appelé depuis Dart pour (ré)initialiser le contenu de l'éditeur.
+  function setEditorContent(html) {
+    var ed = tinymce.get('editor');
+    if (ed) { ed.setContent(html); }
+  }
+</script>
+</body>
+</html>

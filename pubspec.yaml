@@ -1,0 +1,94 @@
+name: eastmarkhk_crm
+description: EastmarkHK CRM — contacts, pipeline, tâches, dictée, modules (facturation, scanner, stock, leads, IA, sync)
+publish_to: 'none'
+version: 0.1.0+1
+
+environment:
+  sdk: ^3.12.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  google_fonts: ^6.2.1
+  http: ^1.2.2
+  # Parseur HTML5 pur Dart (aucun code natif, donc aucun risque côté build
+  # Xcode/Android) — utilisé pour interpréter le HTML collé tel quel dans
+  # les notes riches (voir lib/core/utils/rich_notes.dart), y compris le
+  # HTML complet généré ailleurs (commentaires, entités, styles en ligne,
+  # thead/tbody/caption…), plutôt qu'un mini-analyseur maison à base de
+  # RegExp trop fragile pour du HTML réel.
+  html: ^0.15.4
+  # Éditeur de notes riches — vrai éditeur WYSIWYG (Jodit, licence MIT)
+  # embarqué dans une WebView (assets/jodit/, voir
+  # lib/core/widgets/jodit_editor.dart), plutôt qu'une réimplémentation
+  # façon Quill : Quill n'a aucun support de tableau éditable/
+  # redimensionnable, Jodit si. Fourni en local — pas de CDN. TinyMCE avait
+  # été essayé d'abord mais sa version auto-hébergée gratuite est en GPLv2+,
+  # incompatible avec de futurs modules payants dans la même app.
+  webview_flutter: ^4.13.1
+  crypto: ^3.0.6
+  path: ^1.9.1
+  path_provider: ^2.1.5
+  sqflite: ^2.4.2
+  sqflite_common_ffi: ^2.3.5
+  intl: ^0.20.2
+  shared_preferences: ^2.3.3
+  window_manager: ^0.5.2
+  flutter_secure_storage: ^10.3.1
+  country_picker: ^2.0.27
+  country_flags: ^4.1.2
+  url_launcher: ^6.3.1
+  file_selector: ^1.1.0
+  share_plus: ^13.3.0
+  fl_chart: ^1.2.0
+  uuid: ^4.5.1
+  speech_to_text: ^7.0.0
+  dlibphonenumber: ^1.1.68
+  local_auth: ^3.0.2
+  permission_handler: ^12.0.3
+  package_info_plus: ^10.2.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.4
+  flutter_native_splash: ^2.4.4
+  msix: ^3.18.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/branding/
+    # Jodit auto-hébergé, licence MIT (voir lib/core/widgets/jodit_editor.dart)
+    # — bundle unique (JS+CSS), pas de sous-dossiers à lister.
+    - assets/jodit/
+
+# Icône de l'app (Dock/launcher/App Store) — après modification de l'image,
+# régénérer avec : dart run flutter_launcher_icons
+flutter_launcher_icons:
+  # app_icon_v3.png : version définitive fournie par l'utilisateur (déjà
+  # recadrée sur le seul insigne EastmarkHK CRM, sans les décorations
+  # latérales de app_icon.png d'origine).
+  image_path: "assets/branding/app_icon_v3.png"
+  macos:
+    generate: true
+  ios:
+    generate: true
+  android:
+    generate: true
+  windows:
+    generate: true
+    icon_size: 256
+
+# Écran de chargement (splash natif au démarrage) — régénérer avec :
+# dart run flutter_native_splash:create
+flutter_native_splash:
+  color: "#FFFFFF"
+  image: assets/branding/app_icon.png
+  android_12:
+    image: assets/branding/app_icon.png
+    color: "#FFFFFF"

@@ -1,0 +1,11 @@
+# Bloque tout accès web direct à ce dossier (contient la base SQLite du
+# serveur de sync) — s'applique seulement si ce dossier reste sous le
+# webroot Apache. Idéalement, changez 'db_path' dans config.php pour
+# pointer hors du webroot (ex: un dossier au-dessus de public_html).
+Require all denied
+
+# Compatibilité Apache 2.2 (hébergements plus anciens).
+<IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+</IfModule>
