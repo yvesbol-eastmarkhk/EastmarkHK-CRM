@@ -230,6 +230,8 @@ Future<bool> showAddTaskDialog(
   String? companyId,
   bool allowNoClient = false,
   CrmTask? existing,
+  /// Appelé uniquement à la création réussie (pas à l'édition / suppression).
+  ValueChanged<CrmTask>? onCreated,
 }) async {
   final isEdit = existing != null;
   final message = TextEditingController(
@@ -488,7 +490,7 @@ Future<bool> showAddTaskDialog(
   final now = nowIso();
   final isCreate = existing == null;
   final taskId = existing?.id ?? AppDatabase.newId();
-  await AppDatabase.instance.upsertTask(CrmTask(
+  final task = CrmTask(
     id: taskId,
     companyId: selectedCompanyId,
     opportunityId: existing?.opportunityId,
@@ -500,7 +502,8 @@ Future<bool> showAddTaskDialog(
     doneAt: existing?.doneAt,
     createdAt: existing?.createdAt ?? now,
     updatedAt: now,
-  ));
+  );
+  await AppDatabase.instance.upsertTask(task);
 
   // Création → activité récente / timeline client (comme « Opportunité créée »).
   if (isCreate) {
@@ -518,6 +521,7 @@ Future<bool> showAddTaskDialog(
       createdAt: now,
       updatedAt: now,
     ));
+    onCreated?.call(task);
   }
   return true;
 }

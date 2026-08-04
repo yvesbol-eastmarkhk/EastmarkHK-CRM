@@ -61,6 +61,12 @@ class CrmWorkspaceState extends ChangeNotifier {
   }
 
   void selectTask(CrmTask task) {
+    // Aperçu tâche seulement sur Aujourd'hui / Tâches — bascule si besoin
+    // (ex. création depuis le dashboard / palette).
+    if (section != CrmSection.today && section != CrmSection.tasks) {
+      section = CrmSection.tasks;
+      activeModuleId = null;
+    }
     selectedTaskId = task.id;
     selectedCompanyId = task.companyId;
     selectedOpportunityId = null;

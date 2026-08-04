@@ -172,7 +172,11 @@ class _CrmShellState extends State<CrmShell> with WidgetsBindingObserver {
   }
 
   Future<void> _addTaskFromHeader() async {
-    final created = await showAddTaskDialog(context, allowNoClient: true);
+    final created = await showAddTaskDialog(
+      context,
+      allowNoClient: true,
+      onCreated: _selectTask,
+    );
     if (created) _refreshAll();
   }
 

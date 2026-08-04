@@ -678,9 +678,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               Divider(height: 1, color: scheme.outlineVariant.withValues(alpha: 0.4)),
                             Builder(builder: (context) {
                               final a = _recentActivities[i];
-                              final label = (a.body != null && a.body!.isNotEmpty)
+                              final title = localizedActivityTitle(l10n, a.title);
+                              final body = (a.body != null && a.body!.isNotEmpty)
                                   ? a.body!
-                                  : localizedActivityTitle(l10n, a.title);
+                                  : null;
                               return Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                               child: Row(
@@ -693,11 +694,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          label,
+                                          title,
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
                                           style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
                                         ),
+                                        if (body != null) ...[
+                                          const SizedBox(height: 2),
+                                          Text(
+                                            body,
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(fontSize: 12, color: scheme.onSurfaceVariant),
+                                          ),
+                                        ],
                                         const SizedBox(height: 2),
                                         Text(
                                           a.companyId != null &&

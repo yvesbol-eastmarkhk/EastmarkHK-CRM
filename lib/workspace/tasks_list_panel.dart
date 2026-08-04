@@ -69,6 +69,7 @@ class _TasksListPanelState extends State<TasksListPanel> {
       context,
       companyId: widget.selectedCompanyId ?? widget.workspace.selectedCompanyId,
       allowNoClient: true,
+      onCreated: (t) => widget.onSelectTask?.call(t),
     );
     if (created) {
       await _load();
@@ -134,7 +135,9 @@ class _TasksListPanelState extends State<TasksListPanel> {
                             ? _companyNames[t.companyId]!
                             : l10n.tasksListNoClient,
                         subtitle:
-                            '${truncateTaskMessage(taskMessage(t))}\n${formatDateTimeFr(t.createdAt)}',
+                            '${truncateTaskMessage(taskMessage(t))}\n'
+                            '${t.dueDate == null ? l10n.tasksNoDue : formatDueLabel(t.dueDate)}'
+                            ' · ${formatDateTimeFr(t.createdAt)}',
                         subtitleMaxLines: 3,
                         accentColor: t.isDone
                             ? null
