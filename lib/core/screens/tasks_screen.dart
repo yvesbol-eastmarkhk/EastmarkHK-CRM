@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../l10n/gen/app_localizations.dart';
 import '../../theme/app_theme.dart';
 import '../../theme/crm_tokens.dart';
 import '../../ui/crm_page.dart';
@@ -10,8 +11,10 @@ import '../services/current_session.dart';
 import '../utils/formatters.dart';
 import '../utils/task_display.dart';
 import '../widgets/company_avatar.dart';
+import '../widgets/company_picker_field.dart';
 import '../widgets/dictation_field.dart';
 import '../widgets/empty_state.dart';
+import '../widgets/task_done_toggle.dart';
 
 class TasksScreen extends StatefulWidget {
   const TasksScreen({super.key, this.initialFilterUserId});
@@ -56,35 +59,50 @@ class _TasksScreenState extends State<TasksScreen> {
     if (created) await _load();
   }
 
+  Future<void> _editTask(CrmTask t) async {
+    final changed = await showAddTaskDialog(context, existing: t);
+    if (changed) await _load();
+  }
+
+  Future<void> _deleteTask(CrmTask t) async {
+    await AppDatabase.instance.softDeleteTask(t.id);
+    await _load();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final scheme = Theme.of(context).colorScheme;
     final me = CurrentSession.instance.user;
     return CrmPage(
-      title: 'Tâches',
-      subtitle: '${_tasks.where((t) => !t.isDone).length} ouverte${_tasks.where((t) => !t.isDone).length > 1 ? 's' : ''}',
-      actions: [CrmPrimaryButton(label: 'Nouvelle tâche', onPressed: _addTask)],
+      title: l10n.tasksTitle,
+      subtitle: l10n
+          .tasksOpenCount(_tasks.where((t) => !t.isDone).length),
+      actions: [
+        CrmPrimaryButton(label: l10n.tasksNewButton, onPressed: _addTask)
+      ],
       child: Column(
         children: [
-          // Filtre par utilisateur — invisible tant qu'aucun compte
-          // n'existe (usage local), utile dès que la base est partagée
-          // entre plusieurs commerciaux.
           if (_users.isNotEmpty)
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
               child: Row(
                 children: [
-                  Icon(Icons.filter_list, size: 18, color: scheme.onSurfaceVariant),
+                  Icon(Icons.filter_list,
+                      size: 18, color: scheme.onSurfaceVariant),
                   const SizedBox(width: 8),
                   DropdownButton<String?>(
                     value: _filterUserId,
                     underline: const SizedBox.shrink(),
                     items: [
-                      const DropdownMenuItem(value: null, child: Text('Tous les commerciaux')),
+                      DropdownMenuItem(
+                          value: null, child: Text(l10n.tasksAllReps)),
                       for (final u in _users)
                         DropdownMenuItem(
                           value: u.id,
-                          child: Text(u.id == me?.id ? '${u.displayName} (moi)' : u.displayName),
+                          child: Text(u.id == me?.id
+                              ? l10n.dashboardMeSuffix(u.displayName)
+                              : u.displayName),
                         ),
                     ],
                     onChanged: (v) {
@@ -99,9 +117,9 @@ class _TasksScreenState extends State<TasksScreen> {
             child: _tasks.isEmpty
                 ? EmptyState(
                     icon: Icons.check_circle_outline,
-                    title: 'Tout est fait !',
-                    subtitle: 'Ajoutez une tâche — ou dictez-la après un appel.',
-                    actionLabel: 'Nouvelle tâche',
+                    title: l10n.tasksAllDoneTitle,
+                    subtitle: l10n.tasksAllDoneSubtitle,
+                    actionLabel: l10n.tasksNewButton,
                     onAction: _addTask,
                   )
                 : ListView.builder(
@@ -123,10 +141,28 @@ class _TasksScreenState extends State<TasksScreen> {
                           }
                         }
                       }
-                      return CheckboxListTile(
-                        controlAffinity: ListTileControlAffinity.leading,
-                        value: t.isDone,
-                        title: Text(t.title),
+                      return ListTile(
+                        onTap: () async {
+                          t.doneAt = t.isDone ? null : nowIso();
+                          await AppDatabase.instance.upsertTask(t);
+                          _load();
+                        },
+                        leading: TaskDoneToggle(
+                          done: t.isDone,
+                          onChanged: (v) async {
+                            t.doneAt = v ? nowIso() : null;
+                            await AppDatabase.instance.upsertTask(t);
+                            _load();
+                          },
+                        ),
+                        title: Text(
+                          taskMessage(t),
+                          style: TextStyle(
+                            decoration: t.isDone
+                                ? TextDecoration.lineThrough
+                                : null,
+                          ),
+                        ),
                         subtitle: t.dueDate == null
                             ? null
                             : Text(
@@ -140,46 +176,41 @@ class _TasksScreenState extends State<TasksScreen> {
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
-                        secondary: assignee == null
-                            ? IconButton(
-                                tooltip: 'Supprimer',
-                                icon: const Icon(Icons.delete_outline),
-                                onPressed: () async {
-                                  await AppDatabase.instance.softDeleteTask(t.id);
-                                  _load();
-                                },
-                              )
-                            : Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Tooltip(
-                                    message: assignee.displayName,
-                                    child: CircleAvatar(
-                                      radius: 12,
-                                      backgroundColor: AppTheme.avatarColor(assignee.displayName),
-                                      child: Text(
-                                        assignee.displayName.isEmpty
-                                            ? '?'
-                                            : assignee.displayName[0].toUpperCase(),
-                                        style: const TextStyle(fontSize: 11, color: Colors.white),
-                                      ),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            if (assignee != null)
+                              Padding(
+                                padding: const EdgeInsets.only(right: 4),
+                                child: Tooltip(
+                                  message: assignee.displayName,
+                                  child: CircleAvatar(
+                                    radius: 12,
+                                    backgroundColor: AppTheme.avatarColor(
+                                        assignee.displayName),
+                                    child: Text(
+                                      assignee.displayName.isEmpty
+                                          ? '?'
+                                          : assignee.displayName[0]
+                                              .toUpperCase(),
+                                      style: const TextStyle(
+                                          fontSize: 11, color: Colors.white),
                                     ),
                                   ),
-                                  IconButton(
-                                    tooltip: 'Supprimer',
-                                    icon: const Icon(Icons.delete_outline),
-                                    onPressed: () async {
-                                      await AppDatabase.instance.softDeleteTask(t.id);
-                                      _load();
-                                    },
-                                  ),
-                                ],
+                                ),
                               ),
-                        onChanged: (v) async {
-                          t.doneAt = (v ?? false) ? nowIso() : null;
-                          await AppDatabase.instance.upsertTask(t);
-                          _load();
-                        },
+                            IconButton(
+                              tooltip: l10n.commonEdit,
+                              icon: const Icon(Icons.edit_outlined, size: 20, color: Color(0xFF2563EB)),
+                              onPressed: () => _editTask(t),
+                            ),
+                            IconButton(
+                              tooltip: l10n.commonDelete,
+                              icon: const Icon(Icons.delete_outline, size: 20, color: Color(0xFFDC2626)),
+                              onPressed: () => _deleteTask(t),
+                            ),
+                          ],
+                        ),
                       );
                     },
                   ),
@@ -190,49 +221,67 @@ class _TasksScreenState extends State<TasksScreen> {
   }
 }
 
-/// Dialogue de création de tâche — client optionnel, date + heure, dictée.
+enum _TaskDialogAction { cancel, save, delete }
+
+/// Dialogue création / édition de tâche — client optionnel, date + heure, dictée.
 Future<bool> showAddTaskDialog(
   BuildContext context, {
   String? companyId,
   bool allowNoClient = false,
+  CrmTask? existing,
 }) async {
-  final message = TextEditingController();
+  final isEdit = existing != null;
+  final message = TextEditingController(
+    text: existing == null ? '' : taskMessage(existing),
+  );
   DateTime? dueDate;
   TimeOfDay? dueTime;
+  if (existing?.dueDate != null) {
+    final parsed = DateTime.tryParse(existing!.dueDate!);
+    if (parsed != null) {
+      final local = parsed.toLocal();
+      dueDate = DateTime(local.year, local.month, local.day);
+      dueTime = TimeOfDay(hour: local.hour, minute: local.minute);
+    }
+  }
   await CurrentSession.instance.ensureLoaded();
   final db = AppDatabase.instance;
   final users = await db.users();
   final companies = await db.companies();
-  String? selectedCompanyId = companyId;
+  String? selectedCompanyId = existing?.companyId ?? companyId;
   String? lockedCompanyName;
   if (companyId != null) {
     final match = companies.where((c) => c.id == companyId);
     lockedCompanyName = match.isEmpty ? null : match.first.name;
   }
-  String? assignedTo = CurrentSession.instance.user?.id;
+  String? assignedTo =
+      existing?.assignedTo ?? CurrentSession.instance.user?.id;
   if (!context.mounted) return false;
+  final l10n = AppLocalizations.of(context);
 
   String dueSummary() {
-    if (dueDate == null) return 'Pas d\'échéance';
+    if (dueDate == null) return l10n.tasksNoDue;
     final combined = combineDueDateTime(dueDate, dueTime);
     return formatDateTimeFr(combined!.toUtc().toIso8601String());
   }
 
   DateTime? buildDueUtc() {
-    final combined = combineDueDateTime(dueDate, dueTime, referenceNow: DateTime.now());
+    final combined =
+        combineDueDateTime(dueDate, dueTime, referenceNow: DateTime.now());
     return combined?.toUtc();
   }
 
   if (!context.mounted) return false;
-  final ok = await showDialog<bool>(
+  final action = await showDialog<_TaskDialogAction>(
     context: context,
     builder: (ctx) => StatefulBuilder(
       builder: (ctx, setLocal) {
-        final canCreate = message.text.trim().isNotEmpty;
+        final canSave = message.text.trim().isNotEmpty;
         return AlertDialog(
-          title: const Text('Nouvelle tâche'),
+          title: Text(
+              isEdit ? l10n.tasksEditTaskTitle : l10n.tasksNewTaskTitle),
           content: SizedBox(
-            width: 480,
+            width: 620,
             child: SingleChildScrollView(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -247,44 +296,44 @@ Future<bool> showAddTaskDialog(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('Client', style: Theme.of(ctx).textTheme.bodySmall),
-                              Text(lockedCompanyName, style: const TextStyle(fontWeight: FontWeight.w600)),
+                              Text(l10n.tasksClientLabel,
+                                  style: Theme.of(ctx).textTheme.bodySmall),
+                              Text(lockedCompanyName,
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.w600)),
                             ],
                           ),
                         ),
                       ],
                     ),
                   ] else ...[
-                    Text(allowNoClient ? 'Client (optionnel)' : 'Client *',
+                    Text(
+                        allowNoClient || isEdit
+                            ? l10n.tasksClientOptional
+                            : l10n.tasksClientRequired,
                         style: Theme.of(ctx).textTheme.bodySmall),
                     const SizedBox(height: 6),
-                    DropdownButtonFormField<String?>(
-                      value: selectedCompanyId,
-                      decoration: const InputDecoration(isDense: true),
-                      items: [
-                        if (allowNoClient)
-                          const DropdownMenuItem(
-                            value: null,
-                            child: Text('Sans client (ex. exécuter une tâche perso)'),
-                          ),
-                        for (final c in companies)
-                          DropdownMenuItem(value: c.id, child: Text(c.name)),
-                      ],
-                      onChanged: (v) => setLocal(() => selectedCompanyId = v),
+                    CompanyPickerField(
+                      companies: companies,
+                      selectedId: selectedCompanyId,
+                      allowNoClient: allowNoClient || isEdit,
+                      onSelected: (v) => setLocal(() => selectedCompanyId = v),
                     ),
                   ],
                   const SizedBox(height: 16),
                   DictationField(
                     controller: message,
-                    label: 'Message (ex. Appeler le client, exécuter une tâche…)',
+                    label: l10n.tasksMessageHint,
                     maxLines: 5,
                     autofocus: true,
-                    onChanged: () => setLocal(() {}),
+                    onChanged: (_) => setLocal(() {}),
                   ),
                   const SizedBox(height: 12),
-                  Text('Échéance', style: Theme.of(ctx).textTheme.bodySmall),
+                  Text(l10n.tasksDueLabel,
+                      style: Theme.of(ctx).textTheme.bodySmall),
                   const SizedBox(height: 6),
-                  Text(dueSummary(), style: const TextStyle(fontWeight: FontWeight.w500)),
+                  Text(dueSummary(),
+                      style: const TextStyle(fontWeight: FontWeight.w500)),
                   const SizedBox(height: 8),
                   Wrap(
                     spacing: 8,
@@ -294,13 +343,18 @@ Future<bool> showAddTaskDialog(
                           final picked = await showDatePicker(
                             context: ctx,
                             initialDate: dueDate ?? DateTime.now(),
-                            firstDate: DateTime.now().subtract(const Duration(days: 1)),
-                            lastDate: DateTime.now().add(const Duration(days: 365 * 2)),
+                            firstDate: DateTime.now()
+                                .subtract(const Duration(days: 1)),
+                            lastDate: DateTime.now()
+                                .add(const Duration(days: 365 * 2)),
                           );
-                          if (picked != null) setLocal(() => dueDate = picked);
+                          if (picked != null) {
+                            setLocal(() => dueDate = picked);
+                          }
                         },
-                        icon: const Icon(Icons.calendar_today_outlined, size: 16),
-                        label: const Text('Date'),
+                        icon: const Icon(Icons.calendar_today_outlined,
+                            size: 16),
+                        label: Text(l10n.tasksDateButton),
                       ),
                       OutlinedButton.icon(
                         onPressed: dueDate == null
@@ -311,13 +365,16 @@ Future<bool> showAddTaskDialog(
                                   initialTime: dueTime ??
                                       defaultDueTimeForDate(dueDate!),
                                 );
-                                if (picked != null) setLocal(() => dueTime = picked);
+                                if (picked != null) {
+                                  setLocal(() => dueTime = picked);
+                                }
                               },
                         icon: const Icon(Icons.schedule, size: 16),
                         label: Text(
                           dueDate == null
-                              ? 'Heure'
-                              : (dueTime ?? defaultDueTimeForDate(dueDate!)).format(ctx),
+                              ? l10n.tasksTimeButton
+                              : (dueTime ?? defaultDueTimeForDate(dueDate!))
+                                  .format(ctx),
                         ),
                       ),
                       if (dueDate != null)
@@ -326,7 +383,7 @@ Future<bool> showAddTaskDialog(
                             dueDate = null;
                             dueTime = null;
                           }),
-                          child: const Text('Effacer'),
+                          child: Text(l10n.tasksClearButton),
                         ),
                     ],
                   ),
@@ -334,22 +391,26 @@ Future<bool> showAddTaskDialog(
                     const SizedBox(height: 12),
                     Row(
                       children: [
-                        const Text('Assigné à'),
+                        Text(l10n.tasksAssignedTo),
                         const Spacer(),
                         DropdownButton<String?>(
                           value: assignedTo,
                           underline: const SizedBox.shrink(),
                           items: [
-                            const DropdownMenuItem(value: null, child: Text('Non assigné')),
+                            DropdownMenuItem(
+                                value: null,
+                                child: Text(l10n.tasksUnassigned)),
                             for (final u in users)
                               DropdownMenuItem(
                                 value: u.id,
-                                child: Text(u.id == CurrentSession.instance.user?.id
-                                    ? '${u.displayName} (moi)'
+                                child: Text(u.id ==
+                                        CurrentSession.instance.user?.id
+                                    ? l10n.dashboardMeSuffix(u.displayName)
                                     : u.displayName),
                               ),
                           ],
-                          onChanged: (v) => setLocal(() => assignedTo = v),
+                          onChanged: (v) =>
+                              setLocal(() => assignedTo = v),
                         ),
                       ],
                     ),
@@ -358,30 +419,68 @@ Future<bool> showAddTaskDialog(
               ),
             ),
           ),
+          actionsAlignment:
+              isEdit ? MainAxisAlignment.spaceBetween : MainAxisAlignment.end,
           actions: [
-            TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Annuler')),
-            FilledButton(
-              onPressed: canCreate ? () => Navigator.pop(ctx, true) : null,
-              child: const Text('Créer'),
+            if (isEdit)
+              TextButton(
+                onPressed: () =>
+                    Navigator.pop(ctx, _TaskDialogAction.delete),
+                style: TextButton.styleFrom(
+                    foregroundColor: Colors.red.shade700),
+                child: Text(l10n.commonDelete),
+              ),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextButton(
+                  onPressed: () =>
+                      Navigator.pop(ctx, _TaskDialogAction.cancel),
+                  child: Text(l10n.commonCancel),
+                ),
+                const SizedBox(width: 8),
+                FilledButton(
+                  onPressed: canSave
+                      ? () => Navigator.pop(ctx, _TaskDialogAction.save)
+                      : null,
+                  child: Text(isEdit ? l10n.commonSave : l10n.commonCreate),
+                ),
+              ],
             ),
           ],
         );
       },
     ),
   );
-  if (ok != true || message.text.trim().isEmpty) return false;
-  if (!allowNoClient && selectedCompanyId == null && lockedCompanyName == null) return false;
+
+  if (action == null || action == _TaskDialogAction.cancel) return false;
+
+  if (action == _TaskDialogAction.delete && existing != null) {
+    await AppDatabase.instance.softDeleteTask(existing.id);
+    return true;
+  }
+
+  if (message.text.trim().isEmpty) return false;
+  if (!allowNoClient &&
+      !isEdit &&
+      selectedCompanyId == null &&
+      lockedCompanyName == null) {
+    return false;
+  }
   final fullMessage = message.text.trim();
   final dueUtc = buildDueUtc();
   final now = nowIso();
   await AppDatabase.instance.upsertTask(CrmTask(
-    id: AppDatabase.newId(),
+    id: existing?.id ?? AppDatabase.newId(),
     companyId: selectedCompanyId,
+    opportunityId: existing?.opportunityId,
+    contactId: existing?.contactId,
     title: taskTitleFromMessage(fullMessage),
     notes: fullMessage,
     dueDate: dueUtc?.toIso8601String(),
     assignedTo: assignedTo,
-    createdAt: now,
+    doneAt: existing?.doneAt,
+    createdAt: existing?.createdAt ?? now,
     updatedAt: now,
   ));
   return true;

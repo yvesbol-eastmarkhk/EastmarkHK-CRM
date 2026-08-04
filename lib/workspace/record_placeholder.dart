@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../core/constants/crm_constants.dart';
+import '../l10n/gen/app_localizations.dart';
 import '../state/crm_workspace_state.dart';
 import '../theme/crm_tokens.dart';
 
@@ -12,32 +12,33 @@ class RecordPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final scheme = Theme.of(context).colorScheme;
     final (icon, title, hint) = switch (section) {
       CrmSection.dashboard => (
           Icons.dashboard_outlined,
-          'Tableau de bord',
-          'Vue d\'ensemble : pipeline, relances et activité récente.',
+          l10n.dashboardTitleEmbedded,
+          l10n.placeholderDashboardHint,
         ),
       CrmSection.today => (
           Icons.wb_sunny_outlined,
-          'Votre journée',
-          'Choisissez une relance à gauche.\nLe client s\'ouvre ici — sans changer d\'écran.',
+          l10n.placeholderTodayTitle,
+          l10n.placeholderTodayHint,
         ),
       CrmSection.clients => (
           Icons.business_outlined,
-          'Fiche client',
-          'Sélectionnez un client dans la liste,\n ou créez-en un avec le bouton +.',
+          l10n.placeholderClientsTitle,
+          l10n.placeholderClientsHint,
         ),
       CrmSection.pipeline => (
           Icons.view_kanban_outlined,
-          'Pipeline',
-          'Glissez une carte entre les colonnes.\nCliquez pour ouvrir la fiche client.',
+          l10n.metricPipeline,
+          l10n.placeholderPipelineHint,
         ),
       CrmSection.tasks => (
           Icons.check_circle_outline,
-          'Tâches',
-          'Sélectionnez une tâche pour voir le client concerné.',
+          l10n.metricTasks,
+          l10n.placeholderTasksHint,
         ),
     };
 
@@ -65,7 +66,7 @@ class RecordPlaceholder extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              kProductTagline,
+              l10n.productTagline,
               style: TextStyle(
                 fontSize: CrmTokens.captionSize,
                 color: scheme.primary,

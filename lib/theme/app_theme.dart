@@ -128,24 +128,53 @@ class AppTheme {
       ),
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-          textStyle: const TextStyle(fontSize: CrmTokens.bodySize, fontWeight: FontWeight.w500),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(CrmTokens.radiusMd),
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+          textStyle: const TextStyle(
+            fontSize: CrmTokens.bodySize,
+            fontWeight: FontWeight.w600,
           ),
+          shape: const StadiumBorder(),
+        ),
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+          textStyle: const TextStyle(
+            fontSize: CrmTokens.bodySize,
+            fontWeight: FontWeight.w600,
+          ),
+          shape: const StadiumBorder(),
+        ),
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+          textStyle: const TextStyle(
+            fontSize: CrmTokens.bodySize,
+            fontWeight: FontWeight.w600,
+          ),
+          shape: const StadiumBorder(),
         ),
       ),
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-          textStyle: const TextStyle(fontSize: CrmTokens.bodySize, fontWeight: FontWeight.w500),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+          textStyle: const TextStyle(
+            fontSize: CrmTokens.bodySize,
+            fontWeight: FontWeight.w600,
+          ),
+          shape: const StadiumBorder(),
         ),
       ),
       iconButtonTheme: IconButtonThemeData(
         style: IconButton.styleFrom(
           visualDensity: VisualDensity.compact,
           iconSize: 18,
+          shape: const StadiumBorder(),
         ),
+      ),
+      floatingActionButtonTheme: const FloatingActionButtonThemeData(
+        shape: StadiumBorder(),
       ),
       tooltipTheme: TooltipThemeData(
         textStyle: TextStyle(fontSize: CrmTokens.captionSize, color: scheme.onInverseSurface),

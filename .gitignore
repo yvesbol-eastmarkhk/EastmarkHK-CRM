@@ -6,6 +6,15 @@ build/
 .flutter-plugins-dependencies
 *.iml
 
+# Release binaries (keep dist/README.md)
+dist/dmg/
+dist/apk/
+dist/**/*.dmg
+dist/**/*.apk
+dist/**/*.ipa
+dist/**/*.msix
+!dist/README.md
+
 # Plateformes générées par `flutter create` (régénérables) — à versionner
 # une fois personnalisées (entitlements, icônes). Décommentez au besoin.
 # macos/  ios/  android/  windows/

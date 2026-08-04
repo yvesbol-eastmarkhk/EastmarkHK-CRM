@@ -6,6 +6,8 @@ abstract final class CrmTokens {
   // ── Couleurs ──────────────────────────────────────────────────────────
   static const accent = Color(0xFF2563EB);
   static const accentMuted = Color(0xFFEFF4FF);
+  /// Chiffres à mettre en avant (ex. compteurs d'étape du pipeline mobile).
+  static const fuchsia = Color(0xFFC026D3);
 
   static const surfaceLight = Color(0xFFFFFFFF);
   static const surfaceMutedLight = Color(0xFFF9FAFB);
@@ -78,6 +80,8 @@ abstract final class CrmTokens {
   static const radiusSm = 6.0;
   static const radiusMd = 8.0;
   static const radiusLg = 12.0;
+  /// Forme « pilule » — tous les boutons d’action de l’app.
+  static const buttonRadius = 999.0;
 
   // ── Typographie (échelle Linear) ────────────────────────────────────────
   static const displaySize = 28.0;

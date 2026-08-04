@@ -3,7 +3,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
-import '../../core/constants/crm_constants.dart';
+import '../../l10n/gen/app_localizations.dart';
 import '../../theme/app_theme.dart';
 import '../../theme/crm_tokens.dart';
 import '../data/countries.dart';
@@ -12,14 +12,20 @@ import '../db/app_database.dart';
 import '../models/models.dart';
 import '../modules/module_registry.dart';
 import '../services/pipeline_settings.dart';
-import '../../platform/entitlement_service.dart';
 import '../utils/formatters.dart';
 import '../utils/phone_formatter.dart';
 import '../utils/responsive_form.dart';
+import '../utils/task_display.dart';
 import '../widgets/country_flag_icon.dart';
 import '../widgets/country_picker_field.dart';
 import '../widgets/dictation_field.dart';
+import '../widgets/log_interaction_sheet.dart';
 import '../widgets/party_address_fields.dart';
+import '../widgets/task_done_toggle.dart';
+import '../../platform/desktop_chrome.dart';
+import '../../state/crm_workspace_state.dart';
+import '../../widgets/messaging_brand_badge.dart';
+import 'opportunity_detail_screen.dart';
 import 'opportunity_dialog.dart';
 import 'tasks_screen.dart';
 
@@ -29,12 +35,16 @@ class CompanyDetailScreen extends StatefulWidget {
     super.key,
     required this.companyId,
     this.embedded = false,
+    this.workspace,
     this.onDeleted,
     this.onUpdated,
   });
 
   final String companyId;
   final bool embedded;
+  /// Quand fourni (fiche affichée dans le workspace), les affaires
+  /// s'ouvrent dans le panneau détail au lieu d'être poussées en plein écran.
+  final CrmWorkspaceState? workspace;
   final VoidCallback? onDeleted;
   final VoidCallback? onUpdated;
 
@@ -101,27 +111,21 @@ class _CompanyDetailScreenState extends State<CompanyDetailScreen> with SingleTi
     if (saved) await _load();
   }
 
-  Future<void> _deleteOpportunity(Opportunity o) async {
-    final ok = await _confirmDelete('Supprimer cette opportunité ?', o.title);
-    if (ok != true) return;
-    await AppDatabase.instance.softDeleteOpportunity(o.id);
-    await _load();
-  }
-
   Future<void> _addNote() async {
+    final l10n = AppLocalizations.of(context);
     final body = TextEditingController();
     final ok = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Nouvelle note'),
+        title: Text(l10n.companyNewNoteTitle),
         content: SizedBox(
-          width: 420,
+          width: 560,
           child: DictationField(
-              controller: body, label: 'Note (ou dictez-la)', maxLines: 5, autofocus: true),
+              controller: body, label: l10n.companyNoteFieldLabel, maxLines: 5, autofocus: true),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Annuler')),
-          FilledButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Ajouter')),
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(l10n.commonCancel)),
+          FilledButton(onPressed: () => Navigator.pop(ctx, true), child: Text(l10n.commonAdd)),
         ],
       ),
     );
@@ -163,6 +167,7 @@ class _CompanyDetailScreenState extends State<CompanyDetailScreen> with SingleTi
   /// la place), les canaux de messagerie juste après le téléphone plutôt que
   /// sur une ligne à part en dessous.
   Widget _contactTile(Contact p) {
+    final l10n = AppLocalizations.of(context);
     final channels = decodeMessagingChannels(p.messagingJson);
     final infoText = [
       if (p.role != null) p.role!,
@@ -174,7 +179,7 @@ class _CompanyDetailScreenState extends State<CompanyDetailScreen> with SingleTi
       onTap: () => _viewContact(p),
       leading: const Icon(Icons.person_outline),
       title: Text(
-        p.displayName.isEmpty ? '(sans nom)' : p.displayName,
+        p.displayName.isEmpty ? l10n.commonNoName : p.displayName,
         style: const TextStyle(color: _contactNameColor, fontWeight: FontWeight.w600),
       ),
       subtitle: channels.isEmpty
@@ -195,13 +200,13 @@ class _CompanyDetailScreenState extends State<CompanyDetailScreen> with SingleTi
         mainAxisSize: MainAxisSize.min,
         children: [
           IconButton(
-            tooltip: 'Modifier',
-            icon: const Icon(Icons.edit_outlined, size: 18),
+            tooltip: l10n.commonEdit,
+            icon: const Icon(Icons.edit_outlined, size: 18, color: Color(0xFF2563EB)),
             onPressed: () => _addOrEditContact(existing: p),
           ),
           IconButton(
-            tooltip: 'Supprimer',
-            icon: const Icon(Icons.delete_outline, size: 18),
+            tooltip: l10n.commonDelete,
+            icon: const Icon(Icons.delete_outline, size: 18, color: Color(0xFFDC2626)),
             onPressed: () => _deleteContact(p),
           ),
         ],
@@ -219,7 +224,7 @@ class _CompanyDetailScreenState extends State<CompanyDetailScreen> with SingleTi
   }
 
   Future<void> _deleteContact(Contact p) async {
-    final ok = await _confirmDelete('Supprimer ce contact ?', p.displayName);
+    final ok = await _confirmDelete(AppLocalizations.of(context).companyDeleteContactConfirm, p.displayName);
     if (ok != true) return;
     await AppDatabase.instance.softDeleteContact(p.id);
     await _load();
@@ -228,13 +233,6 @@ class _CompanyDetailScreenState extends State<CompanyDetailScreen> with SingleTi
   Future<void> _addTask() async {
     final created = await showAddTaskDialog(context, companyId: widget.companyId);
     if (created) await _load();
-  }
-
-  Future<void> _deleteTask(CrmTask t) async {
-    final ok = await _confirmDelete('Supprimer cette tâche ?', t.title);
-    if (ok != true) return;
-    await AppDatabase.instance.softDeleteTask(t.id);
-    await _load();
   }
 
   Future<void> _editCompany() async {
@@ -248,8 +246,9 @@ class _CompanyDetailScreenState extends State<CompanyDetailScreen> with SingleTi
 
   Future<void> _deleteCompany() async {
     if (_company == null) return;
-    final ok = await _confirmDelete('Supprimer ce client ?',
-        '${_company!.name} — ses contacts, opportunités, tâches et son historique seront supprimés avec lui.');
+    final l10n = AppLocalizations.of(context);
+    final ok = await _confirmDelete(l10n.companyDeleteConfirmTitle,
+        l10n.companyDeleteConfirmDetail(_company!.name));
     if (ok != true) return;
     await AppDatabase.instance.softDeleteCompany(_company!.id);
     if (!mounted) return;
@@ -261,14 +260,15 @@ class _CompanyDetailScreenState extends State<CompanyDetailScreen> with SingleTi
   }
 
   Future<bool?> _confirmDelete(String title, String detail) {
+    final l10n = AppLocalizations.of(context);
     return showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text(title),
         content: Text(detail),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Annuler')),
-          FilledButton.tonal(onPressed: () => Navigator.pop(ctx, true), child: const Text('Supprimer')),
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(l10n.commonCancel)),
+          FilledButton.tonal(onPressed: () => Navigator.pop(ctx, true), child: Text(l10n.commonDelete)),
         ],
       ),
     );
@@ -297,6 +297,7 @@ class _CompanyDetailScreenState extends State<CompanyDetailScreen> with SingleTi
       };
 
   Widget _buildEmbeddedHeader(Company c) {
+    final l10n = AppLocalizations.of(context);
     final border = Theme.of(context).crmBorder;
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 16, 12, 0),
@@ -321,7 +322,7 @@ class _CompanyDetailScreenState extends State<CompanyDetailScreen> with SingleTi
                     if (c.website != null && c.website!.isNotEmpty)
                       Text(c.website!, style: TextStyle(fontSize: CrmTokens.bodySize, color: Theme.of(context).colorScheme.primary)),
                     if (c.peppolId != null && c.peppolId!.isNotEmpty)
-                      Text('Peppol : ${c.peppolId}', style: TextStyle(fontSize: CrmTokens.captionSize, color: Theme.of(context).colorScheme.onSurfaceVariant)),
+                      Text(l10n.companyPeppolPrefix(c.peppolId!), style: TextStyle(fontSize: CrmTokens.captionSize, color: Theme.of(context).colorScheme.onSurfaceVariant)),
                     if (c.tags.isNotEmpty)
                       Padding(
                         padding: const EdgeInsets.only(top: 6),
@@ -340,22 +341,30 @@ class _CompanyDetailScreenState extends State<CompanyDetailScreen> with SingleTi
               FilledButton.tonalIcon(
                 onPressed: _addNote,
                 icon: const Icon(Icons.mic, size: 16),
-                label: const Text('Note'),
+                label: Text(l10n.companyNoteButtonLabel),
                 style: FilledButton.styleFrom(minimumSize: const Size(0, 32)),
               ),
-              IconButton(tooltip: 'Modifier', onPressed: _editCompany, icon: const Icon(Icons.edit_outlined, size: 18)),
-              IconButton(tooltip: 'Supprimer', onPressed: _deleteCompany, icon: const Icon(Icons.delete_outline, size: 18)),
+              IconButton(
+                tooltip: l10n.commonEdit,
+                onPressed: _editCompany,
+                icon: const Icon(Icons.edit_outlined, size: 18, color: CrmTokens.accent),
+              ),
+              IconButton(
+                tooltip: l10n.commonDelete,
+                onPressed: _deleteCompany,
+                icon: const Icon(Icons.delete_outline, size: 18, color: CrmTokens.overdue),
+              ),
             ],
           ),
           TabBar(
             controller: _tabs,
             isScrollable: true,
             tabAlignment: TabAlignment.start,
-            tabs: const [
-              Tab(text: 'Aperçu'),
-              Tab(text: 'Activité'),
-              Tab(text: 'Tâches'),
-              Tab(text: 'Opportunités'),
+            tabs: [
+              Tab(text: l10n.companyTabOverview),
+              Tab(text: l10n.companyTabActivity),
+              Tab(text: l10n.companyTabTasks),
+              Tab(text: l10n.companyTabDeals),
             ],
           ),
         ],
@@ -367,24 +376,103 @@ class _CompanyDetailScreenState extends State<CompanyDetailScreen> with SingleTi
         child: ListView(padding: const EdgeInsets.all(16), children: [child]),
       );
 
+  /// Séparateur entre sections de l'onglet Overview (Contacts / Tâches /
+  /// Opportunités / e-Invoicing) — volontairement plus marqué qu'un
+  /// [Divider] standard pour que la fin d'une section et le début de la
+  /// suivante soient nets d'un coup d'œil.
+  Widget get _sectionDivider => Container(
+        height: 1,
+        color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.7),
+      );
+
   Widget _buildOverviewTab(Company c) => _scrollTab(Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Row(
             children: [
-              Text('Contacts', style: Theme.of(context).textTheme.titleMedium),
+              Text(AppLocalizations.of(context).companyContactsTitle, style: Theme.of(context).textTheme.titleMedium),
               const Spacer(),
               IconButton(onPressed: () => _addOrEditContact(), icon: const Icon(Icons.person_add_outlined)),
             ],
           ),
           if (_contacts.isEmpty)
-            const Padding(padding: EdgeInsets.symmetric(vertical: 8), child: Text('Aucun contact'))
+            Padding(padding: const EdgeInsets.symmetric(vertical: 8), child: Text(AppLocalizations.of(context).companyNoContacts))
           else
             for (final p in _contacts) _contactTile(p),
-          if (EntitlementService.instance.isActive('invoicing')) ...[
-            const SizedBox(height: 20),
-            const Divider(),
-            const SizedBox(height: 12),
+          const SizedBox(height: 16),
+          _sectionDivider,
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              Text(AppLocalizations.of(context).clientNotesSection, style: Theme.of(context).textTheme.titleMedium),
+              const Spacer(),
+              TextButton(onPressed: () => _tabs.animateTo(1), child: Text(AppLocalizations.of(context).commonSeeAll)),
+              IconButton(onPressed: _addNote, icon: const Icon(Icons.mic_none_outlined)),
+            ],
+          ),
+          if (_notesPreview.isEmpty)
+            Padding(padding: const EdgeInsets.symmetric(vertical: 8), child: Text(AppLocalizations.of(context).companyNoActivity))
+          else
+            ClipRRect(
+              borderRadius: BorderRadius.circular(CrmTokens.radiusMd),
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
+                ),
+                child: Column(
+                  children: [
+                    for (var i = 0; i < _notesPreview.length; i++) _activityTile(_notesPreview[i], i),
+                  ],
+                ),
+              ),
+            ),
+          const SizedBox(height: 16),
+          _sectionDivider,
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              Text(AppLocalizations.of(context).companyTabTasks, style: Theme.of(context).textTheme.titleMedium),
+              const Spacer(),
+              TextButton(onPressed: () => _tabs.animateTo(2), child: Text(AppLocalizations.of(context).commonSeeAll)),
+              IconButton(onPressed: _addTask, icon: const Icon(Icons.add_task_outlined)),
+            ],
+          ),
+          if (_openTasksPreview.isEmpty)
+            Padding(padding: const EdgeInsets.symmetric(vertical: 8), child: Text(AppLocalizations.of(context).companyNoTasks))
+          else
+            for (final t in _openTasksPreview) _taskTile(t),
+          const SizedBox(height: 16),
+          _sectionDivider,
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              Text(AppLocalizations.of(context).companyTabDeals, style: Theme.of(context).textTheme.titleMedium),
+              const Spacer(),
+              TextButton(onPressed: () => _tabs.animateTo(3), child: Text(AppLocalizations.of(context).commonSeeAll)),
+              IconButton(onPressed: () => _addOrEditOpportunity(), icon: const Icon(Icons.add_business_outlined)),
+            ],
+          ),
+          if (_openOpportunitiesPreview.isEmpty)
+            Padding(padding: const EdgeInsets.symmetric(vertical: 8), child: Text(AppLocalizations.of(context).companyNoDeals))
+          else
+            ClipRRect(
+              borderRadius: BorderRadius.circular(CrmTokens.radiusMd),
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
+                ),
+                child: Column(
+                  children: [
+                    for (var i = 0; i < _openOpportunitiesPreview.length; i++)
+                      _opportunityTile(_openOpportunitiesPreview[i], i),
+                  ],
+                ),
+              ),
+            ),
+          if (ModuleRegistry.instance.isUsedInCrm('invoicing')) ...[
+            const SizedBox(height: 16),
+            _sectionDivider,
+            const SizedBox(height: 16),
             ...ModuleRegistry.instance.byId('invoicing')!.customerSections(
                   context,
                   c.id,
@@ -394,67 +482,144 @@ class _CompanyDetailScreenState extends State<CompanyDetailScreen> with SingleTi
         ],
       ));
 
+  /// Dernières notes (dictées ou écrites) — aperçu limité pour l'onglet Overview.
+  List<Activity> get _notesPreview {
+    final notes = _activities.where((a) => a.type == ActivityType.note).toList()
+      ..sort((a, b) => b.happenedAt.compareTo(a.happenedAt));
+    return notes.take(3).toList();
+  }
+
+  /// Tâches ouvertes (non faites), triées par échéance — aperçu limité pour l'onglet Overview.
+  List<CrmTask> get _openTasksPreview {
+    final open = _tasks.where((t) => !t.isDone).toList()
+      ..sort((a, b) {
+        final ad = a.dueDate;
+        final bd = b.dueDate;
+        if (ad == null && bd == null) return 0;
+        if (ad == null) return 1;
+        if (bd == null) return -1;
+        return ad.compareTo(bd);
+      });
+    return open.take(5).toList();
+  }
+
+  /// Opportunités ouvertes (non gagnées/perdues) — aperçu limité pour l'onglet Overview.
+  List<Opportunity> get _openOpportunitiesPreview {
+    final open = _opportunities.where((o) => o.stage != 'won' && o.stage != 'lost').toList();
+    return open.take(5).toList();
+  }
+
   Widget _buildActivityTab() => _scrollTab(Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           if (_activities.isEmpty)
-            const Text('Aucune activité — ajoutez une note.')
+            Text(AppLocalizations.of(context).companyNoActivity)
           else
-            for (final a in _activities)
-              ListTile(
-                dense: true,
-                contentPadding: EdgeInsets.zero,
-                leading: Icon(_activityIcon(a.type), size: 18),
-                title: Text(a.body ?? a.title),
-                subtitle: Text(formatDateTimeFr(a.happenedAt)),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(CrmTokens.radiusMd),
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
+                ),
+                child: Column(
+                  children: [
+                    for (var i = 0; i < _activities.length; i++) _activityTile(_activities[i], i),
+                  ],
+                ),
               ),
+            ),
         ],
       ));
+
+  /// Fond alterné (façon grille) — même repère visuel que la liste d'affaires.
+  Widget _activityTile(Activity a, int index) {
+    final scheme = Theme.of(context).colorScheme;
+    final editable = a.type != ActivityType.moduleEvent;
+    final stripe = index.isEven ? scheme.surface : scheme.surfaceContainerLow;
+    return Material(
+      color: stripe,
+      child: ListTile(
+        dense: true,
+        leading: Icon(_activityIcon(a.type), size: 18),
+        title: SelectableText(a.body ?? a.title),
+        subtitle: Text(formatDateTimeFr(a.happenedAt)),
+        trailing: editable ? const Icon(Icons.chevron_right, size: 18) : null,
+        onTap: editable ? () => _editActivity(a) : null,
+      ),
+    );
+  }
+
+  /// Édition complète d'une activité existante (type, texte, suppression)
+  /// — les entrées générées automatiquement par un module (`moduleEvent`,
+  /// ex. devis créé dans e-Invoicing) restent en lecture seule.
+  Future<void> _editActivity(Activity a) async {
+    final changed = await showEditActivityDialog(context, a);
+    if (changed) await _load();
+  }
 
   Widget _buildTasksTab() => _scrollTab(Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Row(
             children: [
-              Text('Tâches', style: Theme.of(context).textTheme.titleMedium),
+              Text(AppLocalizations.of(context).companyTabTasks, style: Theme.of(context).textTheme.titleMedium),
               const Spacer(),
               IconButton(onPressed: _addTask, icon: const Icon(Icons.add_task_outlined)),
             ],
           ),
           if (_tasks.isEmpty)
-            const Text('Aucune tâche')
+            Text(AppLocalizations.of(context).companyNoTasks)
           else
-            for (final t in _tasks)
-              CheckboxListTile(
-                contentPadding: EdgeInsets.zero,
-                controlAffinity: ListTileControlAffinity.leading,
-                value: t.isDone,
-                title: Text(t.title),
-                subtitle: t.dueDate == null
-                    ? null
-                    : Text(formatDateFr(t.dueDate),
-                        style: TextStyle(color: AppTheme.dueDateColor(t.dueDate, done: t.isDone, neutral: Theme.of(context).colorScheme.onSurfaceVariant))),
-                onChanged: (v) async {
-                  t.doneAt = (v ?? false) ? nowIso() : null;
-                  await AppDatabase.instance.upsertTask(t);
-                  _load();
-                },
-              ),
+            for (final t in _tasks) _taskTile(t),
         ],
       ));
+
+  Widget _taskTile(CrmTask t) {
+    Future<void> toggle(bool v) async {
+      t.doneAt = v ? nowIso() : null;
+      await AppDatabase.instance.upsertTask(t);
+      await _load();
+    }
+
+    return ListTile(
+      contentPadding: EdgeInsets.zero,
+      onTap: () => toggle(!t.isDone),
+      leading: TaskDoneToggle(done: t.isDone, onChanged: toggle),
+      title: Text(
+        taskMessage(t),
+        style: t.isDone ? const TextStyle(decoration: TextDecoration.lineThrough) : null,
+      ),
+      subtitle: t.dueDate == null
+          ? null
+          : Text(formatDateFr(t.dueDate),
+              style: TextStyle(color: AppTheme.dueDateColor(t.dueDate, done: t.isDone, neutral: Theme.of(context).colorScheme.onSurfaceVariant))),
+      trailing: IconButton(
+        tooltip: 'Modifier',
+        icon: const Icon(Icons.edit_outlined, size: 20, color: CrmTokens.accent),
+        onPressed: () async {
+          final changed = await showAddTaskDialog(
+            context,
+            companyId: widget.companyId,
+            existing: t,
+          );
+          if (changed) await _load();
+        },
+      ),
+    );
+  }
 
   Widget _buildDealsTab() => _scrollTab(Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Row(
             children: [
-              Text('Opportunités', style: Theme.of(context).textTheme.titleMedium),
+              Text(AppLocalizations.of(context).companyTabDeals, style: Theme.of(context).textTheme.titleMedium),
               const Spacer(),
               IconButton(onPressed: () => _addOrEditOpportunity(), icon: const Icon(Icons.add_business_outlined)),
             ],
           ),
           if (_opportunities.isEmpty)
-            const Text('Aucune opportunité')
+            Text(AppLocalizations.of(context).companyNoDeals)
           else
             ClipRRect(
               borderRadius: BorderRadius.circular(CrmTokens.radiusMd),
@@ -475,6 +640,7 @@ class _CompanyDetailScreenState extends State<CompanyDetailScreen> with SingleTi
 
   Widget _opportunityTile(Opportunity o, int index) {
     final scheme = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context);
     final stripe = index.isEven ? scheme.surface : scheme.surfaceContainerLow;
     return Material(
       color: stripe,
@@ -485,8 +651,22 @@ class _CompanyDetailScreenState extends State<CompanyDetailScreen> with SingleTi
         subtitle: Text(
           '${PipelineSettings.instance.labelFor(o.stage)}${o.amount != null ? ' · ${formatAmount(o.amount)}' : ''}',
         ),
-        trailing: Icon(Icons.chevron_right, size: 20, color: scheme.onSurfaceVariant),
-        onTap: () => _addOrEditOpportunity(existing: o),
+        trailing: IconButton(
+          tooltip: l10n.commonEdit,
+          icon: const Icon(Icons.edit_outlined, size: 18, color: CrmTokens.accent),
+          onPressed: () => _addOrEditOpportunity(existing: o),
+        ),
+        onTap: () async {
+          if (widget.workspace != null) {
+            widget.workspace!.selectOpportunity(o.id);
+            return;
+          }
+          await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => OpportunityDetailScreen(opportunityId: o.id)),
+          );
+          if (mounted) _load();
+        },
       ),
     );
   }
@@ -518,23 +698,27 @@ class _CompanyDetailScreenState extends State<CompanyDetailScreen> with SingleTi
       );
     }
 
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
+        leadingWidth: DesktopChrome.appBarLeadingWidth,
+        leading: DesktopChrome.backLeading(context),
         title: Text(c.name),
         bottom: TabBar(
           controller: _tabs,
           isScrollable: true,
           tabAlignment: TabAlignment.start,
-          tabs: const [
-            Tab(text: 'Aperçu'),
-            Tab(text: 'Activité'),
-            Tab(text: 'Tâches'),
-            Tab(text: 'Opportunités'),
+          tabs: [
+            Tab(text: l10n.companyTabOverview),
+            Tab(text: l10n.companyTabActivity),
+            Tab(text: l10n.companyTabTasks),
+            Tab(text: l10n.companyTabDeals),
           ],
         ),
         actions: [
-          IconButton(tooltip: 'Note', onPressed: _addNote, icon: const Icon(Icons.mic_none_outlined)),
-          IconButton(tooltip: 'Modifier', onPressed: _editCompany, icon: const Icon(Icons.edit_outlined)),
+          IconButton(tooltip: l10n.companyNoteButtonLabel, onPressed: _addNote, icon: const Icon(Icons.mic_none_outlined)),
+          IconButton(tooltip: l10n.commonEdit, onPressed: _editCompany, icon: const Icon(Icons.edit_outlined, color: CrmTokens.accent)),
         ],
       ),
       body: TabBarView(
@@ -633,9 +817,10 @@ class _CompanyEditorDialogState extends State<CompanyEditorDialog> {
     // Assez large pour que la ligne CP/Bairro/État/Ville (PartyAddressFields)
     // ait la place de respirer plutôt que d'écraser 4 champs sur 680px —
     // tout en restant contenu sur un petit écran (90% de la largeur dispo).
+    final l10n = AppLocalizations.of(context);
     final dialogWidth = math.min(820.0, MediaQuery.sizeOf(context).width * 0.9);
     return AlertDialog(
-      title: Text(widget.isNew ? 'Nouveau client' : 'Modifier le client'),
+      title: Text(widget.isNew ? l10n.companyNewClientTitle : l10n.companyEditClientTitle),
       content: SizedBox(
         width: dialogWidth,
         child: SingleChildScrollView(
@@ -644,7 +829,7 @@ class _CompanyEditorDialogState extends State<CompanyEditorDialog> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               PartyAddressFields(
-                name: DictationField(controller: _name, label: 'Nom de la société', autofocus: true),
+                name: DictationField(controller: _name, label: l10n.commonCompanyNameLabel, autofocus: true),
                 countryCode: _country,
                 taxId: _taxId,
                 address: _address,
@@ -674,31 +859,31 @@ class _CompanyEditorDialogState extends State<CompanyEditorDialog> {
                   formFlexChild(
                     context: context,
                     compact: dialogWidth < 640,
-                    child: DictationField(controller: _website, label: 'Site web'),
+                    child: DictationField(controller: _website, label: l10n.companyWebsiteLabel),
                   ),
                   formFlexChild(
                     context: context,
                     compact: dialogWidth < 640,
-                    child: DictationField(controller: _peppol, label: 'Identifiant Peppol'),
+                    child: DictationField(controller: _peppol, label: l10n.companyPeppolLabel),
                   ),
                 ],
               ),
               const SizedBox(height: 12),
               DictationField(
                 controller: _tags,
-                label: 'Tags (séparés par des virgules)',
+                label: l10n.companyTagsLabel,
               ),
               const SizedBox(height: 12),
-              DictationField(controller: _notes, label: 'Notes', maxLines: 3),
+              DictationField(controller: _notes, label: l10n.commonNotesLabel, maxLines: 3),
             ],
           ),
         ),
       ),
       actions: [
-        TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Annuler')),
+        TextButton(onPressed: () => Navigator.pop(context, false), child: Text(l10n.commonCancel)),
         FilledButton(
           onPressed: _save,
-          child: Text(widget.isNew ? 'Créer' : 'Enregistrer'),
+          child: Text(widget.isNew ? l10n.commonCreate : l10n.commonSave),
         ),
       ],
     );
@@ -735,7 +920,7 @@ class _ContactEditorDialogState extends State<_ContactEditorDialog> {
   late final TextEditingController _phoneCtrl =
       TextEditingController(text: formatPhoneInternational(widget.contact.phone ?? '', _phoneIso));
 
-  late List<MessagingChannel> _channels = decodeMessagingChannels(widget.contact.messagingJson);
+  late final List<MessagingChannel> _channels = decodeMessagingChannels(widget.contact.messagingJson);
 
   /// Indicatif effectif : celui choisi manuellement pour ce contact, sinon
   /// celui du client — cascade réelle (pas un pays imposé arbitrairement).
@@ -788,7 +973,7 @@ class _ContactEditorDialogState extends State<_ContactEditorDialog> {
         keyboardType: TextInputType.phone,
         inputFormatters: [_phoneFormatter],
         decoration: InputDecoration(
-          labelText: 'Téléphone',
+          labelText: AppLocalizations.of(context).commonPhoneLabel,
           hintText: phoneExampleHint(_phoneIso),
           border: const OutlineInputBorder(),
           prefixIcon: Material(
@@ -813,6 +998,7 @@ class _ContactEditorDialogState extends State<_ContactEditorDialog> {
       );
 
   Widget _channelRow(int i, bool compact) {
+    final l10n = AppLocalizations.of(context);
     final c = _channels[i];
     final platform = platformById(c.platformId);
     final canOpen = buildMessagingUrl(c.platformId, c.value) != null;
@@ -833,7 +1019,7 @@ class _ContactEditorDialogState extends State<_ContactEditorDialog> {
             flex: 2,
             child: DropdownButtonFormField<String>(
               initialValue: c.platformId,
-              decoration: const InputDecoration(labelText: 'Appli', border: OutlineInputBorder()),
+              decoration: InputDecoration(labelText: l10n.companyAppLabel, border: const OutlineInputBorder()),
               items: [
                 for (final p in messagingPlatforms)
                   DropdownMenuItem(
@@ -841,13 +1027,9 @@ class _ContactEditorDialogState extends State<_ContactEditorDialog> {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        CircleAvatar(
-                          radius: 10,
-                          backgroundColor: p.color,
-                          child: Icon(p.icon, size: 12, color: Colors.white),
-                        ),
+                        MessagingBrandBadge(platform: p, size: 20),
                         const SizedBox(width: 8),
-                        Text(p.label, overflow: TextOverflow.ellipsis),
+                        Text(platformLabel(context, p.id), overflow: TextOverflow.ellipsis),
                       ],
                     ),
                   ),
@@ -862,7 +1044,7 @@ class _ContactEditorDialogState extends State<_ContactEditorDialog> {
             child: TextFormField(
               initialValue: c.value,
               decoration: InputDecoration(
-                labelText: 'Identifiant / numéro',
+                labelText: l10n.companyIdentifierNumberLabel,
                 hintText: platform.hint,
                 border: const OutlineInputBorder(),
               ),
@@ -875,13 +1057,13 @@ class _ContactEditorDialogState extends State<_ContactEditorDialog> {
             mainAxisSize: MainAxisSize.min,
             children: [
               IconButton(
-                tooltip: 'Ouvrir',
+                tooltip: l10n.companyOpenTooltip,
                 icon: const Icon(Icons.open_in_new),
                 color: canOpen ? platform.color : null,
                 onPressed: () => openMessagingChannel(context, c),
               ),
               IconButton(
-                tooltip: 'Retirer',
+                tooltip: l10n.companyRemoveTooltip,
                 icon: const Icon(Icons.close),
                 onPressed: () => _removeChannel(i),
               ),
@@ -894,9 +1076,10 @@ class _ContactEditorDialogState extends State<_ContactEditorDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final dialogWidth = math.min(760.0, MediaQuery.sizeOf(context).width * 0.9);
     return AlertDialog(
-      title: Text(widget.isNew ? 'Nouveau contact' : 'Modifier le contact'),
+      title: Text(widget.isNew ? l10n.companyNewContactTitle : l10n.companyEditContactTitle),
       content: SizedBox(
         width: dialogWidth,
         child: SingleChildScrollView(
@@ -914,17 +1097,17 @@ class _ContactEditorDialogState extends State<_ContactEditorDialog> {
                       formFlexChild(
                         context: context,
                         compact: compact,
-                        child: DictationField(controller: _first, label: 'Prénom', autofocus: true),
+                        child: DictationField(controller: _first, label: l10n.commonFirstNameLabel, autofocus: true),
                       ),
                       formFlexChild(
                         context: context,
                         compact: compact,
-                        child: DictationField(controller: _last, label: 'Nom'),
+                        child: DictationField(controller: _last, label: l10n.commonLastNameLabel),
                       ),
                     ],
                   ),
                   const SizedBox(height: 12),
-                  DictationField(controller: _role, label: 'Fonction (ex. Acheteur)'),
+                  DictationField(controller: _role, label: l10n.companyRoleFieldLabel),
                   const SizedBox(height: 12),
                   formRowOrColumn(
                     context: context,
@@ -933,7 +1116,7 @@ class _ContactEditorDialogState extends State<_ContactEditorDialog> {
                       formFlexChild(
                         context: context,
                         compact: compact,
-                        child: DictationField(controller: _email, label: 'Email'),
+                        child: DictationField(controller: _email, label: l10n.commonEmailLabel),
                       ),
                       formFlexChild(context: context, compact: compact, child: _phoneField()),
                     ],
@@ -941,12 +1124,12 @@ class _ContactEditorDialogState extends State<_ContactEditorDialog> {
                   const SizedBox(height: 20),
                   Row(
                     children: [
-                      Text('Messageries', style: Theme.of(context).textTheme.titleSmall),
+                      Text(l10n.companyMessagingTitle, style: Theme.of(context).textTheme.titleSmall),
                       const Spacer(),
                       TextButton.icon(
                         onPressed: _addChannel,
                         icon: const Icon(Icons.add, size: 18),
-                        label: const Text('Ajouter'),
+                        label: Text(l10n.commonAdd),
                       ),
                     ],
                   ),
@@ -954,7 +1137,7 @@ class _ContactEditorDialogState extends State<_ContactEditorDialog> {
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 4),
                       child: Text(
-                        'Aucune messagerie renseignée — WhatsApp, WeChat, iMessage…',
+                        l10n.companyNoMessagingHint,
                         style: Theme.of(context)
                             .textTheme
                             .bodySmall
@@ -970,8 +1153,8 @@ class _ContactEditorDialogState extends State<_ContactEditorDialog> {
         ),
       ),
       actions: [
-        TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Annuler')),
-        FilledButton(onPressed: _save, child: Text(widget.isNew ? 'Créer' : 'Enregistrer')),
+        TextButton(onPressed: () => Navigator.pop(context, false), child: Text(l10n.commonCancel)),
+        FilledButton(onPressed: _save, child: Text(widget.isNew ? l10n.commonCreate : l10n.commonSave)),
       ],
     );
   }
@@ -999,10 +1182,10 @@ class _MessagingChip extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(platform.icon, size: 14, color: platform.color),
+              MessagingBrandBadge(platform: platform, size: 18),
               const SizedBox(width: 6),
               Text(
-                channel.value.isEmpty ? platform.label : channel.value,
+                channel.value.isEmpty ? platformLabel(context, platform.id) : channel.value,
                 style: TextStyle(fontSize: 12, color: platform.color, fontWeight: FontWeight.w600),
               ),
             ],
@@ -1025,12 +1208,13 @@ class _ContactViewerDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final p = contact;
     final channels = decodeMessagingChannels(p.messagingJson);
     final dialogWidth = math.min(480.0, MediaQuery.sizeOf(context).width * 0.9);
     return AlertDialog(
       title: Text(
-        p.displayName.isEmpty ? '(sans nom)' : p.displayName,
+        p.displayName.isEmpty ? l10n.commonNoName : p.displayName,
         style: const TextStyle(color: _contactNameColor, fontWeight: FontWeight.w700),
       ),
       content: SizedBox(
@@ -1050,7 +1234,7 @@ class _ContactViewerDialog extends StatelessWidget {
                 dense: true,
                 leading: const Icon(Icons.email_outlined),
                 title: Text(p.email!),
-                onTap: () => openExternalUrl(context, 'mailto:${p.email}', label: 'la messagerie email'),
+                onTap: () => openExternalUrl(context, 'mailto:${p.email}', label: l10n.messagingEmailAppLabel),
               ),
             if (p.phone != null)
               ListTile(
@@ -1058,11 +1242,11 @@ class _ContactViewerDialog extends StatelessWidget {
                 dense: true,
                 leading: const Icon(Icons.call_outlined),
                 title: Text(p.phone!),
-                onTap: () => openExternalUrl(context, 'tel:${p.phone}', label: "l'appli téléphone"),
+                onTap: () => openExternalUrl(context, 'tel:${p.phone}', label: l10n.messagingPhoneAppLabel),
               ),
             if (channels.isNotEmpty) ...[
               const SizedBox(height: 8),
-              Text('Messageries', style: Theme.of(context).textTheme.titleSmall),
+              Text(l10n.companyMessagingTitle, style: Theme.of(context).textTheme.titleSmall),
               const SizedBox(height: 8),
               Wrap(
                 spacing: 6,
@@ -1072,7 +1256,7 @@ class _ContactViewerDialog extends StatelessWidget {
             ],
             if (p.email == null && p.phone == null && channels.isEmpty)
               Text(
-                'Aucun moyen de contact renseigné pour le moment.',
+                l10n.companyNoContactInfo,
                 style: Theme.of(context)
                     .textTheme
                     .bodyMedium
@@ -1085,15 +1269,15 @@ class _ContactViewerDialog extends StatelessWidget {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context, 'delete'),
-          child: const Text('Supprimer'),
+          child: Text(l10n.commonDelete),
         ),
         TextButton(
           onPressed: () => Navigator.pop(context, 'edit'),
-          child: const Text('Modifier'),
+          child: Text(l10n.commonEdit),
         ),
         FilledButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text('Fermer'),
+          child: Text(l10n.commonClose),
         ),
       ],
     );

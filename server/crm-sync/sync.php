@@ -50,6 +50,27 @@ function fail(string $message, int $code = 400): void
     exit;
 }
 
+/**
+ * Auth HTTPS uniquement : compte + hash SHA-256 du mot de passe
+ * (config.php). Aucun appel FTP — le transport est déjà HTTPS (sync.php).
+ */
+function crm_auth_ok(array $config, string $account, string $password): bool
+{
+    if ($account === '' || $password === '') {
+        return false;
+    }
+    $expectedAccount = (string) ($config['account'] ?? '');
+    if ($expectedAccount !== '' && !hash_equals($expectedAccount, $account)) {
+        return false;
+    }
+
+    $storedHash = (string) ($config['password_sha256'] ?? '');
+    if ($storedHash === '') {
+        return false;
+    }
+    return hash_equals($storedHash, hash('sha256', $password));
+}
+
 function fetch_pull(PDO $pdo, string $since): array
 {
     $pull = [];
@@ -76,9 +97,11 @@ if (!is_array($body)) {
 $auth = $body['auth'] ?? null;
 $providedAccount = is_array($auth) ? (string) ($auth['account'] ?? '') : '';
 $providedPassword = is_array($auth) ? (string) ($auth['password'] ?? '') : '';
-if (!hash_equals((string) $config['account'], $providedAccount)
-    || !hash_equals((string) $config['password_sha256'], hash('sha256', $providedPassword))) {
-    fail('Identifiants invalides', 401);
+if (!crm_auth_ok($config, $providedAccount, $providedPassword)) {
+    fail(
+        'Identifiants invalides — compte ou mot de passe incorrect (HTTPS)',
+        401
+    );
 }
 
 try {
@@ -93,12 +116,16 @@ $push = is_array($body['push'] ?? null) ? $body['push'] : [];
 // Pull-first : snapshot distant avant d'appliquer le push entrant.
 $pull = fetch_pull($pdo, $since);
 
+$serverTime = gmdate('Y-m-d\TH:i:s.v\Z');
+
 try {
     $pdo->beginTransaction();
     foreach (TABLES as $table => $columns) {
         $rows = is_array($push[$table] ?? null) ? $push[$table] : [];
 
-        $checkStmt = $pdo->prepare("SELECT updated_at FROM `$table` WHERE id = ?");
+        $checkStmt = $pdo->prepare(
+            "SELECT updated_at, deleted_at FROM `$table` WHERE id = ?"
+        );
 
         $colList = implode(',', array_map(fn($c) => "`$c`", $columns));
         $placeholders = implode(',', array_fill(0, count($columns), '?'));
@@ -115,13 +142,35 @@ try {
             if (!is_array($row) || empty($row['id'])) {
                 continue;
             }
-            $incomingUpdatedAt = (string) ($row['updated_at'] ?? '');
+
+            // updated_at client (avant tampon serveur) pour le LWW réel.
+            $clientUpdatedAt = (string) ($row['updated_at'] ?? '');
+            if ($clientUpdatedAt === '') {
+                $clientUpdatedAt = $serverTime;
+            }
 
             $checkStmt->execute([$row['id']]);
-            $existingUpdatedAt = $checkStmt->fetchColumn();
-            if ($existingUpdatedAt !== false && (string) $existingUpdatedAt >= $incomingUpdatedAt) {
-                continue;
+            $existing = $checkStmt->fetch(PDO::FETCH_ASSOC);
+            if ($existing !== false) {
+                $existingUpdatedAt = (string) ($existing['updated_at'] ?? '');
+                $existingDeletedAt = trim((string) ($existing['deleted_at'] ?? ''));
+                $incomingDeletedAt = trim((string) ($row['deleted_at'] ?? ''));
+
+                // Ne jamais ressusciter une ligne déjà tombstonée par un
+                // appareil qui pousse encore une copie « vivante » (bug CRM :
+                // soft-delete serveur écrasé au prochain sync).
+                if ($existingDeletedAt !== '' && $incomingDeletedAt === '') {
+                    continue;
+                }
+
+                if ($existingUpdatedAt !== '' && $existingUpdatedAt >= $clientUpdatedAt) {
+                    continue;
+                }
             }
+
+            // Tampon serveur APRÈS acceptation — les autres appareils
+            // (since = last_sync_at) reçoivent bien la ligne au prochain pull.
+            $row['updated_at'] = $serverTime;
 
             $values = [];
             foreach ($columns as $col) {
@@ -137,7 +186,5 @@ try {
     }
     fail('Erreur de synchronisation : ' . $e->getMessage(), 500);
 }
-
-$serverTime = gmdate('Y-m-d\TH:i:s.v\Z');
 
 echo json_encode(['ok' => true, 'server_time' => $serverTime, 'pull' => $pull]);

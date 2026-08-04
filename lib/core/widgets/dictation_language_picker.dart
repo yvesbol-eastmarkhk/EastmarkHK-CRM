@@ -1,18 +1,19 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:speech_to_text/speech_to_text.dart';
 
+import '../data/language_flags.dart';
+import '../../l10n/gen/app_localizations.dart';
 import '../services/dictation_settings.dart';
+import 'country_flag_icon.dart';
+import 'safe_picker_dialog.dart';
 
-/// Sélecteur de langue de dictée — liste toutes les langues installées
-/// sur l'appareil (macOS/iOS/Android), recherche incluse. Choix global,
-/// mémorisé, utilisé par tous les champs de dictée de l'app.
+/// Sélecteur de langue de dictée — liste curatée (pas d'appel speech_to_text
+/// à l'ouverture : ça crash sur macOS desktop).
 Future<void> showDictationLanguagePicker(BuildContext context) async {
-  final settings = DictationSettings.instance;
   await showDialog(
     context: context,
     builder: (_) => const _LanguagePickerDialog(),
   );
-  settings.notifyListeners();
 }
 
 class _LanguagePickerDialog extends StatefulWidget {
@@ -23,106 +24,77 @@ class _LanguagePickerDialog extends StatefulWidget {
 }
 
 class _LanguagePickerDialogState extends State<_LanguagePickerDialog> {
-  List<LocaleName> _locales = [];
-  bool _loading = true;
   String _query = '';
 
-  @override
-  void initState() {
-    super.initState();
-    _load();
-  }
-
-  Future<void> _load() async {
-    final locales = await DictationSettings.instance.loadAvailableLocales();
-    locales.sort((a, b) => a.name.compareTo(b.name));
-    if (!mounted) return;
-    setState(() {
-      _locales = locales;
-      _loading = false;
-    });
+  Future<void> _pick(String? localeId) async {
+    if (mounted) Navigator.pop(context);
+    await DictationSettings.instance.setLocale(localeId);
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final options = DictationSettings.curatedLocales;
     final filtered = _query.isEmpty
-        ? _locales
-        : _locales
-            .where((l) => l.name.toLowerCase().contains(_query.toLowerCase()))
+        ? options
+        : options
+            .where(
+              (l) =>
+                  l.label.toLowerCase().contains(_query.toLowerCase()) ||
+                  l.id.toLowerCase().contains(_query.toLowerCase()),
+            )
             .toList();
     final current = DictationSettings.instance.localeId;
 
-    return Dialog(
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 440, maxHeight: 520),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 20, 20, 8),
-              child: Row(
-                children: [
-                  const Icon(Icons.language),
-                  const SizedBox(width: 10),
-                  Text('Langue de dictée',
-                      style: Theme.of(context).textTheme.titleMedium),
-                ],
-              ),
+    return SafePickerDialog(
+      title: l10n.settingsDictationLanguageLabel,
+      icon: Icons.mic_none_outlined,
+      searchHint: l10n.dictationLanguageSearchHint,
+      onQueryChanged: (v) => setState(() => _query = v),
+      child: ListView(
+        children: [
+          if (_query.isEmpty)
+            ListTile(
+              leading: const Icon(Icons.smartphone),
+              title: Text(l10n.systemLanguage),
+              trailing: current == null ? const Icon(Icons.check) : null,
+              onTap: () => _pick(null),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: TextField(
-                autofocus: true,
-                onChanged: (v) => setState(() => _query = v),
-                decoration: const InputDecoration(
-                  prefixIcon: Icon(Icons.search),
-                  hintText: 'Rechercher une langue…',
-                ),
-              ),
+          if (_query.isEmpty) const Divider(height: 1),
+          for (final l in filtered)
+            ListTile(
+              leading: _flag(l.id),
+              title: Text(l.label),
+              subtitle: Text(l.id),
+              trailing: current == l.id ? const Icon(Icons.check) : null,
+              onTap: () => _pick(l.id),
             ),
-            const SizedBox(height: 8),
-            Expanded(
-              child: _loading
-                  ? const Center(child: CircularProgressIndicator())
-                  : ListView(
-                      children: [
-                        ListTile(
-                          leading: const Icon(Icons.smartphone),
-                          title: const Text('Langue du système'),
-                          trailing: current == null
-                              ? const Icon(Icons.check)
-                              : null,
-                          onTap: () async {
-                            await DictationSettings.instance.setLocale(null);
-                            if (context.mounted) Navigator.pop(context);
-                          },
-                        ),
-                        const Divider(height: 1),
-                        for (final l in filtered)
-                          ListTile(
-                            title: Text(l.name),
-                            subtitle: Text(l.localeId),
-                            trailing: current == l.localeId
-                                ? const Icon(Icons.check)
-                                : null,
-                            onTap: () async {
-                              await DictationSettings.instance
-                                  .setLocale(l.localeId);
-                              if (context.mounted) Navigator.pop(context);
-                            },
-                          ),
-                        if (filtered.isEmpty)
-                          const Padding(
-                            padding: EdgeInsets.all(24),
-                            child: Text('Aucune langue trouvée'),
-                          ),
-                      ],
+          if (filtered.isEmpty)
+            Padding(
+              padding: const EdgeInsets.all(24),
+              child: Text(l10n.noLanguage),
+            ),
+          if (!kIsWeb &&
+              (defaultTargetPlatform == TargetPlatform.macOS ||
+                  defaultTargetPlatform == TargetPlatform.windows ||
+                  defaultTargetPlatform == TargetPlatform.linux))
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 20),
+              child: Text(
+                l10n.dictationDesktopHint,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
+              ),
             ),
-            const SizedBox(height: 8),
-          ],
-        ),
+        ],
       ),
     );
+  }
+
+  Widget _flag(String localeId) {
+    final cc = flagCountryForLanguage(localeId);
+    if (cc == null) return const Icon(Icons.language, size: 22);
+    return CountryFlagIcon(countryCode: cc, width: 22, height: 16);
   }
 }

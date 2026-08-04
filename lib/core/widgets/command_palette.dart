@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
+import '../../l10n/gen/app_localizations.dart';
 import '../../state/crm_workspace_state.dart';
 import '../../theme/app_theme.dart';
 import '../../theme/crm_tokens.dart';
 import '../modules/crm_module.dart';
 import '../modules/module_registry.dart';
+import '../../modules/invoicing/invoicing_module.dart';
 import '../db/app_database.dart';
 import '../models/models.dart';
 import '../screens/company_detail_screen.dart';
@@ -66,6 +68,7 @@ class _CommandPaletteState extends State<_CommandPalette> {
     final opps = await db.searchOpportunities(q);
     final tasks = await db.searchTasks(q);
     final activities = await db.searchActivities(q);
+    if (!mounted) return;
     final moduleHits = await ModuleRegistry.instance.searchAll(context, q);
     if (!mounted) return;
     setState(() {
@@ -124,6 +127,7 @@ class _CommandPaletteState extends State<_CommandPalette> {
   Widget build(BuildContext context) {
     final q = _query.text.trim();
     final hasSearch = q.isNotEmpty;
+    final l10n = AppLocalizations.of(context);
 
     return Align(
       alignment: Alignment.topCenter,
@@ -149,9 +153,9 @@ class _CommandPaletteState extends State<_CommandPalette> {
                     controller: _query,
                     autofocus: true,
                     onChanged: _search,
-                    decoration: const InputDecoration(
-                      prefixIcon: Icon(Icons.search, size: 18),
-                      hintText: 'Rechercher ou taper une commande…',
+                    decoration: InputDecoration(
+                      prefixIcon: const Icon(Icons.search, size: 18),
+                      hintText: l10n.cmdSearchHint,
                       border: InputBorder.none,
                       enabledBorder: InputBorder.none,
                       focusedBorder: InputBorder.none,
@@ -165,50 +169,56 @@ class _CommandPaletteState extends State<_CommandPalette> {
                     shrinkWrap: true,
                     children: [
                       if (!hasSearch) ...[
-                        _section('Navigation'),
-                        _action(Icons.dashboard_outlined, 'Aller au Tableau de bord', () => _go(CrmSection.dashboard)),
-                        _action(Icons.wb_sunny_outlined, 'Aller à Aujourd\'hui', () => _go(CrmSection.today)),
-                        _action(Icons.business_outlined, 'Aller aux Clients', () => _go(CrmSection.clients)),
-                        _action(Icons.view_kanban_outlined, 'Aller au Pipeline', () => _go(CrmSection.pipeline)),
-                        _action(Icons.check_circle_outline, 'Aller aux Tâches', () => _go(CrmSection.tasks)),
-                        _section('Créer'),
-                        _action(Icons.add_business_outlined, 'Nouveau client', _newClient),
-                        _action(Icons.add_task_outlined, 'Nouvelle tâche', _newTask),
+                        _section(l10n.cmdSectionNavigation),
+                        _action(Icons.dashboard_outlined, l10n.cmdGoDashboard, () => _go(CrmSection.dashboard)),
+                        _action(Icons.wb_sunny_outlined, l10n.cmdGoToday, () => _go(CrmSection.today)),
+                        _action(Icons.business_outlined, l10n.cmdGoClients, () => _go(CrmSection.clients)),
+                        _action(Icons.view_kanban_outlined, l10n.cmdGoPipeline, () => _go(CrmSection.pipeline)),
+                        _action(Icons.check_circle_outline, l10n.cmdGoTasks, () => _go(CrmSection.tasks)),
+                        _section(l10n.cmdSectionCreate),
+                        _action(Icons.add_business_outlined, l10n.cmdNewClient, _newClient),
+                        _action(Icons.add_task_outlined, l10n.cmdNewTask, _newTask),
                       ],
                       if (hasSearch && _companies.isNotEmpty) ...[
-                        _section('Clients'),
+                        _section(l10n.cmdSectionClients),
                         for (final c in _companies)
                           _action(Icons.business_outlined, c.name, () => _go(CrmSection.clients, companyId: c.id)),
                       ],
                       if (hasSearch && _contacts.isNotEmpty) ...[
-                        _section('Contacts'),
+                        _section(l10n.cmdSectionContacts),
                         for (final p in _contacts)
                           _action(
                             Icons.person_outline,
-                            p.displayName.isEmpty ? '(sans nom)' : p.displayName,
+                            p.displayName.isEmpty ? l10n.cmdNoName : p.displayName,
                             () {
                               if (p.companyId != null) _go(CrmSection.clients, companyId: p.companyId);
                             },
                           ),
                       ],
                       if (hasSearch && _opportunities.isNotEmpty) ...[
-                        _section('Opportunités'),
+                        _section(l10n.cmdSectionOpportunities),
                         for (final o in _opportunities)
                           _action(Icons.trending_up, o.title, () {
-                            if (o.companyId != null) _go(CrmSection.clients, companyId: o.companyId);
-                            else _go(CrmSection.pipeline);
+                            if (o.companyId != null) {
+                              _go(CrmSection.clients, companyId: o.companyId);
+                            } else {
+                              _go(CrmSection.pipeline);
+                            }
                           }),
                       ],
                       if (hasSearch && _tasks.isNotEmpty) ...[
-                        _section('Tâches'),
+                        _section(l10n.cmdSectionTasks),
                         for (final t in _tasks)
                           _action(Icons.check_circle_outline, t.title, () {
-                            if (t.companyId != null) _go(CrmSection.clients, companyId: t.companyId);
-                            else _go(CrmSection.tasks);
+                            if (t.companyId != null) {
+                              _go(CrmSection.clients, companyId: t.companyId);
+                            } else {
+                              _go(CrmSection.tasks);
+                            }
                           }),
                       ],
                       if (hasSearch && _activities.isNotEmpty) ...[
-                        _section('Notes & activités'),
+                        _section(l10n.cmdSectionNotes),
                         for (final a in _activities)
                           _action(
                             Icons.sticky_note_2_outlined,
@@ -219,11 +229,11 @@ class _CommandPaletteState extends State<_CommandPalette> {
                           ),
                       ],
                       if (hasSearch && _moduleHits.isNotEmpty) ...[
-                        _section('Facturation'),
+                        _section(InvoicingModule.displayName),
                         for (final h in _moduleHits)
                           _action(h.icon, '${h.title} — ${h.subtitle}', () {
                             _close();
-                            widget.workspace.goToModule(h.moduleId);
+                            h.onOpen();
                           }),
                       ],
                       if (hasSearch &&
@@ -233,9 +243,9 @@ class _CommandPaletteState extends State<_CommandPalette> {
                           _tasks.isEmpty &&
                           _activities.isEmpty &&
                           _moduleHits.isEmpty)
-                        const Padding(
-                          padding: EdgeInsets.all(24),
-                          child: Text('Aucun résultat'),
+                        Padding(
+                          padding: const EdgeInsets.all(24),
+                          child: Text(l10n.cmdNoResults),
                         ),
                     ],
                   ),

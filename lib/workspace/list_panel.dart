@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../l10n/gen/app_localizations.dart';
 import '../theme/app_theme.dart';
 import '../theme/crm_tokens.dart';
 
@@ -32,6 +33,7 @@ class ListPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final border = Theme.of(context).crmBorder;
     return Container(
       width: expand ? null : width,
@@ -88,7 +90,7 @@ class ListPanel extends StatelessWidget {
                 decoration: InputDecoration(
                   isDense: true,
                   prefixIcon: const Icon(Icons.search, size: 16),
-                  hintText: searchHint ?? 'Filtrer…',
+                  hintText: searchHint ?? l10n.listFilterHint,
                   contentPadding: const EdgeInsets.symmetric(vertical: 8),
                 ),
               ),
@@ -115,6 +117,7 @@ class SelectableListTile extends StatefulWidget {
     required this.onTap,
     this.subtitleMaxLines = 1,
     this.isDone = false,
+    this.titleColor,
   });
 
   final bool selected;
@@ -126,6 +129,9 @@ class SelectableListTile extends StatefulWidget {
   final VoidCallback onTap;
   final int subtitleMaxLines;
   final bool isDone;
+  /// Couleur du titre quand celui-ci est un nom de client (ex. fuchsia) —
+  /// null pour garder la couleur par défaut (ex. titre de repli sans client).
+  final Color? titleColor;
 
   @override
   State<SelectableListTile> createState() => _SelectableListTileState();
@@ -183,7 +189,7 @@ class _SelectableListTileState extends State<SelectableListTile> {
                           decoration: widget.isDone && !widget.selected ? TextDecoration.lineThrough : null,
                           color: widget.isDone && !widget.selected
                               ? theme.colorScheme.onSurfaceVariant
-                              : theme.colorScheme.onSurface,
+                              : (widget.titleColor ?? theme.colorScheme.onSurface),
                         ),
                       ),
                       if (widget.subtitle != null)

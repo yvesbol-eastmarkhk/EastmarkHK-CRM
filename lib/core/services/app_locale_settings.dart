@@ -26,7 +26,8 @@ class AppLocaleSettings extends ChangeNotifier {
     ('nl', 'Nederlands'),
     ('de', 'Deutsch'),
     ('es', 'Español'),
-    ('pt', 'Português'),
+    ('pt', 'Português (Portugal)'),
+    ('pt_BR', 'Português (Brasil)'),
     ('it', 'Italiano'),
     ('zh', '中文'),
     ('ja', '日本語'),
@@ -70,30 +71,60 @@ class AppLocaleSettings extends ChangeNotifier {
   Locale? _locale;
   Locale? get locale => _locale;
 
+  /// Code stocké / affiché : `fr`, `pt`, `pt_BR`…
+  String? get localeCode {
+    if (_locale == null) return null;
+    return toCode(_locale!);
+  }
+
   bool _loaded = false;
+
+  /// Parse `pt_BR` / `pt-BR` → Locale('pt','BR'), sinon Locale(code).
+  static Locale parseLocale(String code) {
+    final parts = code.trim().replaceAll('-', '_').split('_');
+    if (parts.length >= 2 && parts[1].isNotEmpty) {
+      return Locale(parts[0].toLowerCase(), parts[1].toUpperCase());
+    }
+    return Locale(parts.first.toLowerCase());
+  }
+
+  static String toCode(Locale locale) {
+    final c = locale.countryCode;
+    if (c == null || c.isEmpty) return locale.languageCode;
+    return '${locale.languageCode}_$c';
+  }
 
   Future<void> ensureLoaded() async {
     if (_loaded) return;
     final prefs = await SharedPreferences.getInstance();
     final code = prefs.getString(_prefKey);
-    _locale = code == null ? null : Locale(code);
+    // Par défaut (première installation), suit la langue du système —
+    // le choix explicite de l'utilisateur dans Réglages reste prioritaire.
+    _locale = code == null ? null : parseLocale(code);
     _loaded = true;
   }
 
   Future<void> setLocale(String? code) async {
-    _locale = code == null ? null : Locale(code);
+    _locale = code == null ? null : parseLocale(code);
     notifyListeners();
     final prefs = await SharedPreferences.getInstance();
     if (code == null) {
       await prefs.remove(_prefKey);
     } else {
-      await prefs.setString(_prefKey, code);
+      await prefs.setString(_prefKey, toCode(_locale!));
     }
   }
 
   String currentLabel() {
     if (_locale == null) return 'Langue du système';
-    final match = supported.where((s) => s.$1 == _locale!.languageCode);
-    return match.isEmpty ? _locale!.languageCode : match.first.$2;
+    final code = toCode(_locale!);
+    for (final s in supported) {
+      if (s.$1 == code) return s.$2;
+    }
+    // Ancien réglage `pt` sans région.
+    for (final s in supported) {
+      if (s.$1 == _locale!.languageCode) return s.$2;
+    }
+    return code;
   }
 }

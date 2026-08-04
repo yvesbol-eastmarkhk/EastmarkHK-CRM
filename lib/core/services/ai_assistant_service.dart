@@ -24,7 +24,12 @@ class AiAssistantService {
       final title = result['title'] as String?;
       final notes = result['notes'] as String?;
       if (title == null || title.trim().isEmpty) return null;
-      return AiOpportunityDraft(title: title.trim(), notes: (notes ?? '').trim());
+      return AiOpportunityDraft(
+        title: title.trim(),
+        notes: (notes ?? '').trim(),
+        amount: (result['amount'] as num?)?.toDouble(),
+        probability: (result['probability'] as num?)?.clamp(0, 100).toInt(),
+      );
     } on PlatformException {
       // Erreur remontée volontairement par le côté Swift (modèle
       // indisponible, Apple Intelligence désactivé, etc.) — pas un bug.
@@ -38,7 +43,11 @@ class AiAssistantService {
 }
 
 class AiOpportunityDraft {
-  AiOpportunityDraft({required this.title, required this.notes});
+  AiOpportunityDraft({required this.title, required this.notes, this.amount, this.probability});
   final String title;
   final String notes;
+  /// Montant estimé du deal, uniquement si mentionné dans la description.
+  final double? amount;
+  /// Probabilité de gain 0-100, uniquement si déductible du contexte.
+  final int? probability;
 }

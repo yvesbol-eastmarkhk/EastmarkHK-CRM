@@ -3,24 +3,30 @@ import 'package:flutter/material.dart';
 import '../core/db/app_database.dart';
 import '../core/models/models.dart';
 import '../core/screens/tasks_screen.dart';
+import '../core/services/remote_crm_sync_service.dart';
 import '../core/utils/task_display.dart';
+import '../l10n/gen/app_localizations.dart';
 import '../state/crm_workspace_state.dart';
 import '../theme/app_theme.dart';
 import 'list_panel.dart';
 
-/// Liste des tâches — clic ouvre le client lié à droite.
+/// Liste des tâches / Follow-ups — clic ouvre le client (et la tâche) à droite.
 class TasksListPanel extends StatefulWidget {
   const TasksListPanel({
     super.key,
     required this.workspace,
     required this.selectedCompanyId,
+    this.selectedTaskId,
     required this.onSelectCompany,
+    this.onSelectTask,
     this.expand = false,
   });
 
   final CrmWorkspaceState workspace;
   final String? selectedCompanyId;
+  final String? selectedTaskId;
   final ValueChanged<String> onSelectCompany;
+  final ValueChanged<CrmTask>? onSelectTask;
   final bool expand;
 
   @override
@@ -70,17 +76,18 @@ class _TasksListPanelState extends State<TasksListPanel> {
   }
 
   Future<void> _deleteTask(CrmTask t) async {
+    final l10n = AppLocalizations.of(context);
     final ok = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Supprimer cette tâche ?'),
-        content: Text('« ${t.title} »'),
+        title: Text(l10n.tasksListDeleteTitle),
+        content: Text(l10n.tasksListDeleteBody(t.title)),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Annuler')),
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(l10n.commonCancel)),
           FilledButton(
             onPressed: () => Navigator.pop(ctx, true),
             style: FilledButton.styleFrom(backgroundColor: Theme.of(ctx).colorScheme.error),
-            child: const Text('Supprimer'),
+            child: Text(l10n.commonDelete),
           ),
         ],
       ),
@@ -93,11 +100,12 @@ class _TasksListPanelState extends State<TasksListPanel> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final open = _tasks.where((t) => !t.isDone).length;
     return ListPanel(
-      title: 'Tâches',
-      subtitle: '$open ouverte${open > 1 ? 's' : ''}',
-      primaryActionLabel: '+ Tâche',
+      title: l10n.tasksListTitle,
+      subtitle: l10n.tasksListOpenCount(open),
+      primaryActionLabel: l10n.tasksListNew,
       onPrimaryAction: _addTask,
       expand: widget.expand,
       child: _loading
@@ -105,7 +113,7 @@ class _TasksListPanelState extends State<TasksListPanel> {
           : _tasks.isEmpty
               ? Center(
                   child: Text(
-                    'Aucune tâche',
+                    l10n.tasksListEmpty,
                     style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
                   ),
                 )
@@ -116,11 +124,14 @@ class _TasksListPanelState extends State<TasksListPanel> {
                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                       child: SelectableListTile(
-                        selected: t.companyId != null && widget.selectedCompanyId == t.companyId,
+                        selected: widget.selectedTaskId != null
+                            ? widget.selectedTaskId == t.id
+                            : (t.companyId != null &&
+                                widget.selectedCompanyId == t.companyId),
                         isDone: t.isDone,
                         title: t.companyId != null && _companyNames.containsKey(t.companyId)
                             ? _companyNames[t.companyId]!
-                            : 'Sans client',
+                            : l10n.tasksListNoClient,
                         subtitle: truncateTaskMessage(taskMessage(t)),
                         subtitleMaxLines: 2,
                         accentColor: t.isDone
@@ -135,9 +146,9 @@ class _TasksListPanelState extends State<TasksListPanel> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             IconButton(
-                              tooltip: 'Supprimer',
-                              icon: Icon(Icons.delete_outline, size: 18,
-                                  color: Theme.of(context).colorScheme.error.withValues(alpha: 0.7)),
+                              tooltip: l10n.commonDelete,
+                              icon: const Icon(Icons.delete_outline, size: 18,
+                                  color: Color(0xFFDC2626)),
                               onPressed: () => _deleteTask(t),
                               visualDensity: VisualDensity.compact,
                             ),
@@ -146,6 +157,7 @@ class _TasksListPanelState extends State<TasksListPanel> {
                               onChanged: (v) async {
                                 t.doneAt = (v ?? false) ? nowIso() : null;
                                 await AppDatabase.instance.upsertTask(t);
+                                await RemoteCrmSyncService.instance.flushPendingPush();
                                 _load();
                                 widget.workspace.bump();
                               },
@@ -153,7 +165,12 @@ class _TasksListPanelState extends State<TasksListPanel> {
                           ],
                         ),
                         onTap: () {
-                          if (t.companyId != null) widget.onSelectCompany(t.companyId!);
+                          final selectTask = widget.onSelectTask;
+                          if (selectTask != null) {
+                            selectTask(t);
+                          } else if (t.companyId != null) {
+                            widget.onSelectCompany(t.companyId!);
+                          }
                         },
                       ),
                     );

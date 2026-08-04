@@ -1,7 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
-import '../../core/constants/crm_constants.dart';
+import '../../l10n/gen/app_localizations.dart';
 import '../../theme/app_theme.dart';
 import '../../theme/crm_tokens.dart';
 import '../../ui/crm_page.dart';
@@ -11,14 +11,17 @@ import '../models/models.dart';
 import '../models/user_account.dart';
 import '../services/current_session.dart';
 import '../modules/module_registry.dart';
-import '../../platform/entitlement_service.dart';
 import '../services/pipeline_settings.dart';
+import '../services/remote_crm_sync_service.dart';
 import '../utils/formatters.dart';
+import '../utils/responsive_layout.dart';
+import '../utils/task_display.dart';
 import '../widgets/crm_import_export_panel.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/log_interaction_sheet.dart';
 import 'companies_screen.dart';
 import 'company_detail_screen.dart';
+import 'opportunity_detail_screen.dart';
 import 'pipeline_screen.dart';
 import 'tasks_screen.dart';
 
@@ -122,6 +125,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Future<void> _markTaskDone(CrmTask t) async {
     t.doneAt = nowIso();
     await AppDatabase.instance.upsertTask(t);
+    await RemoteCrmSyncService.instance.flushPendingPush();
     _load();
   }
 
@@ -133,6 +137,29 @@ class _DashboardScreenState extends State<DashboardScreen> {
         final p = (o.probability ?? 50) / 100.0;
         return sum + o.amount! * p;
       });
+
+  /// Affaires en cours, triées par dernier mouvement (stage_updated_at) —
+  /// "qu'est-ce qui bouge en ce moment", pas juste un tri par date de
+  /// création. Clic → fiche d'affaire (timeline unifiée).
+  List<Opportunity> _openOpportunities({int limit = 6}) {
+    final open = _opps.where((o) => o.wonLost == null).toList()
+      ..sort((a, b) => b.stageUpdatedAt.compareTo(a.stageUpdatedAt));
+    return open.take(limit).toList();
+  }
+
+  Future<void> _openOpportunity(String opportunityId) async {
+    // Dans le workspace, la fiche s'affiche dans le panneau détail (rail +
+    // liste restent visibles) — sinon (mobile, écran poussé) plein écran.
+    if (widget.workspace != null) {
+      widget.workspace!.selectOpportunity(opportunityId);
+      return;
+    }
+    await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => OpportunityDetailScreen(opportunityId: opportunityId)),
+    );
+    _load();
+  }
 
   List<(String name, double value)> _topClients({int limit = 5}) {
     final totals = <String, double>{};
@@ -207,8 +234,66 @@ class _DashboardScreenState extends State<DashboardScreen> {
     widget.workspace?.goTo(section);
   }
 
+  /// Bloc "affaires en cours" — chaque ligne ouvre la fiche d'affaire
+  /// (timeline unifiée : notes, appels, tâches, devis/factures). Objectif :
+  /// qu'un coup d'œil au dashboard dise "voilà ce qui bouge en ce moment",
+  /// pas seulement des totaux agrégés.
+  Widget _buildOpenDeals(BuildContext context, AppLocalizations l10n, ColorScheme scheme) {
+    final deals = _openOpportunities();
+    final totalOpen = _opps.where((o) => o.wonLost == null).length;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Row(
+          children: [
+            Text(l10n.dashboardOpenDeals, style: Theme.of(context).textTheme.titleMedium),
+            const Spacer(),
+            if (totalOpen > deals.length)
+              TextButton(
+                onPressed: widget.workspace != null
+                    ? () => _goToSection(CrmSection.pipeline)
+                    : () => _push(const PipelineScreen()),
+                child: Text(l10n.dashboardOpenDealsSeeAll),
+              ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        if (deals.isEmpty)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: Text(l10n.dashboardOpenDealsEmpty, style: TextStyle(color: scheme.onSurfaceVariant)),
+          )
+        else
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: scheme.outlineVariant.withValues(alpha: 0.5)),
+            ),
+            clipBehavior: Clip.antiAlias,
+            child: Column(
+              children: [
+                for (var i = 0; i < deals.length; i++) ...[
+                  if (i > 0) Divider(height: 1, color: scheme.outlineVariant.withValues(alpha: 0.4)),
+                  _OpenDealRow(
+                    opp: deals[i],
+                    companyName: deals[i].companyId != null
+                        ? _companyNames[deals[i].companyId]
+                        : null,
+                    stageLabel: PipelineSettings.instance.labelFor(deals[i].stage),
+                    stageColor: AppTheme.stageColors[deals[i].stage] ?? scheme.primary,
+                    onTap: () => _openOpportunity(deals[i].id),
+                  ),
+                ],
+              ],
+            ),
+          ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final scheme = Theme.of(context).colorScheme;
     final me = CurrentSession.instance.user;
     final openStages = PipelineSettings.instance.openStages;
@@ -217,10 +302,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final topClients = _topClients();
     final wonLostMonths = _wonLostByMonth();
     return CrmPage(
-      title: widget.embedded ? 'Tableau de bord' : "Aujourd'hui",
+      title: widget.embedded ? l10n.dashboardTitleEmbedded : l10n.dashboardTitle,
       subtitle: _agendaTotal > 0
-          ? '$_agendaTotal action${_agendaTotal > 1 ? 's' : ''} à traiter'
-          : kProductTagline,
+          ? l10n.dashboardActionsToProcess(_agendaTotal)
+          : l10n.productTagline,
       actions: [
         if (_users.isNotEmpty)
           DropdownButton<String?>(
@@ -229,11 +314,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
             borderRadius: BorderRadius.circular(CrmTokens.radiusMd),
             style: TextStyle(fontSize: CrmTokens.bodySize, color: scheme.onSurfaceVariant),
             items: [
-              const DropdownMenuItem(value: null, child: Text('Tous les commerciaux')),
+              DropdownMenuItem(value: null, child: Text(l10n.dashboardAllReps)),
               for (final u in _users)
                 DropdownMenuItem(
                   value: u.id,
-                  child: Text(u.id == me?.id ? '${u.displayName} (moi)' : u.displayName),
+                  child: Text(u.id == me?.id ? l10n.dashboardMeSuffix(u.displayName) : u.displayName),
                 ),
             ],
             onChanged: (v) {
@@ -255,9 +340,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       children: [
                         EmptyState(
                           icon: Icons.dashboard_customize_outlined,
-                          title: 'Votre CRM est prêt',
-                          subtitle:
-                              'Ajoutez votre premier client, importez un fichier CSV ou explorez les modules à venir.',
+                          title: l10n.dashboardEmptyTitle,
+                          subtitle: l10n.dashboardEmptySubtitle,
                         ),
                         const SizedBox(height: 16),
                         CrmImportExportPanel(
@@ -281,16 +365,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       child: Text(
-                        'Rien de programmé — vos relances apparaîtront ici.',
+                        l10n.dashboardNothingScheduled,
                         style: TextStyle(color: scheme.onSurfaceVariant),
                       ),
                     )
                   else ...[
-                    for (final bucket in const [
-                      (key: 'overdue', label: 'En retard'),
-                      (key: 'today', label: "Aujourd'hui"),
-                      (key: 'week', label: 'Cette semaine'),
-                      (key: 'later', label: 'Plus tard'),
+                    for (final bucket in [
+                      (key: 'overdue', label: l10n.dashboardBucketOverdue),
+                      (key: 'today', label: l10n.dashboardBucketToday),
+                      (key: 'week', label: l10n.dashboardBucketWeek),
+                      (key: 'later', label: l10n.dashboardBucketLater),
                     ])
                       Builder(builder: (context) {
                         final items =
@@ -334,9 +418,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                         companyName: items[i].companyId != null &&
                                                 _companyNames.containsKey(items[i].companyId)
                                             ? _companyNames[items[i].companyId]!
-                                            : items[i].title,
+                                            : taskMessage(items[i]),
+                                        isClientName: items[i].companyId != null &&
+                                            _companyNames.containsKey(items[i].companyId),
                                         subtitle:
-                                            '${items[i].title} · ${formatDateFr(items[i].dueDate)}',
+                                            '${taskMessage(items[i])} · ${formatDateFr(items[i].dueDate)}',
                                         accentColor: AppTheme.dueDateColor(
                                           items[i].dueDate,
                                           done: items[i].isDone,
@@ -347,12 +433,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                             : () => _openCompany(items[i].companyId!),
                                         action: items[i].companyId != null && items[i].opportunityId != null
                                             ? _PillButton(
-                                                label: 'Contacté',
+                                                label: l10n.dashboardContactedButton,
                                                 icon: Icons.call_outlined,
                                                 onTap: () => _logInteraction(items[i]),
                                               )
                                             : _PillButton(
-                                                label: 'Fait',
+                                                label: l10n.dashboardDoneButton,
                                                 icon: Icons.check,
                                                 onTap: () => _markTaskDone(items[i]),
                                               ),
@@ -371,14 +457,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         child: TextButton(
                           onPressed: () => _push(TasksScreen(initialFilterUserId: _agendaFilterUserId)),
                           child: Text(
-                            '+${_agendaTotal - _agendaTasks.length} autre'
-                            '${_agendaTotal - _agendaTasks.length > 1 ? "s" : ""} — voir tout',
+                            l10n.dashboardMoreAgendaItems(_agendaTotal - _agendaTasks.length),
                           ),
                         ),
                       ),
                   ],
                   const SizedBox(height: 28),
+                  _buildOpenDeals(context, l10n, scheme),
+                  const SizedBox(height: 28),
                   _MetricsRow(
+                    labels: (
+                      clients: l10n.metricClients,
+                      opportunities: l10n.metricOpportunities,
+                      pipeline: l10n.metricPipeline,
+                      forecast: l10n.metricForecast,
+                      tasks: l10n.metricTasks,
+                      overdue: l10n.metricOverdue,
+                    ),
                     companies: _companies,
                     openOpps: _opps.where((o) => o.wonLost == null).length,
                     pipelineValue: formatAmount(_pipelineValue(), decimals: false),
@@ -395,13 +490,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         ? () => _goToSection(CrmSection.tasks)
                         : () => _push(const TasksScreen()),
                   ),
-                  if (EntitlementService.instance.isActive('invoicing')) ...[
+                  if (ModuleRegistry.instance.isUsedInCrm('invoicing')) ...[
                     const SizedBox(height: 24),
                     ...ModuleRegistry.instance.byId('invoicing')!.dashboardCards(context, _load),
                   ],
                   const SizedBox(height: 24),
                   if (topClients.isNotEmpty) ...[
-                    Text('Top clients (pipeline ouvert)', style: Theme.of(context).textTheme.titleMedium),
+                    Text(l10n.dashboardTopClients, style: Theme.of(context).textTheme.titleMedium),
                     const SizedBox(height: 12),
                     Container(
                       decoration: BoxDecoration(
@@ -415,7 +510,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               Divider(height: 1, color: scheme.outlineVariant.withValues(alpha: 0.4)),
                             ListTile(
                               dense: true,
-                              title: Text(topClients[i].$1),
+                              title: Text(
+                                topClients[i].$1,
+                                style: const TextStyle(
+                                  color: CrmTokens.fuchsia,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
                               trailing: Text(formatAmount(topClients[i].$2),
                                   style: const TextStyle(fontWeight: FontWeight.w600)),
                             ),
@@ -425,12 +526,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                     const SizedBox(height: 24),
                   ],
-                  Text('Pipeline par étape', style: Theme.of(context).textTheme.titleMedium),
+                  Text(l10n.dashboardPipelineByStage, style: Theme.of(context).textTheme.titleMedium),
                   const SizedBox(height: 12),
                   SizedBox(
                     height: 220,
                     child: _opps.isEmpty
-                        ? const Center(child: Text('Pas encore d\'opportunités'))
+                        ? Center(child: Text(l10n.dashboardNoOpportunitiesYet))
                         : BarChart(
                             BarChartData(
                               borderData: FlBorderData(show: false),
@@ -481,13 +582,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           ),
                   ),
                   const SizedBox(height: 28),
-                  Text('Gagné / Perdu par mois', style: Theme.of(context).textTheme.titleMedium),
+                  Text(l10n.dashboardWonLostByMonth, style: Theme.of(context).textTheme.titleMedium),
                   const SizedBox(height: 12),
                   SizedBox(
                     height: 200,
                     child: wonLostMonths.every((m) => m.$2 == 0 && m.$3 == 0)
                         ? Center(
-                            child: Text('Pas encore de clôtures enregistrées.',
+                            child: Text(l10n.dashboardNoClosuresYet,
                                 style: TextStyle(color: scheme.onSurfaceVariant)),
                           )
                         : BarChart(
@@ -534,7 +635,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ),
                   const SizedBox(height: 28),
                   Text(
-                    'ACTIVITÉ RÉCENTE',
+                    l10n.dashboardRecentActivity.toUpperCase(),
                     style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
@@ -546,7 +647,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   if (_recentActivities.isEmpty)
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: Text('Aucune activité pour le moment.',
+                      child: Text(l10n.dashboardNoActivityYet,
                           style: TextStyle(color: scheme.onSurfaceVariant)),
                     )
                   else
@@ -614,6 +715,7 @@ class _AgendaRow extends StatelessWidget {
     required this.subtitle,
     required this.accentColor,
     required this.action,
+    this.isClientName = false,
     this.onTap,
   });
 
@@ -621,6 +723,9 @@ class _AgendaRow extends StatelessWidget {
   final String subtitle;
   final Color accentColor;
   final Widget action;
+  // false quand companyName tient en fait le message de la tâche (aucun
+  // client associé) — dans ce cas on garde la couleur de texte par défaut.
+  final bool isClientName;
   final VoidCallback? onTap;
 
   @override
@@ -641,7 +746,11 @@ class _AgendaRow extends StatelessWidget {
                     companyName,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: isClientName ? CrmTokens.fuchsia : null,
+                    ),
                   ),
                   const SizedBox(height: 2),
                   Text(
@@ -699,8 +808,94 @@ class _PillButton extends StatelessWidget {
   }
 }
 
+class _OpenDealRow extends StatelessWidget {
+  const _OpenDealRow({
+    required this.opp,
+    required this.companyName,
+    required this.stageLabel,
+    required this.stageColor,
+    required this.onTap,
+  });
+
+  final Opportunity opp;
+  final String? companyName;
+  final String stageLabel;
+  final Color stageColor;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          child: Row(
+            children: [
+              Container(width: 3, height: 30, color: stageColor),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      opp.title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                    ),
+                    const SizedBox(height: 2),
+                    Text.rich(
+                      TextSpan(
+                        children: [
+                          if (companyName != null) ...[
+                            TextSpan(
+                              text: companyName,
+                              style: const TextStyle(
+                                color: CrmTokens.fuchsia,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const TextSpan(text: ' · '),
+                          ],
+                          TextSpan(text: stageLabel),
+                        ],
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontSize: 13, color: scheme.onSurfaceVariant),
+                    ),
+                  ],
+                ),
+              ),
+              if (opp.amount != null) ...[
+                const SizedBox(width: 8),
+                Text(formatAmount(opp.amount), style: const TextStyle(fontWeight: FontWeight.w600)),
+              ],
+              const SizedBox(width: 4),
+              Icon(Icons.chevron_right, size: 18, color: scheme.onSurfaceVariant),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+typedef _MetricLabels = ({
+  String clients,
+  String opportunities,
+  String pipeline,
+  String forecast,
+  String tasks,
+  String overdue,
+});
+
 class _MetricsRow extends StatelessWidget {
   const _MetricsRow({
+    required this.labels,
     required this.companies,
     required this.openOpps,
     required this.pipelineValue,
@@ -712,6 +907,7 @@ class _MetricsRow extends StatelessWidget {
     required this.onTasks,
   });
 
+  final _MetricLabels labels;
   final int companies;
   final int openOpps;
   final String pipelineValue;
@@ -726,35 +922,67 @@ class _MetricsRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final border = Theme.of(context).crmBorder;
     final items = [
-      ('Clients', '$companies', onClients),
-      ('Opportunités', '$openOpps', onPipeline),
-      ('Pipeline', pipelineValue, onPipeline),
-      ('CA prévi.', forecastValue, onPipeline),
-      ('Tâches', '$openTasks', onTasks),
-      if (overdueTasks > 0) ('En retard', '$overdueTasks', onTasks),
+      (labels.clients, '$companies', onClients, false),
+      (labels.opportunities, '$openOpps', onPipeline, false),
+      (labels.pipeline, pipelineValue, onPipeline, false),
+      (labels.forecast, forecastValue, onPipeline, false),
+      (labels.tasks, '$openTasks', onTasks, false),
+      if (overdueTasks > 0) (labels.overdue, '$overdueTasks', onTasks, true),
     ];
+    final phone = CrmLayout.isPhone(context);
     return Container(
       decoration: BoxDecoration(
         border: Border.all(color: border),
         borderRadius: BorderRadius.circular(CrmTokens.radiusMd),
       ),
       clipBehavior: Clip.antiAlias,
-      child: Row(
-        children: [
-          for (var i = 0; i < items.length; i++) ...[
-            if (i > 0) VerticalDivider(width: 1, color: border),
-            Expanded(
-              child: _MetricCell(
-                label: items[i].$1,
-                value: items[i].$2,
-                onTap: items[i].$3,
-                highlight: items[i].$1 == 'En retard',
-              ),
-            ),
-          ],
-        ],
-      ),
+      // Téléphone : grille 2 colonnes — sur 1 seule ligne (5-6 items), les
+      // libellés comme « Opportunités » cassaient au milieu du mot.
+      child: phone ? _phoneGrid(items, border) : _wideRow(items, border),
     );
+  }
+
+  Widget _wideRow(List<(String, String, VoidCallback, bool)> items, Color border) {
+    return Row(
+      children: [
+        for (var i = 0; i < items.length; i++) ...[
+          if (i > 0) VerticalDivider(width: 1, color: border),
+          Expanded(
+            child: _MetricCell(
+              label: items[i].$1,
+              value: items[i].$2,
+              onTap: items[i].$3,
+              highlight: items[i].$4,
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+
+  Widget _phoneGrid(List<(String, String, VoidCallback, bool)> items, Color border) {
+    const columns = 2;
+    final rows = <Widget>[];
+    for (var r = 0; r * columns < items.length; r++) {
+      if (r > 0) rows.add(Divider(height: 1, color: border));
+      final cells = <Widget>[];
+      for (var c = 0; c < columns; c++) {
+        final idx = r * columns + c;
+        if (c > 0) cells.add(VerticalDivider(width: 1, color: border));
+        cells.add(Expanded(
+          child: idx < items.length
+              ? _MetricCell(
+                  label: items[idx].$1,
+                  value: items[idx].$2,
+                  onTap: items[idx].$3,
+                  highlight: items[idx].$4,
+                )
+              : const SizedBox(),
+        ));
+      }
+      rows.add(IntrinsicHeight(child: Row(children: cells)));
+    }
+    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: rows);
   }
 }
 
@@ -786,11 +1014,15 @@ class _MetricCell extends StatelessWidget {
             children: [
               Text(
                 label.toUpperCase(),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 style: Theme.of(context).textTheme.labelSmall,
               ),
               const SizedBox(height: 4),
               Text(
                 value,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w600,

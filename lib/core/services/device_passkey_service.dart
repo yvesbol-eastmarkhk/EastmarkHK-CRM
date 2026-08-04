@@ -17,7 +17,11 @@ import 'package:local_auth/local_auth.dart';
 class DevicePasskeyService {
   DevicePasskeyService._();
 
-  static const _storage = FlutterSecureStorage();
+  // Même option qu'e-Invoicing : le trousseau Data Protection casse
+  // passkey/Touch ID sous sandbox / après changement de bundle ID.
+  static const _storage = FlutterSecureStorage(
+    mOptions: MacOsOptions(usesDataProtectionKeychain: false),
+  );
   static final LocalAuthentication _auth = LocalAuthentication();
 
   static String _key(String userId) => 'device_passkey_$userId';

@@ -6,14 +6,117 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
+import '../../l10n/gen/app_localizations.dart';
 import '../db/app_database.dart';
+import 'client_company_bridge.dart';
 import 'sync_editing_guard.dart';
 
-/// Résultat d'une synchronisation — affiché dans Réglages.
+enum SyncOutcomeKind {
+  serverOk,
+  invalidResponse,
+  cancelled,
+  inProgress,
+  upToDate,
+  received,
+  sentNothing,
+  sent,
+  combined,
+  pullFailed,
+  pushFailed,
+  auth401,
+  timeout,
+  formatError,
+  connectError,
+  serverStatus,
+  raw,
+}
+
+/// Résultat d'une synchronisation — affiché dans Réglages (messages via l10n).
 class SyncOutcome {
-  const SyncOutcome({required this.ok, required this.message});
+  const SyncOutcome({
+    required this.ok,
+    required this.kind,
+    this.count,
+    this.count2,
+    this.detail,
+    this.statusCode,
+  });
+
   final bool ok;
-  final String message;
+  final SyncOutcomeKind kind;
+  final int? count;
+  final int? count2;
+  final String? detail;
+  final int? statusCode;
+
+  /// Texte pour logs / fallback — préférer [localizedMessage] dans l’UI.
+  String get message {
+    switch (kind) {
+      case SyncOutcomeKind.serverOk:
+        return 'server ok';
+      case SyncOutcomeKind.upToDate:
+        return 'up to date';
+      case SyncOutcomeKind.received:
+        return 'received ${count ?? 0}';
+      case SyncOutcomeKind.sent:
+        return 'sent ${count ?? 0}';
+      case SyncOutcomeKind.sentNothing:
+        return 'sent nothing';
+      case SyncOutcomeKind.combined:
+        return 'sent ${count ?? 0}, received ${count2 ?? 0}';
+      case SyncOutcomeKind.timeout:
+        return 'timeout';
+      case SyncOutcomeKind.auth401:
+        return '401';
+      case SyncOutcomeKind.raw:
+      case SyncOutcomeKind.connectError:
+        return detail ?? kind.name;
+      default:
+        return detail ?? kind.name;
+    }
+  }
+
+  String localizedMessage(AppLocalizations l10n) {
+    switch (kind) {
+      case SyncOutcomeKind.serverOk:
+        return l10n.syncServerOk;
+      case SyncOutcomeKind.invalidResponse:
+        return l10n.syncInvalidResponse;
+      case SyncOutcomeKind.cancelled:
+        return l10n.syncCancelled;
+      case SyncOutcomeKind.inProgress:
+        return l10n.syncInProgress;
+      case SyncOutcomeKind.upToDate:
+        return l10n.syncUpToDate;
+      case SyncOutcomeKind.received:
+        return l10n.syncReceived(count ?? 0);
+      case SyncOutcomeKind.sentNothing:
+        return l10n.syncSentNothingNew;
+      case SyncOutcomeKind.sent:
+        return l10n.syncSent(count ?? 0);
+      case SyncOutcomeKind.combined:
+        final parts = <String>[];
+        if ((count ?? 0) > 0) parts.add(l10n.syncSentPart(count!));
+        if ((count2 ?? 0) > 0) parts.add(l10n.syncReceivedPart(count2!));
+        return parts.isEmpty ? l10n.syncUpToDate : parts.join(', ');
+      case SyncOutcomeKind.pullFailed:
+        return detail?.isNotEmpty == true ? detail! : l10n.syncPullFailed;
+      case SyncOutcomeKind.pushFailed:
+        return detail?.isNotEmpty == true ? detail! : l10n.syncPushFailed;
+      case SyncOutcomeKind.auth401:
+        return l10n.sync401;
+      case SyncOutcomeKind.timeout:
+        return l10n.syncTimeout;
+      case SyncOutcomeKind.formatError:
+        return l10n.syncInvalidResponse;
+      case SyncOutcomeKind.connectError:
+        return l10n.syncConnectError(detail ?? '');
+      case SyncOutcomeKind.serverStatus:
+        return l10n.syncServerStatus(statusCode ?? 0);
+      case SyncOutcomeKind.raw:
+        return detail ?? l10n.syncInvalidResponse;
+    }
+  }
 }
 
 enum CrmSyncMode { pullOnly, pushOnly, full }
@@ -35,12 +138,17 @@ class RemoteCrmSyncService extends ChangeNotifier {
   static const _pullLimit = 5000;
   static const _pollInterval = Duration(seconds: 25);
   static const _pushDebounce = Duration(seconds: 2);
+  /// Une sync complète = pull + push (+ pull si push). Timeout raisonnable.
+  static const _httpTimeout = Duration(seconds: 25);
+  static const _syncJobTimeout = Duration(seconds: 90);
 
   static const _dataTables = ['companies', 'contacts', 'opportunities', 'activities', 'tasks'];
   static const _profileTable = 'user_profiles';
   static const _allTables = [..._dataTables, _profileTable];
 
-  static const _storage = FlutterSecureStorage();
+  static const _storage = FlutterSecureStorage(
+    mOptions: MacOsOptions(usesDataProtectionKeychain: false),
+  );
 
   /// Incrémenté après un pull qui a modifié la base — les listes écoutent
   /// cette valeur pour se rafraîchir (comme RemoteDataSyncService.dataEpoch).
@@ -49,9 +157,21 @@ class RemoteCrmSyncService extends ChangeNotifier {
   bool _syncing = false;
   bool get isSyncing => _syncing;
 
+  /// Sous-ensemble de [isSyncing] à afficher dans l'en-tête : uniquement les
+  /// actions explicites (Réglages → Synchroniser). Le poll auto (25 s) et le
+  /// push différé après saisie sont silencieux — avec un serveur parfois
+  /// lent (cold start PHP-FPM après le regroupement des sous-domaines), les
+  /// afficher faisait tourner l'icône bien plus qu'elle ne s'arrêtait, alors
+  /// qu'avant elle restait discrète pour ces syncs de routine.
+  bool _visibleSyncing = false;
+  bool get isSyncingVisible => _visibleSyncing;
+
   DateTime? lastSyncAt;
   String? lastError;
   bool remoteModeEnabled = false;
+
+  /// Mode remote demandé mais mot de passe / serveur manquant (ex. après réinstall).
+  bool credentialsIncomplete = false;
 
   String? _lastSnackbarError;
   DateTime? _lastSnackbarAt;
@@ -59,13 +179,30 @@ class RemoteCrmSyncService extends ChangeNotifier {
   Timer? _pollTimer;
   Timer? _pushDebounceTimer;
   Future<void> _syncMutex = Future<void>.value();
-  int _mutexGen = 0;
+  final int _mutexGen = 0;
 
-  /// Poll pull-only toutes les 25 s + premier tick après le démarrage.
+  /// Nombre de tâches en attente + en cours dans la file (`_syncMutex`).
+  /// Sans ce compteur, le poll auto (25 s) et le push différé pouvaient
+  /// s'empiler plus vite qu'ils ne se vident quand le serveur est lent
+  /// (proche du timeout) — `isSyncing` restait alors vrai en continu et
+  /// le spinner de l'en-tête ne s'arrêtait jamais. Les tâches de fond
+  /// (poll, push différé) sont maintenant ignorées si la file n'est pas
+  /// vide plutôt que d'être empilées ; les actions explicites de
+  /// l'utilisateur (Sync now, flush avant mise en arrière-plan) restent
+  /// mises en file pour garantir qu'elles s'exécutent.
+  int _queueDepth = 0;
+  bool get _syncQueueBusy => _queueDepth > 0;
+
+  /// Poll pull-only toutes les 25 s.
+  /// Au démarrage : pull léger seulement (comme avant) — PAS une sync full
+  /// qui monopolisait le mutex >1 min et bloquait « Tester la connexion ».
   void startAutoSync() {
     _pollTimer?.cancel();
     _pollTimer = Timer.periodic(_pollInterval, (_) => syncBackgroundPull());
-    Future<void>.delayed(const Duration(seconds: 5), syncBackgroundPull);
+    Future<void>.delayed(const Duration(seconds: 5), () {
+      // ignore: discarded_futures
+      syncBackgroundPull();
+    });
   }
 
   void stopAutoSync() {
@@ -78,26 +215,54 @@ class RemoteCrmSyncService extends ChangeNotifier {
   /// Après une écriture locale : push différé (debounce 2 s).
   void schedulePushAfterLocalChange() {
     _pushDebounceTimer?.cancel();
-    _pushDebounceTimer = Timer(_pushDebounce, () {
-      // ignore: discarded_futures
-      syncFromSettings(mode: CrmSyncMode.pushOnly);
-    });
+    _pushDebounceTimer = Timer(_pushDebounce, _runDeferredPush);
+  }
+
+  /// Exécute le push différé, ou se re-planifie si une sync est déjà en
+  /// file — évite d'empiler un push derrière un poll/push déjà en cours
+  /// (ce qui gardait le spinner allumé) sans jamais perdre la donnée : la
+  /// ligne modifiée garde son `updated_at` et sera reprise dès que la file
+  /// se libère.
+  void _runDeferredPush() {
+    if (_syncQueueBusy) {
+      _pushDebounceTimer = Timer(_pushDebounce, _runDeferredPush);
+      return;
+    }
+    // ignore: discarded_futures
+    syncFromSettings(mode: CrmSyncMode.pushOnly, silent: true);
   }
 
   /// Au passage en arrière-plan : pousse immédiatement les changements en attente.
   Future<void> flushPendingPush() async {
     _pushDebounceTimer?.cancel();
     _pushDebounceTimer = null;
-    await syncFromSettings(mode: CrmSyncMode.pushOnly);
+    await syncFromSettings(mode: CrmSyncMode.pushOnly, silent: true);
   }
 
   /// Pull automatique — ignoré si l'utilisateur est en train de saisir.
+  /// Même endpoint HTTPS / mêmes identifiants (trousseau) que Réglages.
+  /// Un timeout ponctuel est retenté 1× avant d’afficher l’erreur (le test
+  /// Réglages est un POST vide ; le poll tire de vraies données).
   Future<SyncOutcome?> syncBackgroundPull() async {
     if (SyncEditingGuard.shouldDeferPull) {
       debugPrint('CRM sync: pull reporté — saisie en cours');
       return null;
     }
-    final outcome = await syncFromSettings(mode: CrmSyncMode.pullOnly);
+    if (_syncQueueBusy) {
+      // Une sync précédente (poll, push différé ou action utilisateur) est
+      // encore en file/en cours : on saute ce cycle de poll plutôt que de
+      // l'empiler. Sinon, avec un serveur lent, la file grossit plus vite
+      // qu'elle ne se vide et le spinner de l'en-tête ne s'arrête jamais.
+      debugPrint('CRM sync: poll ignoré — sync déjà en file');
+      return null;
+    }
+    var outcome = await syncFromSettings(mode: CrmSyncMode.pullOnly, silent: true);
+    if (outcome != null &&
+        !outcome.ok &&
+        outcome.kind == SyncOutcomeKind.timeout) {
+      debugPrint('CRM sync: timeout poll — nouvel essai…');
+      outcome = await syncFromSettings(mode: CrmSyncMode.pullOnly, silent: true);
+    }
     if (outcome != null && !outcome.ok) {
       _maybeShowBackgroundError(outcome.message);
     }
@@ -115,7 +280,11 @@ class RemoteCrmSyncService extends ChangeNotifier {
   }
 
   /// Sync complète depuis les réglages (pull → push → pull).
-  Future<SyncOutcome?> syncFromSettings({CrmSyncMode mode = CrmSyncMode.full}) async {
+  /// [silent] : ne pas animer l'icône de l'en-tête (poll auto / push différé).
+  Future<SyncOutcome?> syncFromSettings({
+    CrmSyncMode mode = CrmSyncMode.full,
+    bool silent = false,
+  }) async {
     await refreshRemoteModeFlag();
     final creds = await _loadCredentials();
     if (creds == null) return null;
@@ -125,7 +294,9 @@ class RemoteCrmSyncService extends ChangeNotifier {
         account: creds.account,
         password: creds.password,
         mode: mode,
+        silent: silent,
       ),
+      silent: silent,
     );
   }
 
@@ -140,37 +311,85 @@ class RemoteCrmSyncService extends ChangeNotifier {
         account: account,
         password: password,
         mode: CrmSyncMode.full,
+        silent: false,
       ),
     );
   }
 
-  Future<SyncOutcome> _enqueueSync(Future<SyncOutcome> Function() body) {
+  /// Test immédiat — hors mutex. Persiste d’abord les mêmes réglages que
+  /// le poll auto utilisera (sinon Test OK avec l’URL du champ, mais l’app
+  /// continue avec l’ancienne URL / sans MDP en trousseau).
+  Future<SyncOutcome> testConnection({
+    required String server,
+    required String account,
+    required String password,
+  }) async {
+    try {
+      final since = DateTime.now().toUtc().toIso8601String();
+      final decoded = await _post(
+        server: server,
+        account: account,
+        password: password,
+        since: since,
+        push: _emptyPush(),
+        timeout: const Duration(seconds: 20),
+      );
+      if (decoded['ok'] == true) {
+        _markSyncSuccess();
+        return const SyncOutcome(ok: true, kind: SyncOutcomeKind.serverOk);
+      }
+      final message = (decoded['message'] as String?) ?? '';
+      lastError = message.isEmpty ? 'invalid' : message;
+      notifyListeners();
+      return SyncOutcome(
+        ok: false,
+        kind: SyncOutcomeKind.raw,
+        detail: message.isEmpty ? null : message,
+      );
+    } catch (e) {
+      final outcome = _outcomeFromError(e);
+      lastError = outcome.message;
+      notifyListeners();
+      return outcome;
+    }
+  }
+
+  void _markSyncSuccess() {
+    lastError = null;
+    _lastSnackbarError = null;
+    lastSyncAt = DateTime.now();
+    notifyListeners();
+  }
+
+  Future<SyncOutcome> _enqueueSync(
+    Future<SyncOutcome> Function() body, {
+    bool silent = false,
+  }) {
     final done = Completer<SyncOutcome>();
     final gen = _mutexGen;
+    _queueDepth++;
     _syncMutex = _syncMutex.catchError((_) {}).then((_) async {
       if (gen != _mutexGen) {
         if (!done.isCompleted) {
-          done.complete(const SyncOutcome(ok: false, message: 'Synchronisation annulée'));
+          done.complete(const SyncOutcome(ok: false, kind: SyncOutcomeKind.cancelled));
         }
-        return;
-      }
-      if (_syncing) {
-        if (!done.isCompleted) {
-          done.complete(const SyncOutcome(ok: false, message: 'Synchronisation déjà en cours'));
-        }
+        _queueDepth--;
         return;
       }
       _syncing = true;
+      if (!silent) _visibleSyncing = true;
       notifyListeners();
       try {
-        final outcome = await body().timeout(const Duration(seconds: 25));
+        final outcome = await body().timeout(_syncJobTimeout);
         if (!done.isCompleted) done.complete(outcome);
       } catch (e) {
         if (!done.isCompleted) {
-          done.complete(SyncOutcome(ok: false, message: _friendlyError(e)));
+          done.complete(_outcomeFromError(e));
         }
       } finally {
         _syncing = false;
+        if (!silent) _visibleSyncing = false;
+        _queueDepth--;
         notifyListeners();
       }
     });
@@ -182,60 +401,127 @@ class RemoteCrmSyncService extends ChangeNotifier {
     required String account,
     required String password,
     required CrmSyncMode mode,
+    bool silent = false,
   }) async {
     try {
       switch (mode) {
         case CrmSyncMode.pullOnly:
-          final pull = await _pullPhase(server: server, account: account, password: password);
-          if (!pull.ok) return SyncOutcome(ok: false, message: pull.message);
-          lastError = null;
-          notifyListeners();
-          return SyncOutcome(
-            ok: true,
-            message: pull.applied == 0 ? 'À jour' : '${pull.applied} élément(s) reçu(s)',
+          final pull = await _pullPhase(
+            server: server,
+            account: account,
+            password: password,
+            recordError: !silent,
           );
+          if (!pull.ok) {
+            return SyncOutcome(
+              ok: false,
+              kind: SyncOutcomeKind.pullFailed,
+              detail: pull.message.isEmpty ? null : pull.message,
+            );
+          }
+          // Miroir UI seulement s’il y a du nouveau — sinon le poll 25 s
+          // coûtait cher pour rien et pouvait faire croire à un timeout.
+          if (pull.applied > 0) {
+            await _mirrorUiDb();
+          }
+          _markSyncSuccess();
+          return pull.applied == 0
+              ? const SyncOutcome(ok: true, kind: SyncOutcomeKind.upToDate)
+              : SyncOutcome(ok: true, kind: SyncOutcomeKind.received, count: pull.applied);
         case CrmSyncMode.pushOnly:
+          await _preparePushFromUiDb();
           final push = await _pushPhase(
             server: server,
             account: account,
             password: password,
             applyPull: false,
+            recordError: !silent,
           );
-          if (!push.ok) return SyncOutcome(ok: false, message: push.message);
-          lastError = null;
-          notifyListeners();
-          return SyncOutcome(
-            ok: true,
-            message: push.pushed == 0 ? 'Envoyé (rien de nouveau)' : '${push.pushed} élément(s) envoyé(s)',
-          );
+          if (!push.ok) {
+            return SyncOutcome(
+              ok: false,
+              kind: SyncOutcomeKind.pushFailed,
+              detail: push.message.isEmpty ? null : push.message,
+            );
+          }
+          _markSyncSuccess();
+          return push.pushed == 0
+              ? const SyncOutcome(ok: true, kind: SyncOutcomeKind.sentNothing)
+              : SyncOutcome(ok: true, kind: SyncOutcomeKind.sent, count: push.pushed);
         case CrmSyncMode.full:
-          final pull1 = await _pullPhase(server: server, account: account, password: password);
-          if (!pull1.ok) return SyncOutcome(ok: false, message: pull1.message);
+          final pull1 = await _pullPhase(
+            server: server,
+            account: account,
+            password: password,
+            recordError: !silent,
+          );
+          if (!pull1.ok) {
+            return SyncOutcome(
+              ok: false,
+              kind: SyncOutcomeKind.pullFailed,
+              detail: pull1.message.isEmpty ? null : pull1.message,
+            );
+          }
+          await _preparePushFromUiDb();
           final push = await _pushPhase(
             server: server,
             account: account,
             password: password,
             applyPull: false,
+            recordError: !silent,
           );
-          if (!push.ok) return SyncOutcome(ok: false, message: push.message);
-          final pull2 = await _pullPhase(server: server, account: account, password: password);
-          if (!pull2.ok) return SyncOutcome(ok: false, message: pull2.message);
-          final totalApplied = pull1.applied + pull2.applied;
-          lastError = null;
-          notifyListeners();
-          final parts = <String>[];
-          if (push.pushed > 0) parts.add('${push.pushed} envoyé(s)');
-          if (totalApplied > 0) parts.add('$totalApplied reçu(s)');
-          return SyncOutcome(
-            ok: true,
-            message: parts.isEmpty ? 'À jour' : parts.join(', '),
-          );
+          if (!push.ok) {
+            return SyncOutcome(
+              ok: false,
+              kind: SyncOutcomeKind.pushFailed,
+              detail: push.message.isEmpty ? null : push.message,
+            );
+          }
+          // Pas de 2ᵉ pull si rien n’a été poussé — évite un aller-retour inutile.
+          var totalApplied = pull1.applied;
+          if (push.pushed > 0) {
+            final pull2 = await _pullPhase(
+              server: server,
+              account: account,
+              password: password,
+              recordError: !silent,
+            );
+            if (!pull2.ok) {
+              return SyncOutcome(
+                ok: false,
+                kind: SyncOutcomeKind.pullFailed,
+                detail: pull2.message.isEmpty ? null : pull2.message,
+              );
+            }
+            totalApplied += pull2.applied;
+          }
+          if (totalApplied > 0 || push.pushed > 0) {
+            await _mirrorUiDb();
+          }
+          _markSyncSuccess();
+          if (push.pushed == 0 && totalApplied == 0) {
+            return const SyncOutcome(ok: true, kind: SyncOutcomeKind.upToDate);
+          }
+          if (push.pushed > 0 && totalApplied > 0) {
+            return SyncOutcome(
+              ok: true,
+              kind: SyncOutcomeKind.combined,
+              count: push.pushed,
+              count2: totalApplied,
+            );
+          }
+          if (push.pushed > 0) {
+            return SyncOutcome(ok: true, kind: SyncOutcomeKind.sent, count: push.pushed);
+          }
+          return SyncOutcome(ok: true, kind: SyncOutcomeKind.received, count: totalApplied);
       }
     } catch (e) {
-      final message = _friendlyError(e);
-      lastError = message;
-      notifyListeners();
-      return SyncOutcome(ok: false, message: message);
+      final outcome = _outcomeFromError(e);
+      if (!silent) {
+        lastError = outcome.message;
+        notifyListeners();
+      }
+      return outcome;
     }
   }
 
@@ -243,6 +529,7 @@ class RemoteCrmSyncService extends ChangeNotifier {
     required String server,
     required String account,
     required String password,
+    bool recordError = true,
   }) async {
     final db = AppDatabase.instance;
     final rawDb = await db.database;
@@ -259,7 +546,7 @@ class RemoteCrmSyncService extends ChangeNotifier {
       );
       if (decoded['ok'] != true) {
         final message = (decoded['message'] as String?) ?? 'Échec du pull';
-        lastError = message;
+        if (recordError) lastError = message;
         return (ok: false, message: message, applied: totalApplied);
       }
 
@@ -313,6 +600,7 @@ class RemoteCrmSyncService extends ChangeNotifier {
     required String account,
     required String password,
     required bool applyPull,
+    bool recordError = true,
   }) async {
     final db = AppDatabase.instance;
     final rawDb = await db.database;
@@ -321,14 +609,36 @@ class RemoteCrmSyncService extends ChangeNotifier {
 
     final push = <String, List<Map<String, Object?>>>{};
     var pushed = 0;
+    // Horodatage « maintenant » : sinon le serveur garde d’anciens updated_at
+    // et les mobiles dont last_sync_at est plus récent ne reçoivent jamais
+    // les lignes (WHERE updated_at > since).
+    final stamp = DateTime.now().toUtc().toIso8601String();
     for (final table in _dataTables) {
       final rows = await rawDb.query(table, where: 'updated_at > ?', whereArgs: [sincePush]);
-      push[table] = rows;
-      pushed += rows.length;
+      final stamped = rows
+          .map((r) => Map<String, Object?>.from(r)..['updated_at'] = stamp)
+          .toList();
+      if (stamped.isNotEmpty) {
+        final batch = rawDb.batch();
+        for (final row in stamped) {
+          batch.update(
+            table,
+            {'updated_at': stamp},
+            where: 'id = ?',
+            whereArgs: [row['id']],
+          );
+        }
+        await batch.commit(noResult: true);
+      }
+      push[table] = stamped;
+      pushed += stamped.length;
     }
     final profiles = await _userProfilesToPush(rawDb, sincePush);
-    push[_profileTable] = profiles;
-    pushed += profiles.length;
+    final stampedProfiles = profiles
+        .map((r) => Map<String, Object?>.from(r)..['updated_at'] = stamp)
+        .toList();
+    push[_profileTable] = stampedProfiles;
+    pushed += stampedProfiles.length;
 
     if (pushed == 0) {
       return (ok: true, message: '', pushed: 0);
@@ -344,7 +654,7 @@ class RemoteCrmSyncService extends ChangeNotifier {
 
     if (decoded['ok'] != true) {
       final message = (decoded['message'] as String?) ?? 'Échec du push';
-      lastError = message;
+      if (recordError) lastError = message;
       return (ok: false, message: message, pushed: 0);
     }
 
@@ -394,12 +704,42 @@ class RemoteCrmSyncService extends ChangeNotifier {
     return applied;
   }
 
+  /// AppDatabase (sync) → CrmDb (UI Clients). Toujours notifier l’UI.
+  Future<void> _mirrorUiDb() async {
+    try {
+      await ClientCompanyBridge.mirrorFromAppDatabase();
+    } catch (e, st) {
+      debugPrint('RemoteCrmSyncService._mirrorUiDb: $e\n$st');
+    }
+    dataEpoch.value++;
+  }
+
+  /// CrmDb (UI) → AppDatabase avant push — sinon les clients v2 restent locaux.
+  /// `force: true` pour les clients uniquement.
+  /// Les tâches live sont dans AppDatabase (CrmShell) : ne pas forcer le miroir
+  /// v2→legacy (sinon une tâche marquée faite est réouverte avant le push).
+  Future<void> _preparePushFromUiDb() async {
+    try {
+      final n = await ClientCompanyBridge.mirrorClientsToAppDatabase(force: true);
+      // Pas de force : n’écrire AppDatabase que si CrmDb est plus récent.
+      final t = await ClientCompanyBridge.mirrorTasksToAppDatabase(force: false);
+      if (n > 0 || t > 0) {
+        debugPrint(
+          'RemoteCrmSyncService._preparePushFromUiDb: $n client(s), $t task(s)',
+        );
+      }
+    } catch (e, st) {
+      debugPrint('RemoteCrmSyncService._preparePushFromUiDb: $e\n$st');
+    }
+  }
+
   Future<Map<String, dynamic>> _post({
     required String server,
     required String account,
     required String password,
     required String since,
     required Map<String, List<Map<String, Object?>>> push,
+    Duration? timeout,
   }) async {
     final uri = Uri.parse('${_normalizeServer(server)}/sync.php');
     final response = await http
@@ -412,13 +752,30 @@ class RemoteCrmSyncService extends ChangeNotifier {
             'push': push,
           }),
         )
-        .timeout(const Duration(seconds: 25));
+        .timeout(timeout ?? _httpTimeout);
+
+    Map<String, dynamic>? body;
+    try {
+      final decoded = jsonDecode(response.body);
+      if (decoded is Map<String, dynamic>) body = decoded;
+    } catch (_) {}
 
     if (response.statusCode != 200) {
-      throw SyncServerException('Le serveur a répondu ${response.statusCode}');
+      final serverMsg = body?['message'] as String?;
+      if (response.statusCode == 401) {
+        throw SyncServerException(
+          serverMsg ?? '401',
+          kind: SyncOutcomeKind.auth401,
+        );
+      }
+      throw SyncServerException(
+        serverMsg ?? 'status ${response.statusCode}',
+        kind: SyncOutcomeKind.serverStatus,
+        statusCode: response.statusCode,
+      );
     }
 
-    return jsonDecode(response.body) as Map<String, dynamic>;
+    return body ?? (jsonDecode(response.body) as Map<String, dynamic>);
   }
 
   Map<String, List<Map<String, Object?>>> _emptyPush() {
@@ -468,18 +825,60 @@ class RemoteCrmSyncService extends ChangeNotifier {
   Future<({String server, String account, String password})?> _loadCredentials() async {
     final db = AppDatabase.instance;
     final values = await db.getSettings(['sync_mode', 'sync_server', 'sync_account']);
-    if (values['sync_mode'] != 'remote') return null;
-    final server = values['sync_server'] ?? '';
-    final account = values['sync_account'] ?? '';
-    if (server.isEmpty || account.isEmpty) return null;
+    final mode = values['sync_mode'];
+    // Défaut produit = remote (comme l’UI Réglages). null = jamais sauvegardé
+    // (typique après réinstall) → on pousse vers la config, pas le silence.
+    final wantsRemote = mode == null || mode == 'remote';
+    if (!wantsRemote) {
+      _setCredentialsIncomplete(false);
+      return null;
+    }
+    if (mode == null) {
+      await db.setSetting('sync_mode', 'remote');
+    }
+    var server = (values['sync_server'] ?? '').trim();
+    var account = (values['sync_account'] ?? '').trim();
+    // Migration silencieuse ancien sous-domaine → emhk (sans attendre Réglages).
+    if (server.contains('crm.eastmarkhk.com')) {
+      server = 'https://emhk.eastmarkhk.com/crm';
+      await db.setSetting('sync_server', server);
+    }
+    if (account == 'crm@eastmarkhk.com') {
+      account = 'emhk@eastmarkhk.com';
+      await db.setSetting('sync_account', account);
+    }
+    if (server.isEmpty) {
+      server = 'https://emhk.eastmarkhk.com/crm';
+      await db.setSetting('sync_server', server);
+    }
+    if (account.isEmpty) {
+      account = 'emhk@eastmarkhk.com';
+      await db.setSetting('sync_account', account);
+    }
     String? password;
     try {
       password = await _storage.read(key: passwordStorageKey);
     } catch (_) {
+      _setCredentialsIncomplete(true);
       return null;
     }
-    if (password == null || password.isEmpty) return null;
+    if (password == null || password.isEmpty) {
+      _setCredentialsIncomplete(true);
+      return null;
+    }
+    _setCredentialsIncomplete(false);
     return (server: server, account: account, password: password);
+  }
+
+  void _setCredentialsIncomplete(bool value) {
+    if (credentialsIncomplete == value) return;
+    credentialsIncomplete = value;
+    if (value) {
+      lastError = 'needs_password';
+    } else if (lastError == 'needs_password') {
+      lastError = null;
+    }
+    notifyListeners();
   }
 
   String _normalizeServer(String server) {
@@ -488,17 +887,38 @@ class RemoteCrmSyncService extends ChangeNotifier {
     return s;
   }
 
-  String _friendlyError(Object e) {
-    if (e is TimeoutException) return 'Le serveur ne répond pas (délai dépassé)';
-    if (e is FormatException) return 'Réponse du serveur invalide';
-    if (e is SyncServerException) return e.message;
-    return 'Connexion impossible : $e';
+  SyncOutcome _outcomeFromError(Object e) {
+    if (e is TimeoutException) {
+      return const SyncOutcome(ok: false, kind: SyncOutcomeKind.timeout);
+    }
+    if (e is FormatException) {
+      return const SyncOutcome(ok: false, kind: SyncOutcomeKind.formatError);
+    }
+    if (e is SyncServerException) {
+      return SyncOutcome(
+        ok: false,
+        kind: e.kind,
+        detail: e.message,
+        statusCode: e.statusCode,
+      );
+    }
+    return SyncOutcome(
+      ok: false,
+      kind: SyncOutcomeKind.connectError,
+      detail: '$e',
+    );
   }
 }
 
 class SyncServerException implements Exception {
-  SyncServerException(this.message);
+  SyncServerException(
+    this.message, {
+    this.kind = SyncOutcomeKind.raw,
+    this.statusCode,
+  });
   final String message;
+  final SyncOutcomeKind kind;
+  final int? statusCode;
   @override
   String toString() => message;
 }

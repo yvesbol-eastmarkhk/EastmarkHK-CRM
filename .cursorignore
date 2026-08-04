@@ -1,0 +1,15 @@
+# Allège Cursor / Extension Host (ne pas indexer ces gros dossiers)
+build/
+.dart_tool/
+dist/
+macos/Flutter/ephemeral/
+ios/Flutter/Flutter.framework/
+ios/Flutter/Flutter.podspec
+**/*.dmg
+**/.packages
+**/Generated.xcconfig
+**/flutter_export_environment.sh
+**/ephemeral/
+**/Pods/
+tool/__pycache__/
+*.pyc

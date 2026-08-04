@@ -20,6 +20,13 @@ function crm_sync_db(array $config): PDO
 
     $pdo = new PDO('sqlite:' . $config['db_path']);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    // Sans busy_timeout, SQLite renvoie SQLITE_BUSY immédiatement si une
+    // autre requête (plusieurs appareils qui synchronisent en même temps)
+    // détient un verrou d'écriture — au lieu d'attendre quelques centaines
+    // de ms que ce verrou se libère. Important surtout depuis le
+    // regroupement CRM + e-Invoicing sur un seul sous-domaine (mutualisation
+    // du pool PHP-FPM → plus de requêtes concurrentes qu'avant).
+    $pdo->exec('PRAGMA busy_timeout = 5000');
     $pdo->exec('PRAGMA journal_mode = WAL');
     $pdo->exec('PRAGMA foreign_keys = OFF');
 

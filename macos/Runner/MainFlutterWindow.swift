@@ -9,6 +9,9 @@ class MainFlutterWindow: NSWindow {
     self.setFrame(windowFrame, display: true)
 
     RegisterGeneratedPlugins(registry: flutterViewController)
+    AiAssistant.register(with: flutterViewController.engine.binaryMessenger)
+    SharedContainerHandler.register(with: flutterViewController.engine.binaryMessenger)
+    SpeechRecognitionHandler.register(with: flutterViewController.engine.binaryMessenger)
 
     super.awakeFromNib()
   }

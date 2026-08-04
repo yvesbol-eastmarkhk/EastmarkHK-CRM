@@ -4,33 +4,35 @@ import 'package:flutter/services.dart';
 import '../core/models/models.dart';
 import '../core/screens/company_detail_screen.dart';
 import '../core/screens/dashboard_screen.dart';
+import '../core/screens/opportunity_detail_screen.dart';
 import '../core/modules/module_registry.dart';
 import '../core/screens/modules_screen.dart';
 import '../core/screens/settings_screen.dart';
+import '../modules/invoicing/screens/ei_products_screen.dart';
 import '../modules/invoicing/screens/invoicing_home_screen.dart';
-import '../platform/entitlement_service.dart';
 import '../core/screens/tasks_screen.dart';
 import '../core/services/current_session.dart';
 import '../core/services/remote_crm_sync_service.dart';
 import '../core/services/sync_editing_guard.dart';
 import '../core/services/task_alarm_service.dart';
+import '../core/utils/responsive_layout.dart';
 import '../core/widgets/login_panel.dart';
-import '../core/services/workspace_layout_settings.dart';
 import '../core/widgets/command_palette.dart';
+import '../l10n/gen/app_localizations.dart';
 import '../state/crm_workspace_state.dart';
 import '../theme/app_theme.dart';
 import '../workspace/clients_list_panel.dart';
-import '../workspace/column_width_controls.dart';
 import '../workspace/crm_workspace_banner.dart';
 import '../workspace/pipeline_board.dart';
 import '../workspace/record_placeholder.dart';
 import '../workspace/tasks_list_panel.dart';
 import '../workspace/today_action_panel.dart';
 import '../workspace/today_queue_panel.dart';
+import '../widgets/emhk_app_footer.dart';
 
 /// Workspace 3 panneaux — Attio × Linear :
 /// [Rail] | [Liste contextuelle] | [Fiche client]
-/// Pas de navigation empilée sur desktop : tout reste visible.
+/// Pas de navigation empilée sur desktop / iPad : tout reste visible.
 class CrmShell extends StatefulWidget {
   const CrmShell({super.key});
 
@@ -41,11 +43,10 @@ class CrmShell extends StatefulWidget {
 class _CrmShellState extends State<CrmShell> with WidgetsBindingObserver {
   final _workspace = CrmWorkspaceState();
   final _sync = RemoteCrmSyncService.instance;
-  static const _railStep = 84.0;
-  static const _breakpoint = 900.0;
-  final _layout = WorkspaceLayoutSettings.instance;
-  double _railWidth = WorkspaceLayoutSettings.railMin;
+  /// Largeur fixe du rail (comme avant) — plus de redimensionnement.
+  static const _railWidth = 188.0;
   static const _listWidth = 320.0;
+  static const _listWidthCompact = 260.0;
   bool _lockShowing = false;
 
   @override
@@ -57,7 +58,7 @@ class _CrmShellState extends State<CrmShell> with WidgetsBindingObserver {
     _sync.addListener(_onSyncStatusChanged);
     // ignore: unawaited_futures
     _sync.refreshRemoteModeFlag();
-    _loadLayout();
+    _sync.startAutoSync();
     WidgetsBinding.instance.addPostFrameCallback((_) => TaskAlarmService.instance.start());
     // ignore: unawaited_futures
     ModuleRegistry.instance.ensureInitialized();
@@ -66,6 +67,7 @@ class _CrmShellState extends State<CrmShell> with WidgetsBindingObserver {
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    _sync.stopAutoSync();
     _sync.dataEpoch.removeListener(_onRemoteDataChanged);
     _sync.removeListener(_onSyncStatusChanged);
     SyncEditingGuard.isUserEditing = null;
@@ -97,7 +99,7 @@ class _CrmShellState extends State<CrmShell> with WidgetsBindingObserver {
         PageRouteBuilder<void>(
           opaque: true,
           barrierDismissible: false,
-          pageBuilder: (_, __, ___) => Scaffold(
+          pageBuilder: (_, _, _) => Scaffold(
             body: Center(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.all(24),
@@ -122,23 +124,33 @@ class _CrmShellState extends State<CrmShell> with WidgetsBindingObserver {
   }
 
   void _onSyncStatusChanged() {
-    if (!mounted || _sync.lastError == null) return;
+    final lastError = _sync.lastError;
+    if (!mounted || lastError == null) return;
     if (!_sync.hasBackgroundErrorNotice) return;
+    final l10n = AppLocalizations.of(context);
+    final detail = switch (lastError) {
+      'timeout' => l10n.syncTimeout,
+      'needs_password' => l10n.shellSyncNeedsPassword,
+      '401' => l10n.sync401,
+      'invalid' => l10n.syncInvalidResponse,
+      _ => lastError,
+    };
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Sync : ${_sync.lastError}'),
+        content: Text(l10n.shellSyncError(detail)),
         action: SnackBarAction(
-          label: 'OK',
+          label: l10n.shellOk,
           onPressed: _sync.clearBackgroundErrorNotice,
         ),
       ),
     );
   }
 
-  /// Reporte les pulls automatiques pendant une saisie ou un dialogue ouvert.
+  /// Reporte les pulls automatiques pendant une saisie texte.
+  /// Ne bloque PAS sur un dialogue ouvert (sinon l’alarme « Task reminder »
+  /// empêche le pull des tâches marquées faites sur un autre appareil).
   bool _isUserEditing() {
     if (!mounted) return false;
-    if (Navigator.of(context).canPop()) return true;
     final focused = FocusManager.instance.primaryFocus?.context;
     return focused != null &&
         focused.findAncestorWidgetOfExactType<EditableText>() != null;
@@ -147,12 +159,6 @@ class _CrmShellState extends State<CrmShell> with WidgetsBindingObserver {
   void _onRemoteDataChanged() {
     if (_isUserEditing()) return;
     _refreshAll();
-  }
-
-  Future<void> _loadLayout() async {
-    await _layout.ensureLoaded();
-    if (!mounted) return;
-    setState(() => _railWidth = _layout.railWidth);
   }
 
   Future<void> _addTaskFromHeader() async {
@@ -170,21 +176,28 @@ class _CrmShellState extends State<CrmShell> with WidgetsBindingObserver {
 
   void _refreshAll() => _workspace.bump();
 
-  void _widenRail() {
-    final next = (_railWidth + _railStep).clamp(WorkspaceLayoutSettings.railMin, WorkspaceLayoutSettings.railMax);
-    setState(() => _railWidth = next);
-    _layout.setRailWidth(next);
+  Future<void> _openModules() async {
+    final moduleId = await Navigator.push<String>(
+      context,
+      MaterialPageRoute(builder: (_) => const ModulesScreen()),
+    );
+    if (moduleId != null) _workspace.goToModule(moduleId);
   }
 
-  void _narrowRail() {
-    final next = (_railWidth - _railStep).clamp(WorkspaceLayoutSettings.railMin, WorkspaceLayoutSettings.railMax);
-    setState(() => _railWidth = next);
-    _layout.setRailWidth(next);
+  Future<void> _openSettings() async {
+    final moduleId = await Navigator.push<String>(
+      context,
+      MaterialPageRoute(builder: (_) => const SettingsScreen()),
+    );
+    if (moduleId != null) _workspace.goToModule(moduleId);
   }
 
   @override
   Widget build(BuildContext context) {
-    final wide = MediaQuery.sizeOf(context).width >= _breakpoint;
+    // Téléphone seulement → chrome mobile. iPad (même portrait) = layout Mac.
+    final phone = CrmLayout.isPhone(context);
+    final compactTablet = CrmLayout.isCompactTablet(context);
+    final listWidth = compactTablet ? _listWidthCompact : _listWidth;
     return ListenableBuilder(
       listenable: _workspace,
       builder: (context, _) {
@@ -193,13 +206,14 @@ class _CrmShellState extends State<CrmShell> with WidgetsBindingObserver {
         final selectedTaskId = _workspace.selectedTaskId;
         final todayFullRecord = _workspace.todayFullRecord;
 
-        // Mobile : liste OU fiche / panneau relance plein écran
-        if (!wide) {
+        // Mobile téléphone : liste OU fiche / panneau relance plein écran
+        if (phone) {
           return _MobileShell(
             workspace: _workspace,
             onCommandPalette: () => showCommandPalette(context, _workspace, _refreshAll),
             onAddTask: _addTaskFromHeader,
             onRefresh: _refreshAll,
+            onSettings: _openSettings,
             child: section == CrmSection.today && selectedTaskId != null && !todayFullRecord
                 ? TodayActionPanel(
                     key: ValueKey(selectedTaskId),
@@ -207,9 +221,8 @@ class _CrmShellState extends State<CrmShell> with WidgetsBindingObserver {
                     workspace: _workspace,
                     onRefresh: _refreshAll,
                   )
-                : _workspace.activeModuleId == 'invoicing'
-                    ? const InvoicingHomeScreen()
-                    : selectedId != null
+                : _moduleScreen(_workspace.activeModuleId) ??
+                    (selectedId != null
                     ? CompanyDetailScreen(
                         key: ValueKey(selectedId),
                         companyId: selectedId,
@@ -225,11 +238,11 @@ class _CrmShellState extends State<CrmShell> with WidgetsBindingObserver {
                         onSelectCompany: _selectCompany,
                         onSelectTask: _selectTask,
                         onRefresh: _refreshAll,
-                      ),
+                      )),
           );
         }
 
-        // Desktop : rail + liste (sauf pipeline / dashboard plein) + panneau droit
+        // Desktop / iPad : rail + liste (sauf pipeline / dashboard plein) + panneau droit
         final showList = _workspace.activeModuleId == null &&
             section != CrmSection.pipeline &&
             section != CrmSection.dashboard;
@@ -254,6 +267,30 @@ class _CrmShellState extends State<CrmShell> with WidgetsBindingObserver {
                   CrmWorkspaceBanner(
                     onAddTask: _addTaskFromHeader,
                     onTaskCreated: _refreshAll,
+                    onSettings: _openSettings,
+                  ),
+                  ListenableBuilder(
+                    listenable: _sync,
+                    builder: (context, _) {
+                      if (!_sync.credentialsIncomplete) return const SizedBox.shrink();
+                      final l10n = AppLocalizations.of(context);
+                      final scheme = Theme.of(context).colorScheme;
+                      return Material(
+                        color: scheme.errorContainer,
+                        child: ListTile(
+                          dense: true,
+                          leading: Icon(Icons.cloud_off_outlined, color: scheme.onErrorContainer),
+                          title: Text(
+                            l10n.shellSyncNeedsPassword,
+                            style: TextStyle(color: scheme.onErrorContainer, fontSize: 13),
+                          ),
+                          trailing: TextButton(
+                            onPressed: _openSettings,
+                            child: Text(l10n.shellSettingsLabel),
+                          ),
+                        ),
+                      );
+                    },
                   ),
                   Expanded(
                     child: Row(
@@ -268,22 +305,18 @@ class _CrmShellState extends State<CrmShell> with WidgetsBindingObserver {
                           },
                           onModule: _workspace.goToModule,
                           onCommandPalette: () => showCommandPalette(context, _workspace, _refreshAll),
-                          onModules: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (_) => const ModulesScreen()),
-                          ),
-                          onSettings: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (_) => const SettingsScreen()),
-                          ),
-                          onWider: _widenRail,
-                          onNarrower: _narrowRail,
-                          canWider: _railWidth < WorkspaceLayoutSettings.railMax,
-                          canNarrower: _railWidth > WorkspaceLayoutSettings.railMin,
+                          onModules: _openModules,
+                          onSettings: () async {
+                            final moduleId = await Navigator.push<String>(
+                              context,
+                              MaterialPageRoute(builder: (_) => const SettingsScreen()),
+                            );
+                            if (moduleId != null) _workspace.goToModule(moduleId);
+                          },
                         ),
                         if (showList) ...[
                           SizedBox(
-                            width: _listWidth,
+                            width: listWidth,
                             child: SelectionArea(
                               child: _ListForSection(
                                 workspace: _workspace,
@@ -312,6 +345,7 @@ class _CrmShellState extends State<CrmShell> with WidgetsBindingObserver {
                       ],
                     ),
                   ),
+                  const EmhkAppFooter(),
                 ],
               ),
             ),
@@ -347,8 +381,18 @@ class _WorkspaceDetailPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     final border = Theme.of(context).crmBorder;
 
-    if (workspace.activeModuleId == 'invoicing') {
-      return const InvoicingHomeScreen();
+    if (workspace.activeModuleId != null) {
+      return _moduleScreen(workspace.activeModuleId) ?? const SizedBox.shrink();
+    }
+
+    final selectedOpportunityId = workspace.selectedOpportunityId;
+    if (selectedOpportunityId != null) {
+      return OpportunityDetailScreen(
+        key: ValueKey('opp-$selectedOpportunityId'),
+        opportunityId: selectedOpportunityId,
+        embedded: true,
+        onClose: () => workspace.selectOpportunity(null),
+      );
     }
 
     if (section == CrmSection.dashboard && !showTodayAction && !showSplitRecord) {
@@ -377,6 +421,7 @@ class _WorkspaceDetailPanel extends StatelessWidget {
                 key: ValueKey(selectedId),
                 companyId: selectedId!,
                 embedded: true,
+                workspace: workspace,
                 onDeleted: () {
                   workspace.clearSelection();
                   onRefresh();
@@ -400,9 +445,10 @@ class _WorkspaceDetailPanel extends StatelessWidget {
       );
     } else if (showSplitRecord) {
       panel = CompanyDetailScreen(
-        key: ValueKey(selectedId),
+        key: ValueKey('co-$selectedId-t-$selectedTaskId'),
         companyId: selectedId!,
         embedded: true,
+        workspace: workspace,
         onDeleted: () {
           workspace.clearSelection();
           onRefresh();
@@ -456,7 +502,9 @@ class _ListForSection extends StatelessWidget {
       CrmSection.tasks => TasksListPanel(
           workspace: workspace,
           selectedCompanyId: selectedCompanyId,
+          selectedTaskId: selectedTaskId,
           onSelectCompany: onSelectCompany,
+          onSelectTask: onSelectTask,
           expand: fullWidth,
         ),
       CrmSection.pipeline => const SizedBox.shrink(),
@@ -474,10 +522,6 @@ class _IconRail extends StatelessWidget {
     required this.onCommandPalette,
     required this.onModules,
     required this.onSettings,
-    required this.onWider,
-    required this.onNarrower,
-    required this.canWider,
-    required this.canNarrower,
   });
 
   final double width;
@@ -488,20 +532,6 @@ class _IconRail extends StatelessWidget {
   final VoidCallback onCommandPalette;
   final VoidCallback onModules;
   final VoidCallback onSettings;
-  final VoidCallback onWider;
-  final VoidCallback onNarrower;
-  final bool canWider;
-  final bool canNarrower;
-
-  bool get _expanded => width >= 120;
-
-  static const _items = [
-    (CrmSection.dashboard, Icons.dashboard_outlined, 'Tableau de bord'),
-    (CrmSection.today, Icons.wb_sunny_outlined, 'Aujourd\'hui'),
-    (CrmSection.clients, Icons.business_outlined, 'Clients'),
-    (CrmSection.pipeline, Icons.view_kanban_outlined, 'Pipeline'),
-    (CrmSection.tasks, Icons.check_circle_outline, 'Tâches'),
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -509,7 +539,17 @@ class _IconRail extends StatelessWidget {
     return ListenableBuilder(
       listenable: ModuleRegistry.instance,
       builder: (context, _) {
-        final activeModules = ModuleRegistry.instance.active;
+        final l10n = AppLocalizations.of(context);
+        // Agenda (calendrier) — pas « Today » / « Aujourd’hui ».
+        final items = [
+          (CrmSection.dashboard, Icons.dashboard_outlined, l10n.shellDashboard),
+          (CrmSection.today, Icons.calendar_month_outlined, l10n.shellAgendaLabel),
+          (CrmSection.clients, Icons.business_outlined, l10n.shellClientsLabel),
+          (CrmSection.pipeline, Icons.view_kanban_outlined, l10n.pipelineTitle),
+          (CrmSection.tasks, Icons.check_circle_outline, l10n.shellTasksLabel),
+        ];
+        // Toutes les destinations module (ex. e-Invoicing + Produits).
+        final moduleDests = ModuleRegistry.instance.navDestinations(context);
         return Container(
           width: width,
           decoration: BoxDecoration(
@@ -523,57 +563,47 @@ class _IconRail extends StatelessWidget {
               _RailButton(
                 width: width,
                 icon: Icons.search,
-                label: 'Rechercher',
-                expanded: _expanded,
+                label: l10n.shellSearch,
+                expanded: true,
                 selected: false,
                 onTap: onCommandPalette,
               ),
               const Divider(height: 1, indent: 8, endIndent: 8),
-              for (final item in _items)
+              for (final item in items)
                 _RailButton(
                   width: width,
                   icon: item.$2,
                   label: item.$3,
-                  expanded: _expanded,
+                  expanded: true,
                   selected: activeModuleId == null && section == item.$1,
                   onTap: () => onSection(item.$1),
                 ),
-              if (activeModules.isNotEmpty) ...[
+              if (moduleDests.isNotEmpty) ...[
                 const Divider(height: 1, indent: 8, endIndent: 8),
-                for (final m in activeModules)
+                for (final dest in moduleDests)
                   _RailButton(
                     width: width,
-                    icon: m.icon,
-                    label: m.title,
-                    expanded: _expanded,
-                    selected: activeModuleId == m.id,
-                    onTap: () => onModule(m.id),
+                    icon: dest.icon,
+                    label: dest.title,
+                    expanded: true,
+                    selected: activeModuleId == dest.id,
+                    onTap: () => onModule(dest.id),
                   ),
               ],
               const Spacer(),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: _expanded ? 6 : 2, vertical: 4),
-                child: ColumnWidthControls(
-                  compact: !_expanded,
-                  onWider: onWider,
-                  onNarrower: onNarrower,
-                  canWider: canWider,
-                  canNarrower: canNarrower,
-                ),
-              ),
               _RailButton(
                 width: width,
                 icon: Icons.extension_outlined,
-                label: 'Modules',
-                expanded: _expanded,
+                label: l10n.shellModulesLabel,
+                expanded: true,
                 selected: false,
                 onTap: onModules,
               ),
               _RailButton(
                 width: width,
                 icon: Icons.settings_outlined,
-                label: 'Réglages',
-                expanded: _expanded,
+                label: l10n.shellSettingsLabel,
+                expanded: true,
                 selected: false,
                 onTap: onSettings,
               ),
@@ -583,6 +613,18 @@ class _IconRail extends StatelessWidget {
         );
       },
     );
+  }
+}
+
+/// Écran module actif (e-Invoicing, Produits…).
+Widget? _moduleScreen(String? moduleId) {
+  switch (moduleId) {
+    case 'invoicing':
+      return const InvoicingHomeScreen();
+    case 'invoicing_products':
+      return const EiProductsScreen();
+    default:
+      return null;
   }
 }
 
@@ -666,12 +708,113 @@ class _RailButtonState extends State<_RailButton> {
   }
 }
 
+/// Barre de nav mobile maison — remplace `NavigationBar` (Material) dont le
+/// libellé (`Text` sans `maxLines`) casse sur 2 lignes pour les traductions
+/// à plusieurs mots (ex. « Tableau de bord »), au lieu de tronquer avec « … ».
+class _MobileNavItem {
+  const _MobileNavItem(this.icon, this.label);
+  final IconData icon;
+  final String label;
+}
+
+class _MobileNavBar extends StatelessWidget {
+  const _MobileNavBar({
+    required this.items,
+    required this.selectedIndex,
+    required this.onSelected,
+  });
+
+  final List<_MobileNavItem> items;
+  final int selectedIndex;
+  final ValueChanged<int> onSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    final border = Theme.of(context).crmBorder;
+    return Material(
+      color: Theme.of(context).colorScheme.surface,
+      child: SafeArea(
+        top: false,
+        child: Container(
+          decoration: BoxDecoration(border: Border(top: BorderSide(color: border))),
+          child: Row(
+            children: [
+              for (var i = 0; i < items.length; i++)
+                Expanded(
+                  child: _MobileNavButton(
+                    item: items[i],
+                    selected: i == selectedIndex,
+                    onTap: () => onSelected(i),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _MobileNavButton extends StatelessWidget {
+  const _MobileNavButton({
+    required this.item,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final _MobileNavItem item;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final color = selected ? scheme.primary : scheme.onSurfaceVariant;
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+              decoration: BoxDecoration(
+                color: selected ? scheme.primary.withValues(alpha: 0.12) : null,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Icon(item.icon, size: 22, color: color),
+            ),
+            const SizedBox(height: 3),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 2),
+              child: Text(
+                item.label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                softWrap: false,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
+                  color: color,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _MobileShell extends StatelessWidget {
   const _MobileShell({
     required this.workspace,
     required this.onCommandPalette,
     required this.onAddTask,
     required this.onRefresh,
+    required this.onSettings,
     required this.child,
   });
 
@@ -679,13 +822,16 @@ class _MobileShell extends StatelessWidget {
   final VoidCallback onCommandPalette;
   final Future<void> Function() onAddTask;
   final VoidCallback onRefresh;
+  final VoidCallback onSettings;
   final Widget child;
 
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
-      listenable: workspace,
+      listenable: Listenable.merge([workspace, RemoteCrmSyncService.instance]),
       builder: (context, _) {
+        final l10n = AppLocalizations.of(context);
+        final sync = RemoteCrmSyncService.instance;
         final hasDetail = workspace.selectedCompanyId != null &&
             (workspace.section != CrmSection.today ||
                 workspace.todayFullRecord ||
@@ -693,35 +839,62 @@ class _MobileShell extends StatelessWidget {
         final hasTodayPanel = workspace.section == CrmSection.today &&
             workspace.selectedTaskId != null &&
             !workspace.todayFullRecord;
+        final scheme = Theme.of(context).colorScheme;
         return Scaffold(
-          body: Column(
-            children: [
-              CrmWorkspaceBanner(
-                leading: hasDetail || hasTodayPanel
-                    ? IconButton(
-                        icon: const Icon(Icons.arrow_back),
-                        onPressed: workspace.clearSelection,
-                      )
-                    : null,
-                onAddTask: onAddTask,
-                onTaskCreated: onRefresh,
-              ),
-              Expanded(child: child),
-            ],
+          body: SafeArea(
+            bottom: false,
+            child: Column(
+              children: [
+                CrmWorkspaceBanner(
+                  compact: true,
+                  leading: hasDetail || hasTodayPanel
+                      ? IconButton(
+                          icon: const Icon(Icons.arrow_back),
+                          onPressed: workspace.clearSelection,
+                        )
+                      : null,
+                  onAddTask: onAddTask,
+                  onTaskCreated: onRefresh,
+                  onSettings: onSettings,
+                ),
+                if (sync.credentialsIncomplete)
+                  Material(
+                    color: scheme.errorContainer,
+                    child: ListTile(
+                      dense: true,
+                      leading: Icon(Icons.cloud_off_outlined, color: scheme.onErrorContainer),
+                      title: Text(
+                        l10n.shellSyncNeedsPassword,
+                        style: TextStyle(color: scheme.onErrorContainer, fontSize: 13),
+                      ),
+                      trailing: TextButton(
+                        onPressed: onSettings,
+                        child: Text(l10n.shellSettingsLabel),
+                      ),
+                    ),
+                  ),
+                Expanded(child: child),
+              ],
+            ),
           ),
-          bottomNavigationBar: hasDetail || hasTodayPanel
-              ? null
-              : NavigationBar(
-                  selectedIndex: workspace.section.index,
-                  onDestinationSelected: (i) => workspace.goTo(CrmSection.values[i]),
-                  destinations: const [
-                    NavigationDestination(icon: Icon(Icons.dashboard_outlined), label: 'Dashboard'),
-                    NavigationDestination(icon: Icon(Icons.wb_sunny_outlined), label: 'Aujourd\'hui'),
-                    NavigationDestination(icon: Icon(Icons.business_outlined), label: 'Clients'),
-                    NavigationDestination(icon: Icon(Icons.view_kanban_outlined), label: 'Pipeline'),
-                    NavigationDestination(icon: Icon(Icons.check_circle_outline), label: 'Tâches'),
+          bottomNavigationBar: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const EmhkAppFooter(),
+              if (!hasDetail && !hasTodayPanel)
+                _MobileNavBar(
+                  selectedIndex: workspace.section.index.clamp(0, 4),
+                  onSelected: (i) => workspace.goTo(CrmSection.values[i]),
+                  items: [
+                    _MobileNavItem(Icons.dashboard_outlined, l10n.shellDashboard),
+                    _MobileNavItem(Icons.calendar_month_outlined, l10n.shellAgendaLabel),
+                    _MobileNavItem(Icons.business_outlined, l10n.shellClientsLabel),
+                    _MobileNavItem(Icons.view_kanban_outlined, l10n.pipelineTitle),
+                    _MobileNavItem(Icons.check_circle_outline, l10n.shellTasksLabel),
                   ],
                 ),
+            ],
+          ),
         );
       },
     );
@@ -743,9 +916,8 @@ class _MobileList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (workspace.activeModuleId == 'invoicing') {
-      return const InvoicingHomeScreen();
-    }
+    final module = _moduleScreen(workspace.activeModuleId);
+    if (module != null) return module;
     if (workspace.section == CrmSection.pipeline) {
       return PipelineBoard(workspace: workspace, onSelectCompany: onSelectCompany);
     }

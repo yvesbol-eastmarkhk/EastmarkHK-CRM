@@ -1,13 +1,15 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../db/crm_db.dart';
+import '../../platform/entitlement_service.dart';
 import '../models/models.dart';
 import '../models/user_account.dart';
-import '../../platform/entitlement_service.dart';
 import '../services/auth_service.dart';
 import '../services/remote_crm_sync_service.dart';
 
@@ -22,6 +24,20 @@ class AppDatabase {
   Database? _db;
   static bool _platformReady = false;
 
+  /// Tests uniquement : évite que [_maybeMigrateLegacyDatabase] n'aille lire
+  /// (et copier dans la base de test) la vraie base de production trouvée
+  /// sur la machine du développeur.
+  @visibleForTesting
+  static bool debugSkipLegacyMigration = false;
+
+  /// Tests uniquement : ferme la connexion pour repartir d'une base neuve
+  /// (chaque test isole son propre `getApplicationSupportDirectory`).
+  @visibleForTesting
+  Future<void> resetForTests() async {
+    await _db?.close();
+    _db = null;
+  }
+
   static const _dbFileName = 'emhk_crm.db';
   // v2 : table users (comptes, rôles).
   // v3 : contacts.phone_country + contacts.messaging_json (canaux WhatsApp,
@@ -34,7 +50,7 @@ class AppDatabase {
   // relance déjà programmée et affiche toujours "Pas de rappel").
   // v7 : opportunities.stage_updated_at (dernier changement d'étape —
   // affiché sur les cartes du pipeline).
-  static const _schemaVersion = 7;
+  static const _schemaVersion = 8;
 
   static Future<void> initPlatform() async {
     if (_platformReady) return;
@@ -58,8 +74,10 @@ class AppDatabase {
     await initPlatform();
     final dir = await getApplicationSupportDirectory();
     await dir.create(recursive: true);
+    final dbPath = p.join(dir.path, _dbFileName);
+    await _maybeMigrateLegacyDatabase(dbPath);
     _db = await _dbFactory.openDatabase(
-      p.join(dir.path, _dbFileName),
+      dbPath,
       options: OpenDatabaseOptions(
         version: _schemaVersion,
         onConfigure: (db) => db.execute('PRAGMA foreign_keys = ON'),
@@ -68,6 +86,114 @@ class AppDatabase {
       ),
     );
     return _db!;
+  }
+
+  /// macOS : sandbox ON (DMG) vs OFF (debug Flutter) = deux dossiers
+  /// Application Support distincts. On récupère la base la plus riche
+  /// (plus de companies) depuis le chemin non-sandbox ou l’ancien container.
+  static Future<void> _maybeMigrateLegacyDatabase(String targetPath) async {
+    if (debugSkipLegacyMigration) return;
+    if (!Platform.isMacOS) return;
+    final home = _realUserHome();
+    if (home == null) return;
+
+    const bundleId = 'com.eastmarkhk.eastmarkhkCrm';
+    final candidates = <String>[
+      '$home/Library/Application Support/$bundleId/$_dbFileName',
+      '$home/Library/Containers/$bundleId/Data/Library/Application Support/$bundleId/$_dbFileName',
+      '$home/Library/Containers/$bundleId/Data/Documents/$_dbFileName',
+      // Bundle ID minuscule (PRODUCT_BUNDLE_IDENTIFIER actuel).
+      '$home/Library/Application Support/com.eastmarkhk.eastmarkhkcrm/$_dbFileName',
+      '$home/Library/Containers/com.eastmarkhk.eastmarkhkcrm/Data/Library/Application Support/com.eastmarkhk.eastmarkhkcrm/$_dbFileName',
+    ];
+
+    final targetCanon = File(targetPath).absolute.path;
+    String? bestPath;
+    var bestCount = -1;
+    for (final legacy in candidates) {
+      final canon = File(legacy).absolute.path;
+      if (canon == targetCanon) continue;
+      if (!await File(legacy).exists()) continue;
+      final n = await _rowCountInFile(legacy, 'companies');
+      if (n > bestCount) {
+        bestCount = n;
+        bestPath = legacy;
+      }
+    }
+    if (bestPath == null || bestCount <= 0) return;
+
+    final targetExists = await File(targetPath).exists();
+    final targetCount =
+        targetExists ? await _rowCountInFile(targetPath, 'companies') : 0;
+    if (bestCount <= targetCount) return;
+
+    try {
+      if (targetExists) {
+        await File(targetPath).copy('$targetPath.pre_migrate.bak');
+      }
+      await File(bestPath).copy(targetPath);
+      for (final suffix in ['-wal', '-shm']) {
+        final side = File('$targetPath$suffix');
+        if (await side.exists()) await side.delete();
+      }
+      // Force un push complet au prochain sync : les updated_at de la
+      // base restaurée sont souvent plus anciens que last_pushed_at.
+      await _resetSyncCursorInFile(targetPath, 'last_pushed_at');
+    } catch (_) {}
+  }
+
+  static Future<void> _resetSyncCursorInFile(String dbPath, String key) async {
+    try {
+      await initPlatform();
+      final db = await databaseFactoryFfi.openDatabase(
+        dbPath,
+        options: OpenDatabaseOptions(singleInstance: false),
+      );
+      try {
+        await db.execute('''
+          CREATE TABLE IF NOT EXISTS settings (
+            key TEXT PRIMARY KEY NOT NULL,
+            value TEXT
+          )''');
+        await db.insert(
+          'settings',
+          {'key': key, 'value': '1970-01-01T00:00:00.000Z'},
+          conflictAlgorithm: ConflictAlgorithm.replace,
+        );
+      } finally {
+        await db.close();
+      }
+    } catch (_) {}
+  }
+
+  static Future<int> _rowCountInFile(String dbPath, String table) async {
+    try {
+      await initPlatform();
+      final db = await databaseFactoryFfi.openDatabase(
+        dbPath,
+        options: OpenDatabaseOptions(readOnly: true, singleInstance: false),
+      );
+      try {
+        final rows = await db.rawQuery(
+          "SELECT COUNT(*) AS c FROM $table WHERE deleted_at IS NULL OR deleted_at = ''",
+        );
+        final c = rows.first['c'];
+        if (c is int) return c;
+        if (c is num) return c.toInt();
+      } finally {
+        await db.close();
+      }
+    } catch (_) {}
+    return 0;
+  }
+
+  static String? _realUserHome() {
+    final home = Platform.environment['HOME'];
+    if (home == null || home.isEmpty) return null;
+    const marker = '/Library/Containers/';
+    final idx = home.indexOf(marker);
+    if (idx > 0) return home.substring(0, idx);
+    return home;
   }
 
   /// Migrations pour les bases déjà créées (v1 n'avait pas la table users).
@@ -97,6 +223,10 @@ class AppDatabase {
       await db.execute('ALTER TABLE opportunities ADD COLUMN stage_updated_at TEXT');
       await db.execute('UPDATE opportunities SET stage_updated_at = updated_at');
     }
+    if (oldVersion < 8) {
+      await db.execute(
+          'ALTER TABLE companies ADD COLUMN einvoice_customer_uuid TEXT');
+    }
   }
 
   Future<void> _onCreate(Database db, int version) async {
@@ -107,6 +237,7 @@ class AppDatabase {
         id TEXT PRIMARY KEY, name TEXT NOT NULL,
         vat_number TEXT, peppol_id TEXT, website TEXT,
         tags TEXT, notes TEXT, country TEXT, address_json TEXT,
+        einvoice_customer_uuid TEXT,
         created_at TEXT NOT NULL, updated_at TEXT NOT NULL, deleted_at TEXT)''');
     await db.execute('''
       CREATE TABLE contacts (
@@ -193,7 +324,10 @@ class AppDatabase {
   /// opportunités, tâches, historique) — sinon ces éléments continuent
   /// d'apparaître dans le Pipeline, le Dashboard et la recherche alors que
   /// le client n'existe plus nulle part dans l'app.
-  Future<void> softDeleteCompany(String id) async {
+  ///
+  /// [flushRemote] : false quand appelé depuis le miroir CrmDb (évite
+  /// récursion / push mid-mirror). L’UI passe true (défaut).
+  Future<void> softDeleteCompany(String id, {bool flushRemote = true}) async {
     final db = await database;
     final now = nowIso();
     await db.transaction((txn) async {
@@ -202,7 +336,53 @@ class AppDatabase {
             where: table == 'companies' ? 'id = ?' : 'company_id = ?', whereArgs: [id]);
       }
     });
-    _scheduleRemotePush();
+    // Miroir UI (CrmDb) — sinon le push force-miroir ressuscite le client.
+    try {
+      await CrmDb.instance.softDeleteClient(id);
+    } catch (e) {
+      debugPrint('softDeleteCompany CrmDb: $e');
+    }
+    if (!flushRemote) return;
+    // Pousser tout de suite — sinon une suppression locale peut rester
+    // invisible sur le serveur (debounce / poll).
+    await RemoteCrmSyncService.instance.flushPendingPush();
+  }
+
+  /// Fusionne les sociétés en double (même nom, insensible à la casse/espaces)
+  /// — ex. import CSV répété, ou société créée séparément avant la 1ʳᵉ sync
+  /// sur un autre appareil. Garde la plus ancienne, réattribue contacts /
+  /// opportunités / tâches / activités des doublons vers elle (jamais de
+  /// perte de données), puis les supprime. Retourne les ids fusionnés.
+  Future<List<String>> dedupeCompaniesByName() async {
+    final db = await database;
+    final list = await companies();
+    final byKey = <String, List<Company>>{};
+    for (final c in list) {
+      final key = c.name.trim().toLowerCase();
+      if (key.isEmpty) continue;
+      (byKey[key] ??= []).add(c);
+    }
+    final removedIds = <String>[];
+    for (final group in byKey.values) {
+      if (group.length < 2) continue;
+      group.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+      final keep = group.first;
+      for (final dup in group.skip(1)) {
+        await db.transaction((txn) async {
+          for (final table in ['contacts', 'opportunities', 'tasks', 'activities']) {
+            await txn.update(table, {'company_id': keep.id},
+                where: 'company_id = ?', whereArgs: [dup.id]);
+          }
+        });
+        await softDeleteCompany(dup.id, flushRemote: false);
+        removedIds.add(dup.id);
+      }
+    }
+    if (removedIds.isNotEmpty) {
+      debugPrint('AppDatabase.dedupeCompaniesByName: fusionné ${removedIds.length} doublon(s)');
+      await RemoteCrmSyncService.instance.flushPendingPush();
+    }
+    return removedIds;
   }
 
   // ---- Contacts ------------------------------------------------------------
@@ -256,6 +436,12 @@ class AppDatabase {
     return rows.map(Opportunity.fromMap).toList();
   }
 
+  Future<Opportunity?> opportunityById(String id) async {
+    final db = await database;
+    final rows = await db.query('opportunities', where: 'id = ?', whereArgs: [id]);
+    return rows.isEmpty ? null : Opportunity.fromMap(rows.first);
+  }
+
   Future<void> upsertOpportunity(Opportunity o) async {
     final db = await database;
     o.updatedAt = nowIso();
@@ -268,13 +454,21 @@ class AppDatabase {
 
   // ---- Activities (timeline) ----------------------------------------------
 
-  Future<List<Activity>> activities({String? companyId, int limit = 100}) async {
+  Future<List<Activity>> activities({
+    String? companyId,
+    String? opportunityId,
+    int limit = 100,
+  }) async {
     final db = await database;
     final where = StringBuffer('deleted_at IS NULL');
     final args = <Object?>[];
     if (companyId != null) {
       where.write(' AND company_id = ?');
       args.add(companyId);
+    }
+    if (opportunityId != null) {
+      where.write(' AND opportunity_id = ?');
+      args.add(opportunityId);
     }
     final rows = await db.query('activities',
         where: where.toString(),
@@ -291,6 +485,8 @@ class AppDatabase {
         conflictAlgorithm: ConflictAlgorithm.replace);
     _scheduleRemotePush();
   }
+
+  Future<void> softDeleteActivity(String id) => _softDelete('activities', id);
 
   Future<List<Opportunity>> searchOpportunities(String search) async {
     final db = await database;
@@ -362,6 +558,12 @@ class AppDatabase {
     return rows.map(CrmTask.fromMap).toList();
   }
 
+  Future<CrmTask?> taskById(String id) async {
+    final db = await database;
+    final rows = await db.query('tasks', where: 'id = ?', whereArgs: [id]);
+    return rows.isEmpty ? null : CrmTask.fromMap(rows.first);
+  }
+
   Future<void> upsertTask(CrmTask t) async {
     final db = await database;
     t.updatedAt = nowIso();
@@ -383,9 +585,28 @@ class AppDatabase {
 
   Future<UserAccount?> userByUsername(String username) async {
     final db = await database;
-    final rows = await db.query('users',
-        where: 'username = ? AND deleted_at IS NULL', whereArgs: [username]);
-    return rows.isEmpty ? null : UserAccount.fromMap(rows.first);
+    final needle = username.trim();
+    if (needle.isEmpty) return null;
+    // Correspondance exacte d'abord, puis insensible à la casse (login).
+    final exact = await db.query('users',
+        where: 'username = ? AND deleted_at IS NULL', whereArgs: [needle]);
+    if (exact.isNotEmpty) return UserAccount.fromMap(exact.first);
+    // Plusieurs comptes type yvesbol / Yvesbol : garder le plus ancien
+    // (évite un doublon sync créé avec un mot de passe aléatoire).
+    final rows = await db.query(
+      'users',
+      where: 'deleted_at IS NULL',
+      orderBy: 'created_at ASC',
+    );
+    UserAccount? match;
+    for (final row in rows) {
+      final u = row['username']?.toString() ?? '';
+      if (u.toLowerCase() == needle.toLowerCase()) {
+        match = UserAccount.fromMap(row);
+        break;
+      }
+    }
+    return match;
   }
 
   Future<void> upsertUser(UserAccount u) async {
@@ -397,6 +618,43 @@ class AppDatabase {
 
   Future<void> softDeleteUser(String id) async {
     await _softDelete('users', id);
+  }
+
+  /// Supprime les doublons de login (yvesbol / Yvesbol) : garde le plus ancien,
+  /// soft-delete les autres. Retourne les ids désactivés (pour nettoyer passkeys).
+  Future<List<String>> dedupeUsersByUsername() async {
+    final list = await users();
+    final byKey = <String, List<UserAccount>>{};
+    for (final u in list) {
+      final key = u.username.trim().toLowerCase();
+      if (key.isEmpty) continue;
+      (byKey[key] ??= []).add(u);
+    }
+    final removedIds = <String>[];
+    for (final group in byKey.values) {
+      if (group.length < 2) continue;
+      group.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+      for (final dup in group.skip(1)) {
+        await softDeleteUser(dup.id);
+        removedIds.add(dup.id);
+      }
+    }
+    return removedIds;
+  }
+
+  /// Réinitialise le mot de passe local d’un compte (cet appareil uniquement).
+  Future<UserAccount?> resetLocalPassword({
+    required String username,
+    required String newPassword,
+  }) async {
+    final account = await userByUsername(username.trim());
+    if (account == null) return null;
+    final (hash, salt) = AuthService.hashNewPassword(newPassword);
+    account.passwordHash = hash;
+    account.passwordSalt = salt;
+    account.touchIdEnabled = false;
+    await upsertUser(account);
+    return account;
   }
 
   /// Fusionne un profil reçu du serveur — jamais le mot de passe local.
@@ -418,27 +676,22 @@ class AppDatabase {
       await db.insert('users', u.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
       return true;
     }
-    final (hash, salt) = AuthService.hashNewPassword(AppDatabase.newId());
-    final account = UserAccount(
-      id: id,
-      username: row['username'] as String? ?? '',
-      displayName: row['display_name'] as String? ?? '',
-      passwordHash: hash,
-      passwordSalt: salt,
-      role: UserRole.fromDb(row['role'] as String?),
-      createdAt: row['created_at'] as String? ?? nowIso(),
-      updatedAt: remoteUpdatedAt,
-      deletedAt: row['deleted_at'] as String?,
-    );
-    await db.insert('users', account.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
-    return true;
+    // Ne pas créer un 2ᵉ compte même casse (yvesbol / Yvesbol) : le sync
+    // mettrait un hash aléatoire et casserait le login sur mobile.
+    final remoteName = (row['username'] as String? ?? '').trim();
+    if (remoteName.isNotEmpty) {
+      final clash = await userByUsername(remoteName);
+      if (clash != null) return false;
+    }
+    // Profil inconnu sans mot de passe — inutile pour le login ; on ignore.
+    // (assigned_to peut rester un id opaque jusqu’à création locale du user.)
+    return false;
   }
 
   /// Copie la base SQLite vers un fichier temporaire pour export.
   Future<File> exportBackupCopy() async {
     final db = await database;
     final path = db.path;
-    if (path == null) throw StateError('Chemin base indisponible');
     final src = File(path);
     final stamp = DateTime.now().toIso8601String().replaceAll(':', '-').split('.').first;
     final dest = File(p.join(p.dirname(path), 'emhk_crm_backup_$stamp.db'));

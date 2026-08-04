@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../l10n/gen/app_localizations.dart';
 import '../db/app_database.dart';
 import '../models/models.dart' show nowIso;
 import '../models/user_account.dart';
@@ -7,7 +8,7 @@ import '../services/auth_service.dart';
 import '../services/current_session.dart';
 import '../services/device_passkey_service.dart';
 import '../widgets/dictation_field.dart';
-import '../widgets/eastmark_logo.dart';
+import '../../ui/crm_overlay_page.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/password_field.dart';
 
@@ -55,23 +56,24 @@ class _UsersScreenState extends State<UsersScreen> {
   }
 
   Future<void> _delete(UserAccount u) async {
+    final l10n = AppLocalizations.of(context);
     final isSelf = u.id == CurrentSession.instance.user?.id;
     if (isSelf) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Impossible de supprimer votre propre compte')),
+        SnackBar(content: Text(l10n.usersDeleteSelfError)),
       );
       return;
     }
     final ok = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Supprimer cet utilisateur ?'),
-        content: Text('${u.displayName} (${u.username}) perdra l\'accès au CRM.'),
+        title: Text(l10n.usersDeleteConfirmTitle),
+        content: Text(l10n.usersDeleteConfirmDetail(u.displayName, u.username)),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Annuler')),
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(l10n.commonCancel)),
           FilledButton.tonal(
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Supprimer'),
+            child: Text(l10n.commonDelete),
           ),
         ],
       ),
@@ -84,25 +86,29 @@ class _UsersScreenState extends State<UsersScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const EastmarkWordmark(height: 24), centerTitle: true),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _openEditor(),
-        icon: const Icon(Icons.person_add_alt_outlined),
-        label: const Text('Utilisateur'),
-      ),
-      body: _loading
+    final l10n = AppLocalizations.of(context);
+    return CrmOverlayPage(
+      title: l10n.usersTitle,
+      subtitle: l10n.usersSubtitle,
+      actions: [
+        FilledButton.tonalIcon(
+          onPressed: () => _openEditor(),
+          icon: const Icon(Icons.person_add_alt_outlined, size: 18),
+          label: Text(l10n.usersAddButton),
+        ),
+      ],
+      child: _loading
           ? const Center(child: CircularProgressIndicator())
           : _users.isEmpty
               ? EmptyState(
                   icon: Icons.people_outline,
-                  title: 'Aucun utilisateur',
-                  subtitle: 'Créez le premier compte — il sera administrateur.',
-                  actionLabel: 'Nouvel utilisateur',
+                  title: l10n.usersEmptyTitle,
+                  subtitle: l10n.usersEmptySubtitle,
+                  actionLabel: l10n.usersEmptyAction,
                   onAction: () => _openEditor(),
                 )
               : ListView.separated(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 40),
                   itemCount: _users.length,
                   separatorBuilder: (_, _) => const SizedBox(height: 4),
                   itemBuilder: (ctx, i) {
@@ -113,19 +119,19 @@ class _UsersScreenState extends State<UsersScreen> {
                         leading: CircleAvatar(
                           child: Text(u.displayName.isEmpty ? '?' : u.displayName[0].toUpperCase()),
                         ),
-                        title: Text('${u.displayName}${isSelf ? ' (vous)' : ''}'),
-                        subtitle: Text('${u.username} · ${u.role.label}'),
+                        title: Text(isSelf ? l10n.usersDisplayNameSelf(u.displayName) : u.displayName),
+                        subtitle: Text('${u.username} · ${roleLabel(context, u.role)}'),
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             IconButton(
-                              tooltip: 'Modifier',
-                              icon: const Icon(Icons.edit_outlined),
+                              tooltip: l10n.commonEdit,
+                              icon: const Icon(Icons.edit_outlined, color: Color(0xFF2563EB)),
                               onPressed: () => _openEditor(existing: u),
                             ),
                             IconButton(
-                              tooltip: 'Supprimer',
-                              icon: const Icon(Icons.delete_outline),
+                              tooltip: l10n.commonDelete,
+                              icon: const Icon(Icons.delete_outline, color: Color(0xFFDC2626)),
                               onPressed: () => _delete(u),
                             ),
                           ],
@@ -177,18 +183,19 @@ class _UserEditorDialogState extends State<_UserEditorDialog> {
   }
 
   Future<void> _save() async {
+    final l10n = AppLocalizations.of(context);
     final username = _username.text.trim();
     final displayName = _displayName.text.trim();
     if (username.isEmpty || displayName.isEmpty) {
-      setState(() => _error = 'Nom et identifiant sont obligatoires');
+      setState(() => _error = l10n.commonRequiredFields);
       return;
     }
     if (_isNew && _password.text.isEmpty) {
-      setState(() => _error = 'Choisissez un mot de passe');
+      setState(() => _error = l10n.commonChoosePassword);
       return;
     }
     if (_password.text.isNotEmpty && _password.text != _passwordConfirm.text) {
-      setState(() => _error = 'Les mots de passe ne correspondent pas');
+      setState(() => _error = l10n.commonPasswordMismatch);
       return;
     }
 
@@ -205,7 +212,7 @@ class _UserEditorDialogState extends State<_UserEditorDialog> {
     if (other != null && other.id != widget.existing?.id) {
       setState(() {
         _saving = false;
-        _error = 'Cet identifiant est déjà utilisé';
+        _error = l10n.commonUsernameTaken;
       });
       return;
     }
@@ -220,9 +227,14 @@ class _UserEditorDialogState extends State<_UserEditorDialog> {
         u.passwordHash = hash;
         u.passwordSalt = salt;
       }
-      if (_isSelf && _touchIdEnabled != u.touchIdEnabled) {
+      if (_isSelf) {
         if (_touchIdEnabled) {
-          await DevicePasskeyService.createToken(u.id);
+          // Recrée aussi un jeton manquant (trousseau isolé par un
+          // changement de bundle ID) même si touchIdEnabled était déjà true.
+          final hasToken = await DevicePasskeyService.hasToken(u.id);
+          if (!hasToken) {
+            await DevicePasskeyService.createToken(u.id);
+          }
         } else {
           await DevicePasskeyService.removeToken(u.id);
         }
@@ -255,42 +267,43 @@ class _UserEditorDialogState extends State<_UserEditorDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return AlertDialog(
-      title: Text(_isNew ? 'Nouvel utilisateur' : 'Modifier l\'utilisateur'),
+      title: Text(_isNew ? l10n.usersNewTitle : l10n.usersEditTitle),
       content: SizedBox(
-        width: 420,
+        width: 560,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            DictationField(controller: _displayName, label: 'Nom affiché', autofocus: true),
+            DictationField(controller: _displayName, label: l10n.commonDisplayNameLabel, autofocus: true),
             const SizedBox(height: 12),
             TextField(
               controller: _username,
-              decoration: const InputDecoration(labelText: 'Identifiant de connexion'),
+              decoration: InputDecoration(labelText: l10n.usersLoginIdLabel),
               autocorrect: false,
             ),
             const SizedBox(height: 12),
             DropdownButtonFormField<UserRole>(
               initialValue: _role,
-              decoration: const InputDecoration(labelText: 'Rôle'),
+              decoration: InputDecoration(labelText: l10n.usersRoleLabel),
               items: [
-                for (final r in UserRole.values) DropdownMenuItem(value: r, child: Text(r.label)),
+                for (final r in UserRole.values) DropdownMenuItem(value: r, child: Text(roleLabel(context, r))),
               ],
               onChanged: (v) => setState(() => _role = v!),
             ),
             const SizedBox(height: 12),
             PasswordField(
               controller: _password,
-              label: _isNew ? 'Mot de passe' : 'Nouveau mot de passe (laisser vide pour ne pas changer)',
+              label: _isNew ? null : l10n.usersNewPasswordLabel,
             ),
             const SizedBox(height: 12),
-            PasswordField(controller: _passwordConfirm, label: 'Confirmer le mot de passe'),
+            PasswordField(controller: _passwordConfirm, label: l10n.commonConfirmPasswordLabel),
             if (_isSelf && _touchIdSupported) ...[
               const SizedBox(height: 12),
               SwitchListTile(
                 contentPadding: EdgeInsets.zero,
-                title: const Text('Touch ID sur cet appareil'),
-                subtitle: const Text('Déverrouiller sans retaper le mot de passe, ici uniquement.'),
+                title: Text(l10n.usersTouchIdTitle),
+                subtitle: Text(l10n.usersTouchIdSubtitle),
                 value: _touchIdEnabled,
                 onChanged: (v) => setState(() => _touchIdEnabled = v),
               ),
@@ -303,8 +316,8 @@ class _UserEditorDialogState extends State<_UserEditorDialog> {
         ),
       ),
       actions: [
-        TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Annuler')),
-        FilledButton(onPressed: _saving ? null : _save, child: const Text('Enregistrer')),
+        TextButton(onPressed: () => Navigator.pop(context, false), child: Text(l10n.commonCancel)),
+        FilledButton(onPressed: _saving ? null : _save, child: Text(l10n.commonSave)),
       ],
     );
   }

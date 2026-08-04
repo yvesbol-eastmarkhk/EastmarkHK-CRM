@@ -1,0 +1,1420 @@
+{
+  "@@locale": "ta",
+  "commonCancel": "ரத்து செய்",
+  "commonSave": "சேமி",
+  "commonDelete": "அழி",
+  "commonEdit": "திருத்து",
+  "commonSeeAll": "See all",
+  "commonUsernameLabel": "பயனர்பெயர்",
+  "commonDisplayNameLabel": "காட்சிப்பெயர்",
+  "commonPasswordLabel": "கடவுச்சொல்",
+  "commonConfirmPasswordLabel": "கடவுச்சொல்லை உறுதிப்படுத்தவும்",
+  "commonPasswordMismatch": "கடவுச்சொற்கள் பொருந்தவில்லை",
+  "commonUsernameTaken": "இந்த பயனர்பெயர் ஏற்கனவே பயன்பாட்டில் உள்ளது",
+  "commonChoosePassword": "ஒரு கடவுச்சொல்லைத் தேர்ந்தெடுக்கவும்",
+  "commonRequiredFields": "பெயர் மற்றும் பயனர்பெயர் அவசியம்",
+  "passwordFieldShow": "காட்டு",
+  "passwordFieldHide": "மறை",
+  "loginWelcomeBack": "மீண்டும் வரவேற்கிறோம், {name}",
+  "@loginWelcomeBack": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "loginTitle": "உள்நுழைவு",
+  "loginVerifying": "சரிபார்க்கிறது…",
+  "loginUnlockTouchId": "Touch ID மூலம் திறக்கவும்",
+  "loginOr": "அல்லது",
+  "loginRequiredFields": "பயனர்பெயர் மற்றும் கடவுச்சொல் தேவை",
+  "loginInvalidCredentials": "தவறான பயனர்பெயர் அல்லது கடவுச்சொல்",
+  "loginSubmit": "உள்நுழைக",
+  "bootstrapWelcome": "வரவேற்கிறோம்",
+  "bootstrapSubtitle": "உங்கள் CRM-ஐ பாதுகாக்க நிர்வாகி கணக்கை உருவாக்கவும்.",
+  "bootstrapSubmit": "நிர்வாகி கணக்கை உருவாக்கு",
+  "commonAdd": "சேர்க்கவும்",
+  "commonCreate": "உருவாக்கவும்",
+  "commonClose": "மூடு",
+  "commonNoName": "(பெயர் இல்லை)",
+  "commonNotesLabel": "குறிப்புகள்",
+  "commonEmailLabel": "மின்னஞ்சல்",
+  "commonPhoneLabel": "தொலைபேசி",
+  "commonFirstNameLabel": "முதல் பெயர்",
+  "commonLastNameLabel": "கடைசி பெயர்",
+  "commonCompanyNameLabel": "நிறுவனத்தின் பெயர்",
+  "messagingCannotOpen": "{target} திறக்க முடியவில்லை.",
+  "@messagingCannotOpen": {
+    "placeholders": {
+      "target": {
+        "type": "String"
+      }
+    }
+  },
+  "messagingEmailAppLabel": "மின்னஞ்சல் ஆப்",
+  "messagingPhoneAppLabel": "தொலைபேசி ஆப்",
+  "messagingIncompleteId": "{label} திறக்க அடையாளங்காட்டி முழுமையடையவில்லை.",
+  "@messagingIncompleteId": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "messagingCannotOpenApp": "{label} திறக்க முடியவில்லை — ஆப் நிறுவப்பட்டுள்ளதா?",
+  "@messagingCannotOpenApp": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "messagingWechatNote": "WeChat ஒரு குறிப்பிட்ட தொடர்புக்கு பொது இணைப்பை வழங்காது — ஆப் திறக்கும், ஆனால் உரையாடலை கைமுறையாக தேர்ந்தெடுக்க வேண்டும்.",
+  "messagingKakaotalkNote": "KakaoTalk ஒரு குறிப்பிட்ட தொடர்புக்கு பொது இணைப்பை வழங்காது — ஆப் திறக்கும், ஆனால் உரையாடலை கைமுறையாக தேர்ந்தெடுக்க வேண்டும்.",
+  "messagingPhoneCallLabel": "தொலைபேசி அழைப்பு",
+  "companyDeleteOpportunityConfirm": "இந்த வாய்ப்பை நீக்கவா?",
+  "companyDeleteContactConfirm": "இந்த தொடர்பை நீக்கவா?",
+  "companyDeleteTaskConfirm": "இந்த பணியை நீக்கவா?",
+  "companyDeleteConfirmTitle": "இந்த வாடிக்கையாளரை நீக்கவா?",
+  "companyDeleteConfirmDetail": "{name} — இதன் தொடர்புகள், வாய்ப்புகள், பணிகள் மற்றும் வரலாறும் இதனுடன் நீக்கப்படும்.",
+  "@companyDeleteConfirmDetail": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "companyNewNoteTitle": "புதிய குறிப்பு",
+  "companyNoteFieldLabel": "குறிப்பு (அல்லது சொல்லி எழுதவும்)",
+  "companyTabOverview": "மேலோட்டப் பார்வை",
+  "companyTabActivity": "செயல்பாடு",
+  "companyTabTasks": "பணிகள்",
+  "companyTabDeals": "வாய்ப்புகள்",
+  "companyContactsTitle": "தொடர்புகள்",
+  "companyNoContacts": "தொடர்புகள் இல்லை",
+  "companyNoActivity": "செயல்பாடு இல்லை — ஒரு குறிப்பைச் சேர்க்கவும்.",
+  "companyNoTasks": "பணிகள் இல்லை",
+  "companyNoDeals": "வாய்ப்புகள் இல்லை",
+  "companyNoteButtonLabel": "குறிப்பு",
+  "companyNewClientTitle": "புதிய வாடிக்கையாளர்",
+  "companyEditClientTitle": "வாடிக்கையாளரைத் திருத்து",
+  "companyWebsiteLabel": "இணையதளம்",
+  "companyPeppolLabel": "Peppol ID",
+  "companyPeppolPrefix": "Peppol: {value}",
+  "@companyPeppolPrefix": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "companyTagsLabel": "குறிச்சொற்கள் (கமாவால் பிரிக்கப்பட்டவை)",
+  "companyNewContactTitle": "புதிய தொடர்பு",
+  "companyEditContactTitle": "தொடர்பைத் திருத்து",
+  "companyAppLabel": "ஆப்",
+  "companyIdentifierNumberLabel": "அடையாளங்காட்டி / எண்",
+  "companyOpenTooltip": "திற",
+  "companyRemoveTooltip": "அகற்று",
+  "companyRoleFieldLabel": "பங்கு (எ.கா. வாங்குபவர்)",
+  "companyMessagingTitle": "செய்தி அனுப்புதல்",
+  "companyNoMessagingHint": "எந்த செய்தி அனுப்பும் சேனலும் சேர்க்கப்படவில்லை — WhatsApp, WeChat, iMessage…",
+  "companyNoContactInfo": "இதுவரை தொடர்புத் தகவல் எதுவும் சேர்க்கப்படவில்லை.",
+  "settingsTitle": "அமைப்புகள்",
+  "settingsSubtitle": "ஆப்பின் ஒருமுறை உள்ளமைவு.",
+  "settingsLanguagesTitle": "மொழிகள் & நாணயம்",
+  "settingsAppLanguageLabel": "ஆப் மொழி",
+  "settingsDictationLanguageLabel": "வாய்மொழி மொழி",
+  "settingsCurrencyLabel": "நாணயம்",
+  "settingsFormatsHint": "தொகைகள் 1,234.56 ஆக (கமா = ஆயிரம், புள்ளி = தசம) மற்றும் தேதிகள் dd/mm/yyyy ஆக காட்டப்படும், இடைமுக மொழியைப் பொருட்படுத்தாமல்.",
+  "settingsCompanyTitle": "நிறுவனம்",
+  "settingsCompanySubtitle": "இந்த CRM-ஐப் பயன்படுத்தும் நிறுவனத்தின் அடையாளம் — பின்னர் தலைப்பில் (வெள்ளை-லேபிள்) மற்றும் PDF ஆவண தலைப்புகளில் மீண்டும் பயன்படுத்தப்படும்.",
+  "settingsSyncTitle": "ஒத்திசைவு",
+  "settingsSyncSubtitle": "இயல்பாக, அனைத்து தரவும் இந்த சாதனத்தில் உள்ளூர் (SQLite) ஆக இருக்கும்.",
+  "settingsSyncLocalTitle": "தனித்தியங்கி (உள்ளூர் மட்டும்)",
+  "settingsSyncLocalSubtitle": "இந்த சாதனத்திற்கு வெளியே எந்த தரவும் அனுப்பப்படாது",
+  "settingsSyncRemoteTitle": "பகிரப்பட்ட தரவுத்தளம் (தொலைநிலை)",
+  "settingsSyncRemoteSubtitle": "PHP + SQLite சேவையகத்துடன் ஒத்திசைக்கிறது (server/crm-sync/ ஐப் பார்க்கவும்)",
+  "settingsServerLabel": "சேவையகம்",
+  "settingsAccountLabel": "கணக்கு",
+  "settingsSyncPasswordHint": "சாதனத்தின் பாதுகாப்பான கீசெயினில் சேமிக்கப்படுகிறது — தரவுத்தளத்தில் ஒருபோதும் இல்லை.",
+  "settingsSyncNowButton": "இப்போது ஒத்திசை",
+  "settingsSyncPollHint": "பின்னணியில் ஒவ்வொரு 25 வினாடிக்கும் தானியங்கு இழுத்தல்; ஒவ்வொரு மாற்றத்திற்குப் பிறகும் உடனடி தள்ளுதல் (தொலைநிலை பயன்முறை செயலில்). தட்டச்சு செய்யும்போது இழுத்தல் இல்லை.",
+  "settingsSyncMissingFields": "சேவையகம், கணக்கு மற்றும் கடவுச்சொல் தேவை",
+  "settingsModulesTitle": "தொகுதிகள்",
+  "settingsModulesSubtitle": "EastmarkHK மின்-விலைப்பட்டியல், ஸ்கேனர், ஒத்திசைவு… — 7-நாள் சோதனை அல்லது உரிம செயல்படுத்தல்.",
+  "settingsBrowseModules": "தொகுதிகளை உலாவவும்",
+  "settingsImportExportTitle": "இறக்குமதி / ஏற்றுமதி",
+  "settingsImportExportSubtitle": "வாடிக்கையாளர்கள், தொடர்புகள் மற்றும் வாய்ப்புகள் CSV ஆக; vCard இலிருந்து தொடர்புகள்.",
+  "settingsPipelineTitle": "பைப்லைன்",
+  "settingsPipelineSubtitle": "நிலைகள் மற்றும் அவற்றின் லேபிள்களை தனிப்பயனாக்கவும்.",
+  "settingsConfigureStages": "நிலைகளை உள்ளமைக்கவும்",
+  "settingsBackupTitle": "உள்ளூர் காப்புப்பிரதி",
+  "settingsBackupSubtitle": "உங்கள் SQLite தரவுத்தளத்தின் நகலை ஏற்றுமதி செய்கிறது — புதுப்பிப்புக்கு முன் அல்லது காப்பகப்படுத்த பயனுள்ளது.",
+  "settingsExportDbButton": "தரவுத்தளத்தை ஏற்றுமதி செய் (.db)",
+  "settingsBackupShareText": "EastmarkHK CRM காப்புப்பிரதி",
+  "settingsExportError": "ஏற்றுமதி தோல்வியடைந்தது: {error}",
+  "@settingsExportError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsUsersTitle": "பயனர்கள்",
+  "settingsUsersSubtitleAdmin": "கணக்குகள், பங்குகள் மற்றும் கடவுச்சொற்கள் — நிர்வாகி மற்றும் பயனர்.",
+  "settingsUsersSubtitleLocked": "நிர்வாகிகளுக்கு மட்டும்.",
+  "settingsManageUsersButton": "பயனர்களை நிர்வகிக்கவும்",
+  "settingsUsersLockedHint": "பயனர்களையும் அவர்களின் கடவுச்சொற்களையும் பார்க்க அல்லது திருத்த நிர்வாகி கணக்குடன் உள்நுழையவும்.",
+  "settingsSaveKeychainError": "அமைப்புகள் சேமிக்கப்பட்டன, ஆனால் பாதுகாப்பான கீசெயின் கிடைக்கவில்லை — ஒத்திசைவு கடவுச்சொல்லை சேமிக்க முடியவில்லை (முழு மறுகட்டமைப்புக்குப் பிறகு ஆப்பை மறுதொடக்கம் செய்யவும்).",
+  "settingsSaved": "அமைப்புகள் சேமிக்கப்பட்டன",
+  "settingsLogoutConfirmTitle": "வெளியேற வேண்டுமா?",
+  "settingsLogoutConfirmDetail": "திரும்ப வர உங்கள் கடவுச்சொல்லை (அல்லது Touch ID) உள்ளிட வேண்டும்.",
+  "settingsLogoutButton": "வெளியேறு",
+  "settingsLogoTitle": "நிறுவன லோகோ",
+  "settingsLogoSubtitle": "ஆப்பின் மேலே மற்றும் பேனரில் காட்டப்படும்.",
+  "settingsLogoEmpty": "லோகோ இல்லை — உங்கள் நிறுவனத்தின் லோகோவைச் சேர்க்கவும்",
+  "settingsLogoChoose": "ஒரு படத்தைத் தேர்ந்தெடுக்கவும்",
+  "settingsLogoChange": "லோகோவை மாற்று",
+  "usersDeleteSelfError": "உங்கள் சொந்த கணக்கை நீக்க முடியாது",
+  "usersDeleteConfirmTitle": "இந்த பயனரை நீக்கவா?",
+  "usersDeleteConfirmDetail": "{displayName} ({username}) CRM க்கான அணுகலை இழப்பார்.",
+  "@usersDeleteConfirmDetail": {
+    "placeholders": {
+      "displayName": {
+        "type": "String"
+      },
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "usersTitle": "பயனர்கள்",
+  "usersSubtitle": "கணக்குகள், பங்குகள் மற்றும் கடவுச்சொற்கள்.",
+  "usersAddButton": "பயனர்",
+  "usersEmptyTitle": "பயனர்கள் இல்லை",
+  "usersEmptySubtitle": "முதல் கணக்கை உருவாக்கவும் — அது நிர்வாகியாக இருக்கும்.",
+  "usersEmptyAction": "புதிய பயனர்",
+  "usersDisplayNameSelf": "{name} (நீங்கள்)",
+  "@usersDisplayNameSelf": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "usersNewTitle": "புதிய பயனர்",
+  "usersEditTitle": "பயனரைத் திருத்து",
+  "usersLoginIdLabel": "உள்நுழைவு ID",
+  "usersRoleLabel": "பங்கு",
+  "usersNewPasswordLabel": "புதிய கடவுச்சொல் (மாற்ற வேண்டாம் என்றால் காலியாக விடவும்)",
+  "usersTouchIdTitle": "இந்த சாதனத்தில் Touch ID",
+  "usersTouchIdSubtitle": "கடவுச்சொல்லை மீண்டும் தட்டச்சு செய்யாமல் திறக்கவும், இந்த சாதனத்தில் மட்டும்.",
+  "roleAdministrator": "நிர்வாகி",
+  "roleUser": "பயனர்",
+  "dashboardTitleEmbedded": "டாஷ்போர்டு",
+  "dashboardTitle": "இன்று",
+  "dashboardActionsToProcess": "{count, plural, one{கையாள {count} செயல்} other{கையாள {count} செயல்கள்}}",
+  "@dashboardActionsToProcess": {
+    "placeholders": {
+      "count": {
+        "type": "num",
+        "format": "compact"
+      }
+    }
+  },
+  "dashboardMoreAgendaItems": "{count, plural, one{+{count} மேலும் — அனைத்தையும் காண்க} other{+{count} மேலும் — அனைத்தையும் காண்க}}",
+  "@dashboardMoreAgendaItems": {
+    "placeholders": {
+      "count": {
+        "type": "num",
+        "format": "compact"
+      }
+    }
+  },
+  "dashboardAllReps": "அனைத்து விற்பனை பிரதிநிதிகள்",
+  "dashboardMeSuffix": "{name} (நான்)",
+  "@dashboardMeSuffix": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "dashboardEmptyTitle": "உங்கள் CRM தயார்",
+  "dashboardEmptySubtitle": "உங்கள் முதல் வாடிக்கையாளரைச் சேர்க்கவும், CSV கோப்பை இறக்குமதி செய்யவும், அல்லது வரவிருக்கும் தொகுதிகளை ஆராயவும்.",
+  "dashboardNothingScheduled": "எதுவும் திட்டமிடப்படவில்லை — உங்கள் பின்தொடர்தல்கள் இங்கே தோன்றும்.",
+  "dashboardBucketOverdue": "காலாவதியானது",
+  "dashboardBucketToday": "இன்று",
+  "dashboardBucketWeek": "இந்த வாரம்",
+  "dashboardBucketLater": "பின்னர்",
+  "dashboardContactedButton": "தொடர்பு கொள்ளப்பட்டது",
+  "dashboardDoneButton": "முடிந்தது",
+  "dashboardOpenDeals": "Affaires en cours",
+  "dashboardOpenDealsSeeAll": "Voir tout",
+  "dashboardOpenDealsEmpty": "Aucune affaire en cours.",
+  "dashboardTopClients": "சிறந்த வாடிக்கையாளர்கள் (திறந்த பைப்லைன்)",
+  "dashboardPipelineByStage": "நிலை வாரியாக பைப்லைன்",
+  "dashboardNoOpportunitiesYet": "இதுவரை வாய்ப்புகள் இல்லை",
+  "dashboardWonLostByMonth": "மாதம் வாரியாக வெற்றி / தோல்வி",
+  "dashboardNoClosuresYet": "இதுவரை பதிவு செய்யப்பட்ட முடிவுகள் இல்லை.",
+  "dashboardRecentActivity": "சமீபத்திய செயல்பாடு",
+  "dashboardNoActivityYet": "இதுவரை செயல்பாடு இல்லை.",
+  "metricClients": "வாடிக்கையாளர்கள்",
+  "metricOpportunities": "வாய்ப்புகள்",
+  "metricPipeline": "பைப்லைன்",
+  "metricForecast": "முன்னறிவிப்பு",
+  "metricTasks": "பணிகள்",
+  "metricOverdue": "காலாவதியானது",
+  "productTagline": "முதல் நாளிலிருந்தே நேரத்தை மிச்சப்படுத்துங்கள்.",
+  "placeholderDashboardHint": "மேலோட்டப் பார்வை: பைப்லைன், பின்தொடர்தல்கள் மற்றும் சமீபத்திய செயல்பாடு.",
+  "placeholderTodayTitle": "உங்கள் நாள்",
+  "placeholderTodayHint": "இடதுபுறத்தில் ஒரு பின்தொடர்தலைத் தேர்ந்தெடுக்கவும்.\nவாடிக்கையாளர் இங்கே திறக்கும் — திரையை மாற்றாமல்.",
+  "placeholderClientsTitle": "வாடிக்கையாளர் அட்டை",
+  "placeholderClientsHint": "பட்டியலிலிருந்து ஒரு வாடிக்கையாளரைத் தேர்ந்தெடுக்கவும்,\nஅல்லது + பொத்தானுடன் ஒன்றை உருவாக்கவும்.",
+  "placeholderPipelineHint": "நெடுவரிசைகளுக்கு இடையே ஒரு அட்டையை இழுக்கவும்.\nவாடிக்கையாளர் அட்டையைத் திறக்க கிளிக் செய்யவும்.",
+  "placeholderTasksHint": "தொடர்புடைய வாடிக்கையாளரைக் காண ஒரு பணியைத் தேர்ந்தெடுக்கவும்.",
+  "modulesSubtitleAppStore": "App Store மூலம் சந்தா செலுத்தவும், அல்லது eastmarkhk.com-இல் ஏற்கனவே வாங்கிய சந்தாவைச் செயல்படுத்தவும்.",
+  "modulesSubtitleWebStore": "இலவச சோதனை, eastmarkhk.com-இல் வாங்குதல் — EastmarkHK e-Invoicing ஆப்பைப் போன்ற அதே சந்தா.",
+  "modulesStatusActiveAppStore": "செயலில் — App Store",
+  "modulesStatusActiveWeb": "செயலில் — eastmarkhk.com",
+  "modulesStatusTrial": "{count, plural, one{சோதனை — {count} நாள் மீதம்} other{சோதனை — {count} நாட்கள் மீதம்}}",
+  "@modulesStatusTrial": {
+    "placeholders": {
+      "count": {
+        "type": "num",
+        "format": "compact"
+      }
+    }
+  },
+  "modulesStatusActive": "செயலில்",
+  "modulesStatusAvailable": "கிடைக்கிறது",
+  "modulesBuyFailed": "வாங்குதலைத் தொடங்க முடியவில்லை. மீண்டும் முயற்சிக்கவும் அல்லது உங்கள் வாங்குதல்களை மீட்டெடுக்கவும்.",
+  "modulesRestoreDone": "மீட்டெடுப்பு நிறைவடைந்தது.",
+  "modulesImportedFromEinvoicing": "{name} நிறுவப்பட்ட ஆப்பிலிருந்து செயல்படுத்தப்பட்டது.",
+  "@modulesImportedFromEinvoicing": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "modulesLicenseNotFound": "உரிமம் தானாகக் கண்டறியப்படவில்லை. EastmarkHK e-Invoicing → அமைப்புகளைத் திறந்து, உங்கள் செயல்படுத்தல் குறியீட்டை நகலெடுத்து, பிறகு «வலைக் குறியீட்டைச் செயல்படுத்து» என்பதைத் தேர்ந்தெடுக்கவும்.",
+  "modulesRenewalNote": "App Store மூலம் தானியங்கி புதுப்பித்தல். அமைப்புகள் → Apple ID → சந்தாக்களில் சந்தாவை நிர்வகிக்கவும்.",
+  "modulesWebStoreNote": "அல்லது eastmarkhk.com-இல் சந்தா செலுத்தி, மின்னஞ்சலில் பெற்ற குறியீட்டுடன் செயல்படுத்தவும்.",
+  "modulesHaveEinvoicing": "என்னிடம் ஏற்கனவே EastmarkHK e-Invoicing உள்ளது",
+  "modulesTry7Days": "7 நாட்கள் முயற்சிக்கவும்",
+  "modulesSubscribe": "சந்தா செலுத்து",
+  "modulesRestore": "வாங்குதல்களை மீட்டெடு",
+  "modulesWebSubscription": "eastmarkhk.com சந்தா",
+  "modulesActivateWebCode": "வலைக் குறியீட்டைச் செயல்படுத்து",
+  "modulesUseInCrm": "CRM-இல் பயன்படுத்து",
+  "modulesPerMonth": "/ மாதம்",
+  "modulesActivationSubtitleAppStore": "eastmarkhk.com-இல் சந்தா செலுத்தினீர்களா? மின்னஞ்சலில் பெற்ற குறியீட்டை ஒட்டவும். iPhone/iPad-இல், ஆரம்ப வாங்குதல் செயல்படுத்துவதற்கு முன் App Store அல்லது தளம் மூலம் செய்யப்படுகிறது.",
+  "modulesActivationSubtitleWeb": "eastmarkhk.com-இல் சந்தா செலுத்தி, பிறகு இந்தச் சாதனத்துடன் இணைக்கப்பட்ட செயல்படுத்தல் குறியீட்டை ஒட்டவும்.",
+  "modulesMachineId": "இயந்திர அடையாள எண்",
+  "modulesCopy": "நகலெடு",
+  "modulesSubscriptionEmailLabel": "சந்தா மின்னஞ்சல்",
+  "modulesActivationCodeLabel": "செயல்படுத்தல் குறியீடு",
+  "modulesActivationCodeHint": "வாங்கிய பிறகு பெற்ற குறியீட்டை ஒட்டவும்",
+  "modulesActivate": "செயல்படுத்து",
+  "modulesBuyOnWebsite": "eastmarkhk.com-இல் வாங்கவும்",
+  "modulesRequestCodeByEmail": "மின்னஞ்சல் மூலம் குறியீட்டைக் கோரவும்",
+  "modulesActivatedViaWebsite": "{name} eastmarkhk.com மூலம் செயல்படுத்தப்பட்டது",
+  "@modulesActivatedViaWebsite": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "modulesMachineIdCopied": "இயந்திர அடையாள எண் நகலெடுக்கப்பட்டது",
+  "modulesEmailRequired": "உங்கள் சந்தா மின்னஞ்சலை உள்ளிடவும்",
+  "invNewQuote": "New quote",
+  "invNewInvoice": "New invoice",
+  "invSectionQuote": "Quote",
+  "invSectionInvoice": "Invoice",
+  "invFieldClient": "Client",
+  "invFieldDate": "Date",
+  "invFieldDueDate": "Due date",
+  "invFieldValidUntil": "Valid until",
+  "invFieldStatus": "Status",
+  "invFieldVatPercent": "VAT %",
+  "invStatusDraft": "Draft",
+  "invStatusSent": "Sent",
+  "invStatusAccepted": "Accepted",
+  "invStatusRejected": "Rejected",
+  "invStatusInvoiced": "Invoiced",
+  "invStatusPartial": "Partial",
+  "invStatusPaid": "Paid",
+  "invStatusOverdue": "Overdue",
+  "invStatusCancelled": "Cancelled",
+  "invLinesTitle": "Lines",
+  "invNotesTitle": "Notes",
+  "invCreate": "Create",
+  "invCreating": "Creating…",
+  "invAddFromCatalog": "Add from catalog",
+  "invAddFreeLine": "Add a line",
+  "invEmptyLines": "No lines — add a catalog product or a free line.",
+  "invUpdateProductTooltip": "Update product",
+  "invAddToCatalogTooltip": "Add to catalog",
+  "invDeleteLineTooltip": "Delete line",
+  "invChangePhotoTooltip": "Change photo",
+  "invAddPhotoTooltip": "Add a photo",
+  "invProductUpdated": "Product updated (price and photos).",
+  "invProductSaved": "Line saved to the catalog (with photos).",
+  "invClientLinkedHint": "The CRM client is already linked: the document will be created in e-Invoicing for the same client.",
+  "invFooterHint": "The document is created in EastmarkHK e-Invoicing — layout, PDF, sending and follow-up are done in the e-Invoicing app.",
+  "invNeedLines": "Add at least one line with a description.",
+  "invSubtotalHt": "Subtotal excl. tax",
+  "invVat": "VAT",
+  "invTotalTtc": "Total incl. tax",
+  "invCatalogTitle": "Product catalog",
+  "invCatalogSearch": "Search a product…",
+  "invCatalogEmpty": "No products — create them in e-Invoicing.",
+  "loginOtherAccount": "Other account",
+  "loginUseSavedAccount": "Back to saved account",
+  "shellModuleTitle": "Module",
+  "shellFollowupTitle": "Follow-up",
+  "shellClientTitle": "Client",
+  "shellModulesTooltip": "Modules",
+  "shellAgendaLabel": "Agenda",
+  "shellClientsLabel": "Clients",
+  "shellTasksLabel": "Follow-ups",
+  "shellNewFollowup": "Follow-up",
+  "shellNewClient": "Client",
+  "shellModulesLabel": "Modules",
+  "shellSettingsLabel": "Settings",
+  "tasksSelectPrompt": "Select a task",
+  "dashOverviewSubtitle": "Overview · {month}",
+  "@dashOverviewSubtitle": {
+    "placeholders": {
+      "month": {
+        "type": "String"
+      }
+    }
+  },
+  "dashOpenFollowups": "Open follow-ups",
+  "dashOverdue": "Overdue",
+  "dashToApprove": "To approve",
+  "dashProspects": "Prospects",
+  "dashActiveClients": "Active clients",
+  "dashInactive": "Inactive / lost",
+  "dashQuotes": "Quotes",
+  "dashOpenInvoices": "Open invoices",
+  "dashPaidInvoices": "Paid invoices",
+  "dashRecentActions": "Recent actions",
+  "dashNoRecentActions": "No recent actions — follow-ups, calls, emails and documents will appear here.",
+  "dashRecentDone": "Recently completed",
+  "dashNoClosed": "No closed follow-ups yet.",
+  "dashModules": "Modules",
+  "dashOpenCaHint": "Open revenue: unpaid invoices (see e-Invoicing for details).",
+  "dashDoneBadge": "Done",
+  "dashPassedBadge": "Passed",
+  "clientEmptyTitle": "Select a client",
+  "clientEmptySubtitle": "Or create one to start tracking.",
+  "clientEinvoiceBadge": "E-invoice / Peppol",
+  "clientNoContactsHint": "Add at least one contact (with a role) for this company.",
+  "clientFollowupsTitle": "Follow-up / tasks",
+  "clientPlanAction": "Schedule",
+  "clientNoTasksHint": "Plan the phases: first contact, follow-up, meeting…",
+  "clientEinvoiceError": "E-invoicing unavailable: {error}",
+  "@clientEinvoiceError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "clientPrimaryBadge": "Primary",
+  "tasksTitle": "Tasks",
+  "tasksNewButton": "New task",
+  "tasksOpenCount": "{count, plural, =1{1 open} other{{count} open}}",
+  "@tasksOpenCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "tasksAllReps": "All salespeople",
+  "tasksAllDoneTitle": "All done!",
+  "tasksAllDoneSubtitle": "Add a task — or dictate it after a call.",
+  "tasksClientLabel": "Client",
+  "tasksClientOptional": "Client (optional)",
+  "tasksClientRequired": "Client *",
+  "tasksNoClient": "Without a client (e.g. personal task)",
+  "tasksMessageHint": "Message (e.g. Call the client, run an errand…)",
+  "tasksDueLabel": "Due date",
+  "tasksNoDue": "No due date",
+  "tasksDateButton": "Date",
+  "tasksTimeButton": "Time",
+  "tasksClearButton": "Clear",
+  "tasksAssignedTo": "Assigned to",
+  "tasksUnassigned": "Unassigned",
+  "tasksNewTaskTitle": "New task",
+  "pipelineNewOpportunity": "New opportunity",
+  "pipelineTitleLabel": "Title",
+  "pipelineAmountLabel": "Amount",
+  "pipelineMoveTooltip": "Move",
+  "pipelineTitle": "Pipeline",
+  "pipelineNoOpen": "No open opportunity",
+  "pipelineOpenCount": "{count, plural, =1{1 open opportunity} other{{count} open opportunities}}",
+  "@pipelineOpenCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pipelineEmptyTitle": "Your pipeline is empty",
+  "pipelineEmptySubtitle": "Create an opportunity, then drag it from stage to stage.",
+  "pipelineBoardEmptyTitle": "Empty pipeline",
+  "pipelineBoardEmptySubtitle": "Create an opportunity, then drag it between stages.",
+  "pipelineDragHint": "Drag to move",
+  "pipelineCreatedOn": "Created on {date}",
+  "@pipelineCreatedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "pipelineStageSince": "Stage since {date}",
+  "@pipelineStageSince": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "agendaTitle": "Agenda",
+  "agendaToday": "Today",
+  "agendaUpcoming": "Upcoming days",
+  "agendaEmptyToday": "Nothing scheduled today. Plan a follow-up.",
+  "agendaEmptyUpcoming": "No tasks scheduled soon.",
+  "agendaPendingCount": "{count, plural, =1{1 task awaiting approval} other{{count} tasks awaiting approval}}",
+  "@agendaPendingCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "taskEditTooltip": "Edit",
+  "taskCloseTooltip": "Close",
+  "taskClientSubtitle": "Client",
+  "taskDueSubtitle": "Due date",
+  "taskValidationTitle": "Validation",
+  "taskInfoHint": "This entry is informational. Mark it as passed once acknowledged.",
+  "taskActionHint": "Mark as executed, then approve to confirm it’s done.",
+  "taskHistoryTitle": "History",
+  "taskNoHistory": "No events yet. Quotes, invoices and status changes will appear here.",
+  "taskDoneByUs": "Executed by us",
+  "taskInfoOnly": "Info only — passed",
+  "taskApprove": "Approve — confirmed done",
+  "taskReopen": "Reopen",
+  "taskReopenTask": "Reopen task",
+  "taskDeleteTitle": "Delete this task?",
+  "taskViewDocument": "View document",
+  "taskInvoiceTitle": "Invoice {number}",
+  "@taskInvoiceTitle": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "taskQuoteTitle": "Quote {number}",
+  "@taskQuoteTitle": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "logContactedTitle": "Contacted — {title}",
+  "@logContactedTitle": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "logTypeLabel": "Contact type",
+  "logNoteLabel": "Note (optional, or dictate it)",
+  "logNextFollowup": "Next follow-up",
+  "logCustom": "Custom",
+  "logReplacesHint": "Replaces the follow-up already scheduled on {date}.",
+  "@logReplacesHint": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "logTomorrow": "Tomorrow",
+  "log3Days": "3 days",
+  "log1Week": "1 week",
+  "log2Weeks": "2 weeks",
+  "logTypeField": "Type",
+  "logContentLabel": "Content",
+  "logDeleteTitle": "Delete this entry?",
+  "logDeleteBody": "This action is permanent.",
+  "logRelanceTitle": "Follow up: {title}",
+  "@logRelanceTitle": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "logKindNote": "Note",
+  "logKindQuoteSent": "Quote sent",
+  "logKindEmail": "Email",
+  "logKindCall": "Call",
+  "logKindMeeting": "Meeting",
+  "logKindReply": "Client reply",
+  "logKindRemark": "Remark",
+  "addressMultipleCities": "Multiple cities found",
+  "addressCnpj": "CNPJ",
+  "addressAddress": "Address",
+  "addressCountry": "Country",
+  "addressZip": "Postal code",
+  "addressState": "State",
+  "addressCity": "City",
+  "loginResetPasswordTitle": "Reset password",
+  "loginResetHint": "This device only — the password is not shared by sync. Choose a local account and set a new password.",
+  "loginAccountLabel": "Account",
+  "loginNewPasswordLabel": "New password",
+  "loginConfirmLabel": "Confirm",
+  "loginTooShort": "Password too short (min. 4 characters).",
+  "loginMismatch": "Passwords do not match.",
+  "loginResetButton": "Reset",
+  "currencySearchHint": "Search currency…",
+  "currencyNone": "No currency found",
+  "systemLanguage": "System language",
+  "noLanguage": "No language found",
+  "dictationUnavailable": "Dictation unavailable on this device.",
+  "companyDeleteTitle": "Delete this client?",
+  "companyListTitle": "Clients",
+  "companyCount": "{count, plural, =1{1 company} other{{count} companies}}",
+  "@companyCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "companyNewButton": "New client",
+  "companySearchHint": "Filter by name, notes…",
+  "companyColumnClient": "Client",
+  "companyColumnModified": "Modified",
+  "companyEmptyNoName": "No clients",
+  "companyEmptyNoResult": "No results",
+  "companyEmptySubtitle": "Add your first client — or dictate it with the mic.",
+  "companyEmptySearchSubtitle": "Try another term.",
+  "taskEditorNewTitle": "Schedule a follow-up",
+  "taskEditorEditTitle": "Edit follow-up",
+  "taskEditorClientSection": "Client",
+  "taskEditorClientOfTask": "Follow-up client",
+  "taskEditorNoClient": "Without a client (internal)",
+  "taskEditorChoose": "Choose…",
+  "taskEditorTypeSection": "Type",
+  "taskEditorTitleField": "Title *",
+  "taskEditorTitleHint": "Follow up the quote, call…",
+  "taskEditorWhatSection": "What to do?",
+  "taskEditorActionHint": "Choose the concrete action to perform.",
+  "taskEditorMessaging": "Messaging",
+  "taskEditorNeedClient": "First choose a client to show the number or email.",
+  "taskEditorPhaseSection": "Phase & due date",
+  "taskEditorPhaseLabel": "Deal phase",
+  "taskEditorChooseDue": "Choose date and time",
+  "taskEditorSaveShortcut": "Save (⌘S)",
+  "taskEditorNeedMessaging": "Choose the messaging app to use.",
+  "taskEditorNeedDue": "Choose the date and time of the follow-up.",
+  "taskEditorNeedTitle": "The task title is required.",
+  "taskEditorSearchHint": "Search…",
+  "taskSuggestedMessage": "Send a message",
+  "taskSuggestedPlatformMessage": "Message {platform}",
+  "@taskSuggestedPlatformMessage": {
+    "placeholders": {
+      "platform": {
+        "type": "String"
+      }
+    }
+  },
+  "taskSuggestedCall": "Call",
+  "taskSuggestedEmail": "Send an email",
+  "taskSuggestedMeeting": "Meeting",
+  "taskSuggestedFollowup": "Follow-up",
+  "importTargetClient": "Target client",
+  "importCsvButton": "Import CSV",
+  "importModulesSoon": "Modules (coming soon)",
+  "importExportCsvTitle": "CSV export",
+  "importExportClients": "Clients",
+  "importExportContacts": "Contacts",
+  "importExportOpportunities": "Opportunities",
+  "importTitle": "Import",
+  "importClientsCsv": "Clients CSV",
+  "importContactsCsv": "Contacts CSV",
+  "importOpportunitiesCsv": "Opportunities CSV",
+  "importContactsVCard": "Contacts vCard",
+  "importExported": "Exported: {path}",
+  "@importExported": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "importExportFailed": "Export failed: {error}",
+  "@importExportFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "importResult": "{label}: {imported} imported, {skipped} skipped.",
+  "@importResult": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "imported": {
+        "type": "int"
+      },
+      "skipped": {
+        "type": "int"
+      }
+    }
+  },
+  "importFailed": "Import failed: {error}",
+  "@importFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "importNeedClientFirst": "First create a client to attach the vCard contacts.",
+  "importVcardResult": "vCard: {count} contact(s) imported.",
+  "@importVcardResult": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "importVcardFailed": "vCard import failed: {error}",
+  "@importVcardFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "cmdSearchHint": "Search or type a command…",
+  "cmdSectionNavigation": "Navigation",
+  "cmdGoDashboard": "Go to Dashboard",
+  "cmdGoToday": "Go to Today",
+  "cmdGoClients": "Go to Clients",
+  "cmdGoPipeline": "Go to Pipeline",
+  "cmdGoTasks": "Go to Tasks",
+  "cmdSectionCreate": "Create",
+  "cmdNewClient": "New client",
+  "cmdNewTask": "New task",
+  "cmdSectionClients": "Clients",
+  "cmdSectionContacts": "Contacts",
+  "cmdSectionOpportunities": "Opportunities",
+  "cmdSectionTasks": "Tasks",
+  "cmdSectionNotes": "Notes & activities",
+  "cmdNoResults": "No results",
+  "pipelineSettingsTitle": "Pipeline stages",
+  "pipelineSettingsHint": "Customize labels and order of open stages. Won and Lost stay at the end.",
+  "pipelineMoveUp": "Move up",
+  "pipelineMoveDown": "Move down",
+  "pipelineStepLabel": "Step {index}",
+  "@pipelineStepLabel": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "pipelineNewStage": "New stage",
+  "pipelineAddStage": "Add a stage",
+  "pipelineWon": "Won",
+  "pipelineLost": "Lost",
+  "pipelineReset": "Reset",
+  "oppNotFound": "Opportunity not found.",
+  "oppHistoryTitle": "HISTORY",
+  "oppEmptyTimeline": "Nothing yet — notes, calls, tasks and quotes/invoices related to this deal will appear here.",
+  "oppTaskLabel": "Task",
+  "oppTaskDue": "Task · due {date}",
+  "@oppTaskDue": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "oppTaskMarkDone": "Mark done",
+  "oppWon": "Won",
+  "oppLost": "Lost",
+  "oppProbability": "Probability: {value}%",
+  "@oppProbability": {
+    "placeholders": {
+      "value": {
+        "type": "int"
+      }
+    }
+  },
+  "oppClosePlanned": "Expected close: {date}",
+  "@oppClosePlanned": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "eiProductsTitle": "Products",
+  "eiProductsSubtitle": "EastmarkHK e-Invoicing catalog",
+  "eiNewProduct": "New product",
+  "eiProductSearch": "Search a product…",
+  "eiNoProducts": "No products yet.",
+  "eiSaveFailed": "Save failed: {error}",
+  "@eiSaveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "eiDeleteProductTitle": "Delete this product?",
+  "eiDeleteFailed": "Delete failed: {error}",
+  "@eiDeleteFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "eiInfoSection": "Information",
+  "eiPriceSection": "Price and tax",
+  "eiSellPrice": "Sale price (incl. tax)",
+  "eiNfeSection": "Brazil NF-e tax classification",
+  "eiPhotosSection": "Photos",
+  "eiCustomerTitle": "e-Invoicing client",
+  "eiUseExisting": "Use existing",
+  "eiOptional": "Optional",
+  "eiImagesLabel": "Images",
+  "eiTakePhoto": "Take a photo",
+  "eiChooseLibrary": "Choose from library",
+  "eiBrowseFiles": "Browse files",
+  "eiPhotoSaveFailed": "Unable to save the photo.",
+  "eiProductLabel": "Product",
+  "eiRemoteTitle": "Connect to e-Invoicing (remote mode)",
+  "eiRemoteUrl": "Base URL",
+  "eiRemoteLogin": "Login",
+  "invModuleTitle": "e-Invoicing",
+  "queueDeleteTitle": "Delete this reminder?",
+  "queueEmpty": "No reminders",
+  "tasksListDeleteTitle": "Delete this task?",
+  "tasksListTitle": "Tasks",
+  "tasksListCount": "{count, plural, =1{1 open} other{{count} open}}",
+  "@tasksListCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "clientsListTitle": "Clients",
+  "clientsListCount": "{count, plural, =1{1 company} other{{count} companies}}",
+  "@clientsListCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "colWiden": "Widen",
+  "colNarrow": "Narrow",
+  "bannerTaskLabel": "Task",
+  "activityInfoAdded": "Info added to the file",
+  "activityFollowupCreated": "Follow-up created",
+  "activityDuePlanned": "Due date scheduled",
+  "activityFollowupUpdated": "Follow-up updated",
+  "activityMarkedDone": "Marked executed",
+  "activityApproved": "Approved — confirmed done",
+  "activityPassed": "Passed / info only",
+  "activityReopened": "Reopened",
+  "tasksOpenTitle": "Open tasks",
+  "tasksPlanButton": "Schedule",
+  "tasksNoneOpenTitle": "No open tasks",
+  "tasksNoneOpenSubtitle": "Plan what needs to be done — today or later.",
+  "activityContactAdded": "Contact added to the file",
+  "activityContactUpdated": "Contact updated",
+  "activityPendingApproval": "Awaiting approval",
+  "settingsSyncOk": "OK — {message}",
+  "@settingsSyncOk": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsSyncError": "Error — {message}",
+  "@settingsSyncError": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsSyncConnected": "Connection OK — {message}",
+  "@settingsSyncConnected": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsFtpPassword": "FTP password",
+  "settingsTestConnection": "Test connection",
+  "settingsNoModules": "No module activated. Browse the store to try or activate EastmarkHK e-Invoicing.",
+  "settingsTrialRemaining": "Trial — {days} days left",
+  "@settingsTrialRemaining": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsActiveInCrm": "Active — Use in CRM",
+  "settingsEinvoiceDisplay": "e-Invoicing — display",
+  "settingsEinvoiceDisplaySubtitle": "Quotes and invoices also created outside CRM: choose what appears here.",
+  "settingsLinkedToCrm": "Linked to CRM",
+  "settingsAllEinvoicing": "All e-Invoicing",
+  "settingsCrmOnlyDesc": "Shows only documents from CRM-linked clients (recommended).",
+  "settingsAllDocsDesc": "Also shows documents created only in the e-Invoicing app.",
+  "settingsAbout": "About",
+  "settingsVersion": "Version",
+  "settingsBuild": "Build",
+  "settingsPrivacyReport": "Privacy Report",
+  "settingsPrivacyReportSubtitle": "EastmarkHK CRM — privacy report",
+  "companyColumnNotes": "Notes",
+  "companyWithoutName": "(No name)",
+  "clientsSearchHint": "Search for a client…",
+  "clientsNewButton": "New",
+  "clientsEmptyTitle": "No clients yet",
+  "clientsEmptySubtitle": "First create the client (prospect or company) to track a deal.",
+  "clientsEmptyCreateButton": "Create a client",
+  "clientsNoCountry": "Country not provided",
+  "clientsPanelSearch": "Name, notes…",
+  "clientsPanelNew": "+ New",
+  "clientNameRequired": "The company name is required.",
+  "clientEditNewTitle": "New client",
+  "clientEditModifyTitle": "Edit client",
+  "companyNameLabel": "Company",
+  "companyNameRequiredLabel": "Company name *",
+  "formRequired": "Required",
+  "clientContactPerson": "Contact person",
+  "clientEinvoicingSection": "E-invoicing",
+  "clientEinvoicingPeppol": "Receive via e-invoice / Peppol",
+  "clientEinvoicingPeppolHint": "If disabled, invoices remain email/PDF for this client.",
+  "clientPeppolIdLabel": "Peppol ID",
+  "clientPeppolVerify": "Peppol check — via the e-Invoicing module.",
+  "peppolVerify": "Check Peppol registration",
+  "nfeTitle": "Electronic invoice (NF-e)",
+  "clientNfeHint": "Brazil — no Peppol. Documents follow the NF-e / CNPJ regime.",
+  "clientNotesSection": "Notes",
+  "clientNotesHint": "Free notes about this client…",
+  "clientEditSaveShortcut": "Save (⌘S)",
+  "contactNameRequired": "Enter at least a first or last name.",
+  "contactNewTitle": "New contact",
+  "contactEditTitle": "Edit contact",
+  "contactIdentitySection": "Identity",
+  "contactFirstName": "First name",
+  "contactLastName": "Last name",
+  "contactRoleLabel": "Role in the company",
+  "contactRoleHint": "Buyer, CEO, Accounting…",
+  "contactPrimary": "Primary contact",
+  "contactPrimaryHint": "Shown first on the client profile",
+  "contactDetailsSection": "Contact details",
+  "contactEmail": "Email",
+  "contactPhone": "Phone",
+  "contactPhoneFormat": "Format for {country}",
+  "@contactPhoneFormat": {
+    "placeholders": {
+      "country": {
+        "type": "String"
+      }
+    }
+  },
+  "contactNotesSection": "Notes",
+  "contactSaveShortcut": "Save (⌘S)",
+  "oppEditTitle": "Edit opportunity",
+  "oppStageLabel": "Stage",
+  "oppClosePlannedLabel": "Expected close",
+  "oppNotSet": "Not set",
+  "oppFollowupScheduled": "Follow-up scheduled",
+  "oppFollowupReminder": "Follow-up reminder",
+  "oppFollowupOptional": "Optional — schedule a client follow-up",
+  "oppRemoveFollowup": "Remove follow-up",
+  "oppSchedule": "Schedule",
+  "oppDetailsHint": "Details (product, Incoterms, payment terms, table…)",
+  "oppStageChanged": "Stage changed",
+  "oppCreated": "Opportunity created",
+  "oppWonTitle": "Opportunity won",
+  "oppCreateQuotePrompt": "Create a pre-filled quote for this client?",
+  "oppLater": "Later",
+  "oppCreateQuoteButton": "Create the quote",
+  "oppQuoteButton": "Quote",
+  "oppInvoiceButton": "Invoice",
+  "stageContacted": "Contacted",
+  "aiAssistant": "AI Assistant",
+  "aiGenerating": "Generating…",
+  "aiGenerateButton": "Generate",
+  "aiUnavailable": "AI Assistant unavailable — requires Apple Intelligence (macOS 26+, Apple Silicon). Manual entry possible.",
+  "aiPromptHint": "Describe the client need in natural language — Apple’s on-device AI prepares the title, notes, amount and probability. Nothing is saved without your validation.",
+  "aiPromptExample": "E.g.: “20,000 RFID tags for Acme, FOB Shenzhen price, delivery before November, client already visited the trade show”",
+  "taskNotesTitle": "Notes",
+  "taskEditorNotesTitle": "Notes",
+  "taskTileToApprove": "To approve",
+  "taskTileInfo": "Info",
+  "reachCallWithSource": "Call · {source}",
+  "@reachCallWithSource": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "taskEmailClientRef": "Open email client (ref. {ref})",
+  "@taskEmailClientRef": {
+    "placeholders": {
+      "ref": {
+        "type": "String"
+      }
+    }
+  },
+  "reachNoPhone": "No number on this client — add it to the file.",
+  "reachNoEmail": "No email on this client — add it to the file.",
+  "reachCallLaunched": "Call launched",
+  "reachEmailLabel": "email",
+  "reachEmailOpened": "Email opened · {ref}",
+  "@reachEmailOpened": {
+    "placeholders": {
+      "ref": {
+        "type": "String"
+      }
+    }
+  },
+  "queueGroupOverdue": "Overdue",
+  "queueGroupToday": "Today",
+  "queueGroupTomorrow": "Tomorrow",
+  "queueGroupWeek": "This week",
+  "queueGroupLater": "Later",
+  "queueDeleteBody": "“{title}”",
+  "@queueDeleteBody": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "queueNothingScheduled": "Nothing scheduled",
+  "queueCount": "{count, plural, =1{1 follow-up} other{{count} follow-ups}}",
+  "@queueCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "queuePersonal": "Personal",
+  "queueEmptySubtitle": "Add clients and opportunities — reminders will appear here.",
+  "queueRemoveBody": "“{title}” will be removed from your queue.",
+  "@queueRemoveBody": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "linkClientTitle": "Link to a client",
+  "linkClientButton": "Link to a client",
+  "linkClientLabel": "Client",
+  "actionNotFound": "Follow-up not found",
+  "actionMessage": "Message",
+  "actionContact": "Contact",
+  "contactedReschedule": "Contacted — reschedule",
+  "actionNotLinked": "Not linked",
+  "viewFullProfile": "View full profile",
+  "actionNoContact": "No contact — add one from the client profile.",
+  "actionEmailLabel": "email",
+  "commonPhone": "phone",
+  "boardNoOpenOpps": "No open opportunities",
+  "boardOpenCount": "{count} open",
+  "@boardOpenCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "colWidthLabel": "Width of this column",
+  "tasksListDeleteBody": "“{title}”",
+  "@tasksListDeleteBody": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "tasksListOpenCount": "{count} open",
+  "@tasksListOpenCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "tasksListNew": "+ Task",
+  "tasksListEmpty": "No tasks",
+  "tasksListNoClient": "Without a client",
+  "listFilterHint": "Filter…",
+  "cmdNoName": "(no name)",
+  "shellSyncError": "Sync: {error}",
+  "@shellSyncError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "shellOk": "OK",
+  "shellSearch": "Search",
+  "shellDashboard": "Dashboard",
+  "loginPasskeyNotConfigured": "Passkey not configured — sign in once with the password.",
+  "loginPasskeyRefused": "Passkey / biometrics refused — use the password or reset it.",
+  "loginNoAccount": "No account on this device.",
+  "loginAccountNotFound": "Account not found.",
+  "loginResetDone": "Password reset — sign in again with the new password.",
+  "loginForgotPassword": "Forgot password — reset",
+  "dictationStop": "Stop dictation",
+  "dictationStart": "Dictate — long-press to change language",
+  "joditLoadFailed": "The editor could not load. Retry, or check that the Jodit files are included in the app assets.",
+  "languagePickerTitle": "App language",
+  "languageSearchHint": "Search for a language…",
+  "dictationLanguageSearchHint": "Search for a language…",
+  "dictationDesktopHint": "On desktop, native dictation may be limited; the choice is remembered for mobile devices.",
+  "currencyPickerTitle": "Currency",
+  "addressDistrict": "District",
+  "addressPhone": "Phone",
+  "addressEmail": "Email",
+  "eiPriceHt": "{amount} ex. tax",
+  "@eiPriceHt": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "eiRefAlreadyUsed": "The reference “{ref}” is already used by another product.",
+  "@eiRefAlreadyUsed": {
+    "placeholders": {
+      "ref": {
+        "type": "String"
+      }
+    }
+  },
+  "eiEditProductTitle": "Edit product",
+  "eiTaxRate": "{rate} %",
+  "@eiTaxRate": {
+    "placeholders": {
+      "rate": {
+        "type": "String"
+      }
+    }
+  },
+  "eiRefLabel": "Reference",
+  "eiRefHint": "Leave empty to generate automatically (unique)",
+  "eiNameLabel": "Name",
+  "eiNameRequired": "Enter a product name.",
+  "eiDescriptionLabel": "Description",
+  "eiPriceExclTax": "Sale price (excl. tax)",
+  "eiTaxNote": "Tax note (e.g. ICMS per state)",
+  "eiHsInfo": "The HS/NCM code is informational (customs). The product rate is the item reference (VAT, ICMS…). Quotes/invoices keep a single document-level rate for totals.",
+  "eiCfop": "CFOP",
+  "eiCfopHint": "e.g. 5102 / 6102",
+  "eiIcmsCst": "ICMS CST/CSOSN",
+  "eiIcmsCstHint": "e.g. 40, 60, 102",
+  "eiPisCofins": "PIS/COFINS CST",
+  "eiPisCofinsHint": "e.g. 07, 08, 99",
+  "eiNfeOverrideHint": "Optional — overrides the company’s default NF-e values (Settings) for this item only. Leave empty to use defaults. Validate with your accountant before using in production.",
+  "eiNotesSection": "Notes",
+  "eiSaveShortcut": "Save (⌘S)",
+  "eiRemoteBody": "e-Invoicing is set to remote storage. Enter here the same credentials as in e-Invoicing → Settings → Remote storage, so the CRM can create quotes/invoices via the same API.",
+  "eiRemoteIndexHint": "On the new hosting, the /index.php path is required (no rewrite to /einvoicing/…).",
+  "eiRemoteSuccess": "Connection successful.",
+  "eiRemoteFail": "Failure: {error}",
+  "@eiRemoteFail": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "eiRemoteTesting": "Testing…",
+  "invModuleDisplayName": "EastmarkHK e-Invoicing",
+  "invModuleDescription": "Quotes and invoices created from your CRM clients and opportunities, managed by the EastmarkHK e-Invoicing app (included — App Store). Receipts, follow-ups and sending are handled in the e-Invoicing app.",
+  "invModulePrice": "€5.99/month",
+  "invInvoiceCreated": "Invoice created",
+  "invQuoteCreated": "Quote created",
+  "invModuleAppNotFound": "e-Invoicing app not found — install it from the App Store, launch it once, then retry.",
+  "eiCustomerCheckFailed": "Client check failed: {error}",
+  "@eiCustomerCheckFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "quoteCreatedFromEinvoice": "Created from e-Invoicing",
+  "quoteCreatedSnackbar": "{type} {number} created in e-Invoicing",
+  "@quoteCreatedSnackbar": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      },
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "quoteCreateFailed": "Creation failed: {error}",
+  "@quoteCreateFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "syncServerOk": "server reachable, credentials accepted",
+  "syncInvalidResponse": "Invalid server response",
+  "syncCancelled": "Sync cancelled",
+  "syncInProgress": "Sync already in progress",
+  "syncUpToDate": "Up to date",
+  "syncReceived": "{count} item(s) received",
+  "@syncReceived": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "syncSentNothingNew": "Sent (nothing new)",
+  "syncSent": "{count} item(s) sent",
+  "@syncSent": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "syncSentPart": "{count} sent",
+  "@syncSentPart": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "syncReceivedPart": "{count} received",
+  "@syncReceivedPart": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "syncPullFailed": "Pull failed",
+  "syncPushFailed": "Push failed",
+  "sync401": "401 — credentials rejected (wrong account or password)",
+  "syncServerStatus": "The server responded {code}",
+  "@syncServerStatus": {
+    "placeholders": {
+      "code": {
+        "type": "int"
+      }
+    }
+  },
+  "syncTimeout": "The server is not responding (timeout)",
+  "syncConnectError": "Connection failed: {error}",
+  "@syncConnectError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "taskKindAction": "To do",
+  "taskKindInfo": "Info",
+  "taskActionMessage": "Chat message",
+  "taskActionCall": "Call",
+  "taskActionEmail": "Email",
+  "taskActionMeeting": "Meeting",
+  "taskActionOther": "Other",
+  "taskStatusOpen": "Open",
+  "taskStatusToApprove": "To approve",
+  "taskStatusApproved": "Approved",
+  "taskStatusPassed": "Passed",
+  "phaseProspect": "Prospect",
+  "phaseFirstContact": "First contact",
+  "phaseContacted": "Contacted",
+  "phaseQualification": "Qualification",
+  "phaseQuote": "Quote",
+  "phaseNegotiation": "Negotiation",
+  "phaseClosing": "Closing",
+  "phaseWon": "Won",
+  "phaseLost": "Lost",
+  "phaseAfterSales": "Post-sale follow-up",
+  "clientStatusProspect": "Prospect",
+  "clientStatusClient": "Client",
+  "clientStatusInactive": "Inactive",
+  "contactNoName": "No name",
+  "contactRoleDirector": "Director / CEO",
+  "contactRoleManager": "Manager",
+  "contactRoleBuyer": "Buyer",
+  "contactRoleSales": "Sales",
+  "contactRoleAccounting": "Accounting",
+  "contactRoleTechnical": "Technical",
+  "contactRoleAssistant": "Assistant",
+  "contactRoleDecisionMaker": "Decision maker",
+  "contactRoleOther": "Other",
+  "eiDocumentNotFound": "Document not found in e-Invoicing.",
+  "invLicenseActiveSite": "Active subscription — eastmarkhk.com",
+  "invLicenseActiveAppStore": "Active subscription — App Store",
+  "invLicenseTrial": "Free trial",
+  "invOpenInvoicesCount": "{count, plural, =1{1 open invoice} other{{count} open invoices}}",
+  "@invOpenInvoicesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "lineQty": "Qty",
+  "lineUnitPriceHt": "Unit price ex. tax",
+  "lineUnitPriceVat": "Unit price incl. tax",
+  "lineTotalVat": "Total incl. tax",
+  "eiCreateClient": "Create the client",
+  "eiCreateNew": "Create a new one",
+  "eiContinue": "Continue",
+  "eiClientCrm": "CRM client: {name}",
+  "@eiClientCrm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "eiNoTaxCountry": "This country does not use tax IDs on documents (e.g. Hong Kong). Linking is done by email, phone, name, or a remembered link after the first association.",
+  "eiTaxIdMissing": "{taxId} missing on the CRM record. Recommended for e-invoicing and to avoid duplicates. Enter it below or continue without.",
+  "@eiTaxIdMissing": {
+    "placeholders": {
+      "taxId": {
+        "type": "String"
+      }
+    }
+  },
+  "eiSameTaxIdDifferentName": "Same {taxId} ({vatNumber}) found in e-Invoicing, but the name differs:\n• e-Invoicing: {eiName}\n• CRM: {crmName}\n\nUse the existing client, or create a new one?",
+  "@eiSameTaxIdDifferentName": {
+    "placeholders": {
+      "taxId": {
+        "type": "String"
+      },
+      "vatNumber": {
+        "type": "String"
+      },
+      "eiName": {
+        "type": "String"
+      },
+      "crmName": {
+        "type": "String"
+      }
+    }
+  },
+  "eiNameOnlyMatch": "Name-only match (“{name}”). Without a common tax ID / email / phone, confirm “Use existing” or create a new client (the link will be remembered next time).",
+  "@eiNameOnlyMatch": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "eiNoMatchNew": "No matching client in e-Invoicing. A new client will be created from the CRM record.",
+  "eiNoMatchNewGeneric": "No matching client (email / phone / name). A new client will be created in e-Invoicing and the link will be remembered on this CRM record.",
+  "eiClientFound": "Client found in e-Invoicing: {name}{detail}.",
+  "@eiClientFound": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "eiHitEmail": " — email {email}",
+  "@eiHitEmail": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "eiHitPhone": " — phone {phone}",
+  "@eiHitPhone": {
+    "placeholders": {
+      "phone": {
+        "type": "String"
+      }
+    }
+  },
+  "eiHitName": " — name",
+  "eiHitLinked": " — already linked",
+  "dictationLanguageTitle": "Dictation language",
+  "eiAddPhoto": "Add a photo",
+  "openExternalError": "Unable to open{label}.",
+  "@openExternalError": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "syncPushFailedShort": "Push failed",
+  "reachEmailSent": "Email opened",
+  "countryPickerTitle": "Choose a country",
+  "countryPickerSearchHint": "Search for a country…",
+  "alarmTitle": "{count, plural, =1{Task reminder} other{{count} reminders}}",
+  "@alarmTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "alarmMarkDone": "Mark done",
+  "alarmPostpone15": "+15 min",
+  "alarmPostpone1h": "+1 h",
+  "alarmClose1min": "Close — reminder in 1 min",
+  "richColorPickerTitle": "Text color",
+  "eiHitEmailPlain": " — email",
+  "eiHitPhonePlain": " — phone",
+  "tasksEditTaskTitle": "Edit task"
+}

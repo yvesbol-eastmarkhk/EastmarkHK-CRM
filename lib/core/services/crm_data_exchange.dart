@@ -125,6 +125,13 @@ class CrmDataExchange {
     var imported = 0;
     var skipped = 0;
     final errors = <String>[];
+    // Retrouve un client déjà existant par nom quand la ligne CSV n'a pas
+    // d'identifiant — sinon réimporter le même fichier (par erreur, ou depuis
+    // un autre appareil) crée un doublon à chaque passage au lieu de mettre
+    // à jour la fiche existante (cf. « 3 fois le même client » remonté).
+    final existingByName = <String, String>{
+      for (final c in await AppDatabase.instance.companies()) c.name.trim().toLowerCase(): c.id,
+    };
     for (var i = start; i < lines.length; i++) {
       final cols = _parseCsvLine(lines[i]);
       if (cols.isEmpty) continue;
@@ -135,21 +142,25 @@ class CrmDataExchange {
       }
       try {
         final now = nowIso();
-        final id = cols[0].trim().isNotEmpty ? cols[0].trim() : AppDatabase.newId();
+        final explicitId = cols[0].trim();
+        final nameKey = name.toLowerCase();
+        final id = explicitId.isNotEmpty ? explicitId : (existingByName[nameKey] ?? AppDatabase.newId());
+        final existing = await AppDatabase.instance.companyById(id);
         await AppDatabase.instance.upsertCompany(Company(
           id: id,
           name: name,
-          country: cols.length > 2 && cols[2].trim().isNotEmpty ? cols[2].trim() : null,
-          vatNumber: cols.length > 3 && cols[3].trim().isNotEmpty ? cols[3].trim() : null,
-          website: cols.length > 4 && cols[4].trim().isNotEmpty ? cols[4].trim() : null,
-          peppolId: cols.length > 5 && cols[5].trim().isNotEmpty ? cols[5].trim() : null,
+          country: cols.length > 2 && cols[2].trim().isNotEmpty ? cols[2].trim() : existing?.country,
+          vatNumber: cols.length > 3 && cols[3].trim().isNotEmpty ? cols[3].trim() : existing?.vatNumber,
+          website: cols.length > 4 && cols[4].trim().isNotEmpty ? cols[4].trim() : existing?.website,
+          peppolId: cols.length > 5 && cols[5].trim().isNotEmpty ? cols[5].trim() : existing?.peppolId,
           tags: cols.length > 6 && cols[6].trim().isNotEmpty
               ? cols[6].trim().split(',').map((t) => t.trim()).where((t) => t.isNotEmpty).toList()
-              : const [],
-          notes: cols.length > 7 && cols[7].trim().isNotEmpty ? cols[7].trim() : null,
-          createdAt: now,
+              : (existing?.tags ?? const []),
+          notes: cols.length > 7 && cols[7].trim().isNotEmpty ? cols[7].trim() : existing?.notes,
+          createdAt: existing?.createdAt ?? now,
           updatedAt: now,
         ));
+        existingByName[nameKey] = id;
         imported++;
       } catch (e) {
         errors.add('Ligne ${i + 1}: $e');

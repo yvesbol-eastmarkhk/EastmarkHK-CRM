@@ -1,7 +1,7 @@
 name: eastmarkhk_crm
 description: EastmarkHK CRM — contacts, pipeline, tâches, dictée, modules (facturation, scanner, stock, leads, IA, sync)
 publish_to: 'none'
-version: 0.1.0+1
+version: 0.1.15+18
 
 environment:
   sdk: ^3.12.2
@@ -12,7 +12,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   cupertino_icons: ^1.0.8
-  google_fonts: ^6.2.1
+  google_fonts: ^8.2.1
   http: ^1.2.2
   # Parseur HTML5 pur Dart (aucun code natif, donc aucun risque côté build
   # Xcode/Android) — utilisé pour interpréter le HTML collé tel quel dans
@@ -42,27 +42,44 @@ dependencies:
   country_flags: ^4.1.2
   url_launcher: ^6.3.1
   file_selector: ^1.1.0
+  desktop_drop: ^0.7.1
+  image_picker: ^1.2.3
+  image: ^4.9.1
   share_plus: ^13.3.0
   fl_chart: ^1.2.0
   uuid: ^4.5.1
   speech_to_text: ^7.0.0
   dlibphonenumber: ^1.1.68
   local_auth: ^3.0.2
-  permission_handler: ^12.0.3
+  permission_handler: ^13.0.0
   package_info_plus: ^10.2.1
+  in_app_purchase: ^3.2.3
+  flutter_svg: ^2.2.0
+  # Génération du Privacy Report (tool/generate_privacy_pdf.dart) — même
+  # dépendance que les autres apps EastmarkHK (e-Invoicing, Trading).
+  pdf: ^3.13.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
+  # Faux path_provider pour les tests DB (voir test/support/fake_path_provider.dart)
+  # — sans ça, getApplicationSupportDirectory() plante hors app réelle.
+  path_provider_platform_interface: ^2.1.2
   flutter_launcher_icons: ^0.14.4
   flutter_native_splash: ^2.4.4
   msix: ^3.18.0
 
 flutter:
   uses-material-design: true
+  # Génère AppLocalizations depuis lib/l10n/*.arb à chaque build (voir
+  # l10n.yaml) — aucune commande manuelle à lancer, `flutter run`/`build`
+  # s'en charge.
+  generate: true
   assets:
     - assets/branding/
+    # Logos messagerie (Simple Icons, CC0) — SVG locaux, pas de CDN.
+    - assets/messaging/
     # Jodit auto-hébergé, licence MIT (voir lib/core/widgets/jodit_editor.dart)
     # — bundle unique (JS+CSS), pas de sous-dossiers à lister.
     - assets/jodit/
@@ -87,8 +104,17 @@ flutter_launcher_icons:
 # Écran de chargement (splash natif au démarrage) — régénérer avec :
 # dart run flutter_native_splash:create
 flutter_native_splash:
-  color: "#FFFFFF"
-  image: assets/branding/app_icon.png
+  color: "#F8F8FA"
+  # Visuel portrait CRM (iPhone / Android). Contenu = plein écran.
+  image: assets/branding/splash_crm_mobile_hd.png
+  fullscreen: true
+  android: true
+  ios: true
+  web: false
+  android_gravity: fill
+  ios_content_mode: scaleAspectFill
   android_12:
-    image: assets/branding/app_icon.png
-    color: "#FFFFFF"
+    # Android 12+ n'affiche qu'une icône centrée — fond teal de marque.
+    color: "#024C4F"
+    image: assets/branding/app_icon_v3.png
+    icon_background_color: "#024C4F"

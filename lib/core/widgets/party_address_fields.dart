@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../data/countries.dart';
+import '../../l10n/gen/app_localizations.dart';
 import '../services/postal_lookup_service.dart';
 import '../utils/phone_formatter.dart';
 import '../utils/postal_code_formatter.dart';
@@ -23,7 +24,7 @@ import 'country_picker_field.dart';
 class PartyAddressFields extends StatefulWidget {
   const PartyAddressFields({
     super.key,
-    required this.name,
+    this.name,
     required this.countryCode,
     required this.taxId,
     required this.address,
@@ -46,7 +47,8 @@ class PartyAddressFields extends StatefulWidget {
     this.onPhoneCountryChanged,
   });
 
-  final Widget name;
+  /// Si `null`, le nom est géré hors de ce bloc (ex. section Société e-Invoicing).
+  final Widget? name;
 
   final String countryCode;
   final String taxId;
@@ -133,24 +135,46 @@ class _PartyAddressFieldsState extends State<PartyAddressFields> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       if (old.countryCode != widget.countryCode) {
-        _vatFormatter.countryCode = widget.countryCode;
-        if (followedAddress && widget.onPhoneCountryChanged != null) {
-          // On ne réinterprète pas les chiffres de l'ancien pays sous le
-          // nouvel indicatif (ex. "+32 4 263 59 20" → "+852 4263 5920" n'a
-          // aucun sens, ce n'est pas le même numéro) : on repart d'un champ
-          // vide avec le bon préfixe international.
-          _resetPhoneForCountry(widget.countryCode);
-        }
-        if (widget.countryCode.toUpperCase() != 'BR') {
-          final v = VatNumber.formatLive(_taxIdCtrl.text, widget.countryCode);
-          if (_taxIdCtrl.text != v) _setCtrl(_taxIdCtrl, v);
-          widget.onTaxIdChanged(VatNumber.normalize(v, countryCode: widget.countryCode));
-        }
-        _lastLookupKey = null;
+        // Changement de pays → tout le bloc adresse repart de zéro
+        // (sinon BE reste collé sur CNPJ, CP belge sur une fiche BR, etc.).
+        _resetAddressFieldsForCountry(
+          widget.countryCode,
+          resetPhone: followedAddress || widget.onPhoneCountryChanged != null,
+        );
       } else if (_phoneFormatter.countryCode != _phoneIso) {
         _applyPhoneCountry(_phoneIso, notify: false);
       }
     });
+  }
+
+  /// Vide n° fiscal, rue, CP, ville… après un changement de pays.
+  /// Le téléphone suit le nouvel indicatif ; l'e-mail est conservé.
+  void _resetAddressFieldsForCountry(String iso, {required bool resetPhone}) {
+    final code = iso.trim().toUpperCase();
+    _vatFormatter.countryCode = code;
+    _lastLookupKey = null;
+
+    _setCtrl(_taxIdCtrl, '');
+    widget.onTaxIdChanged('');
+
+    _setCtrl(_addressCtrl, '');
+    widget.onAddressChanged('');
+
+    _setCtrl(_districtCtrl, '');
+    widget.onDistrictChanged('');
+
+    _setCtrl(_zipCtrl, '');
+    widget.onZipChanged('');
+
+    _setCtrl(_cityCtrl, '');
+    widget.onCityChanged('');
+
+    _setCtrl(_stateCtrl, '');
+    widget.onStateChanged('');
+
+    if (resetPhone) {
+      _resetPhoneForCountry(code);
+    }
   }
 
   /// Repart d'un champ vide (juste le préfixe international) pour un
@@ -260,12 +284,13 @@ class _PartyAddressFieldsState extends State<PartyAddressFields> {
   }
 
   Future<PostalLookupResult?> _pickPlace(List<PostalLookupResult> results, String iso) {
+    final l10n = AppLocalizations.of(context);
     return showDialog<PostalLookupResult>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Plusieurs villes trouvées'),
+        title: Text(l10n.addressMultipleCities),
         content: SizedBox(
-          width: 360,
+          width: 460,
           child: ListView(
             shrinkWrap: true,
             children: [
@@ -279,7 +304,7 @@ class _PartyAddressFieldsState extends State<PartyAddressFields> {
           ),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Annuler')),
+          TextButton(onPressed: () => Navigator.pop(ctx), child: Text(l10n.commonCancel)),
         ],
       ),
     );
@@ -307,6 +332,7 @@ class _PartyAddressFieldsState extends State<PartyAddressFields> {
     final usesDistrict = showDistrictField(iso);
     final usesState = showStateField(iso);
     final usesCnpj = showCnpjField(iso);
+    final usesTaxId = showTaxIdField(iso);
     final country = CountryInfo.byCode(iso);
     final taxLabel = taxIdLabelForCountry(iso);
 
@@ -319,54 +345,103 @@ class _PartyAddressFieldsState extends State<PartyAddressFields> {
     // les champs les uns contre les autres.
     return LayoutBuilder(
       builder: (context, constraints) {
+        final l10n = AppLocalizations.of(context);
         final compact = constraints.maxWidth < kCompactFormBreakpoint;
 
-        // Ligne 1 : Nom | Pays | TVA-CNPJ.
-        final identityRow = formRowOrColumn(
-          context: context,
-          compact: compact,
-          children: [
-            formFlexChild(context: context, compact: compact, flex: 3, child: widget.name),
-            formFlexChild(
-              context: context,
-              compact: compact,
-              flex: 2,
-              child: CountryPickerField(
-                label: 'Pays',
+        // Ligne principale Adresse :
+        // Pays (largeur fixe pour le plus long nom) | Adresse (reste) |
+        // n° fiscal après l'adresse si le pays en a un (sinon rien — ex. HK).
+        final hasCountry = iso.trim().isNotEmpty;
+        final showTax = hasCountry && usesTaxId;
+
+        Widget taxField() => usesCnpj
+            ? TextField(
+                controller: _taxIdCtrl,
+                inputFormatters: [CnpjInputFormatter()],
+                decoration: InputDecoration(
+                  labelText: l10n.addressCnpj,
+                  hintText: '00.000.000/0000-00',
+                  border: const OutlineInputBorder(),
+                ),
+                onChanged: _onTaxIdChanged,
+              )
+            : TextField(
+                controller: _taxIdCtrl,
+                inputFormatters: [_vatFormatter],
+                decoration: InputDecoration(
+                  labelText: taxLabel,
+                  border: const OutlineInputBorder(),
+                ),
+                onChanged: _onTaxIdChanged,
+              );
+
+        final addressField = TextField(
+          controller: _addressCtrl,
+          decoration: InputDecoration(
+            labelText: l10n.addressAddress,
+            border: const OutlineInputBorder(),
+          ),
+          onChanged: widget.onAddressChanged,
+        );
+
+        // Largeur pays : assez pour « Saint Vincent and the Grenadines » + drapeau.
+        const countryWidth = 280.0;
+
+        final Widget countryAddressTaxRow;
+        if (compact) {
+          countryAddressTaxRow = Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (widget.name != null) ...[
+                widget.name!,
+                const SizedBox(height: 12),
+              ],
+              CountryPickerField(
+                label: l10n.addressCountry,
                 selected: country,
                 onSelected: (c) => widget.onCountryChanged(c.code),
               ),
-            ),
-            formFlexChild(
-              context: context,
-              compact: compact,
-              flex: 2,
-              child: usesCnpj
-                  ? TextFormField(
-                      controller: _taxIdCtrl,
-                      inputFormatters: [CnpjInputFormatter()],
-                      decoration: const InputDecoration(
-                          labelText: 'CNPJ', hintText: '00.000.000/0000-00', border: OutlineInputBorder()),
-                      onChanged: _onTaxIdChanged,
-                    )
-                  : TextFormField(
-                      controller: _taxIdCtrl,
-                      focusNode: _taxIdFocus,
-                      textCapitalization: TextCapitalization.characters,
-                      inputFormatters: [_vatFormatter],
-                      decoration: InputDecoration(labelText: taxLabel, border: const OutlineInputBorder()),
-                      onChanged: _onTaxIdChanged,
+              const SizedBox(height: 12),
+              addressField,
+              if (showTax) ...[
+                const SizedBox(height: 12),
+                taxField(),
+              ],
+            ],
+          );
+        } else {
+          countryAddressTaxRow = Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (widget.name != null) ...[
+                widget.name!,
+                const SizedBox(height: 12),
+              ],
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    width: countryWidth,
+                    child: CountryPickerField(
+                      label: l10n.addressCountry,
+                      selected: country,
+                      onSelected: (c) => widget.onCountryChanged(c.code),
                     ),
-            ),
-          ],
-        );
-
-        // Ligne 2 : Adresse seule, pleine largeur.
-        final addressRow = TextFormField(
-          controller: _addressCtrl,
-          decoration: const InputDecoration(labelText: 'Adresse', border: OutlineInputBorder()),
-          onChanged: widget.onAddressChanged,
-        );
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(flex: 5, child: addressField),
+                  if (showTax) ...[
+                    const SizedBox(width: 12),
+                    Expanded(
+                      flex: taxIdFlexForCountry(iso),
+                      child: taxField(),
+                    ),
+                  ],
+                ],
+              ),
+            ],
+          );
+        }
 
         // Ligne 3 : Code postal | Quartier/Bairro | État | Ville — le code
         // postal en premier car il permet de déduire les champs suivants
@@ -382,10 +457,10 @@ class _PartyAddressFieldsState extends State<PartyAddressFields> {
                 context: context,
                 compact: compact,
                 flex: 2,
-                child: TextFormField(
+                child: TextField(
                   controller: _zipCtrl,
                   decoration: InputDecoration(
-                    labelText: 'Code postal',
+                    labelText: l10n.addressZip,
                     hintText: postalHintForCountry(iso),
                     border: const OutlineInputBorder(),
                     suffixIcon: _lookingUp
@@ -403,10 +478,10 @@ class _PartyAddressFieldsState extends State<PartyAddressFields> {
                 context: context,
                 compact: compact,
                 flex: 2,
-                child: TextFormField(
+                child: TextField(
                   controller: _districtCtrl,
                   decoration: InputDecoration(
-                      labelText: country?.districtLabel ?? 'Quartier', border: const OutlineInputBorder()),
+                      labelText: country?.districtLabel ?? l10n.addressDistrict, border: const OutlineInputBorder()),
                   onChanged: widget.onDistrictChanged,
                 ),
               ),
@@ -415,9 +490,9 @@ class _PartyAddressFieldsState extends State<PartyAddressFields> {
                 context: context,
                 compact: compact,
                 flex: 1,
-                child: TextFormField(
+                child: TextField(
                   controller: _stateCtrl,
-                  decoration: const InputDecoration(labelText: 'État', border: OutlineInputBorder()),
+                  decoration: InputDecoration(labelText: l10n.addressState, border: const OutlineInputBorder()),
                   onChanged: widget.onStateChanged,
                 ),
               ),
@@ -425,9 +500,9 @@ class _PartyAddressFieldsState extends State<PartyAddressFields> {
               context: context,
               compact: compact,
               flex: 2,
-              child: TextFormField(
+              child: TextField(
                 controller: _cityCtrl,
-                decoration: const InputDecoration(labelText: 'Ville', border: OutlineInputBorder()),
+                decoration: InputDecoration(labelText: l10n.addressCity, border: const OutlineInputBorder()),
                 onChanged: widget.onCityChanged,
               ),
             ),
@@ -442,12 +517,12 @@ class _PartyAddressFieldsState extends State<PartyAddressFields> {
               context: context,
               compact: compact,
               flex: 1,
-              child: TextFormField(
+              child: TextField(
                 controller: _phoneCtrl,
                 keyboardType: TextInputType.phone,
                 inputFormatters: [_phoneFormatter],
                 decoration: InputDecoration(
-                  labelText: 'Téléphone',
+                  labelText: l10n.addressPhone,
                   hintText: phoneExampleHint(_phoneIso),
                   border: const OutlineInputBorder(),
                   prefixIcon: Material(
@@ -469,17 +544,18 @@ class _PartyAddressFieldsState extends State<PartyAddressFields> {
                   ),
                   prefixIconConstraints: const BoxConstraints(minWidth: 58, minHeight: 24),
                 ),
-                onChanged: (v) => widget.onPhoneChanged(formatPhoneInternational(v, _phoneIso)),
+                onChanged: (v) => widget.onPhoneChanged(
+                    formatPhoneInternational(v, _phoneIso)),
               ),
             ),
             formFlexChild(
               context: context,
               compact: compact,
               flex: 1,
-              child: TextFormField(
+              child: TextField(
                 controller: _emailCtrl,
                 keyboardType: TextInputType.emailAddress,
-                decoration: const InputDecoration(labelText: 'Email', border: OutlineInputBorder()),
+                decoration: InputDecoration(labelText: l10n.addressEmail, border: const OutlineInputBorder()),
                 onChanged: widget.onEmailChanged,
               ),
             ),
@@ -489,9 +565,7 @@ class _PartyAddressFieldsState extends State<PartyAddressFields> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            identityRow,
-            const SizedBox(height: 12),
-            addressRow,
+            countryAddressTaxRow,
             const SizedBox(height: 12),
             addressDetailsRow,
             const SizedBox(height: 12),

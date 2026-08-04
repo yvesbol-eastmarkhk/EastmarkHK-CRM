@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../l10n/gen/app_localizations.dart';
 import '../db/app_database.dart';
 import '../models/models.dart' show nowIso;
 import '../models/user_account.dart';
@@ -37,18 +38,19 @@ class _BootstrapPanelState extends State<BootstrapPanel> {
   }
 
   Future<void> _create() async {
+    final l10n = AppLocalizations.of(context);
     final username = _username.text.trim();
     final displayName = _displayName.text.trim();
     if (username.isEmpty || displayName.isEmpty) {
-      setState(() => _error = 'Nom et identifiant sont obligatoires');
+      setState(() => _error = l10n.commonRequiredFields);
       return;
     }
     if (_password.text.isEmpty) {
-      setState(() => _error = 'Choisissez un mot de passe');
+      setState(() => _error = l10n.commonChoosePassword);
       return;
     }
     if (_password.text != _passwordConfirm.text) {
-      setState(() => _error = 'Les mots de passe ne correspondent pas');
+      setState(() => _error = l10n.commonPasswordMismatch);
       return;
     }
 
@@ -62,7 +64,7 @@ class _BootstrapPanelState extends State<BootstrapPanel> {
     if (other != null) {
       setState(() {
         _saving = false;
-        _error = 'Cet identifiant est déjà utilisé';
+        _error = l10n.commonUsernameTaken;
       });
       return;
     }
@@ -87,6 +89,7 @@ class _BootstrapPanelState extends State<BootstrapPanel> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return ConstrainedBox(
       constraints: const BoxConstraints(maxWidth: 380),
       child: Column(
@@ -94,13 +97,13 @@ class _BootstrapPanelState extends State<BootstrapPanel> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            'Bienvenue',
+            l10n.bootstrapWelcome,
             style: Theme.of(context).textTheme.headlineSmall,
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 8),
           Text(
-            'Créez le compte administrateur pour sécuriser votre CRM.',
+            l10n.bootstrapSubtitle,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: Theme.of(context).colorScheme.onSurfaceVariant),
             textAlign: TextAlign.center,
@@ -108,19 +111,19 @@ class _BootstrapPanelState extends State<BootstrapPanel> {
           const SizedBox(height: 24),
           DictationField(
             controller: _displayName,
-            label: 'Nom affiché',
+            label: l10n.commonDisplayNameLabel,
           ),
           const SizedBox(height: 12),
           TextField(
             controller: _username,
-            decoration: const InputDecoration(labelText: 'Identifiant'),
+            decoration: InputDecoration(labelText: l10n.commonUsernameLabel),
             autocorrect: false,
             enabled: !_saving,
           ),
           const SizedBox(height: 12),
-          PasswordField(controller: _password, label: 'Mot de passe'),
+          PasswordField(controller: _password),
           const SizedBox(height: 12),
-          PasswordField(controller: _passwordConfirm, label: 'Confirmer le mot de passe'),
+          PasswordField(controller: _passwordConfirm, label: l10n.commonConfirmPasswordLabel),
           if (_error != null) ...[
             const SizedBox(height: 12),
             Text(_error!, style: TextStyle(color: Theme.of(context).colorScheme.error)),
@@ -131,7 +134,7 @@ class _BootstrapPanelState extends State<BootstrapPanel> {
             child: _saving
                 ? const SizedBox(
                     width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2))
-                : const Text('Créer le compte administrateur'),
+                : Text(l10n.bootstrapSubmit),
           ),
         ],
       ),

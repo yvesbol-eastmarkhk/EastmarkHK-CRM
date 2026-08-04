@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../l10n/gen/app_localizations.dart';
 import '../models/models.dart';
 
 /// Une messagerie utilisable pour joindre un contact — la correspondance
@@ -10,10 +11,7 @@ import '../models/models.dart';
 /// par l'email. [id] est stocké tel quel dans `messaging_json` (stable même
 /// si le libellé affiché change plus tard).
 ///
-/// Pas d'assets de logos officiels embarqués (droits de marque, pas de
-/// pipeline de téléchargement d'images dans cette app) : chaque plateforme
-/// a un badge — icône + couleur de marque — qui sert de repère visuel
-/// cohérent à défaut du vrai logo.
+/// Logos SVG locaux (`assets/messaging/`, Simple Icons CC0) — repli Material.
 class MessagingPlatformInfo {
   const MessagingPlatformInfo({
     required this.id,
@@ -21,6 +19,7 @@ class MessagingPlatformInfo {
     required this.icon,
     required this.color,
     required this.hint,
+    this.logoAsset,
     this.buildUrl,
     this.openNote,
   });
@@ -29,6 +28,9 @@ class MessagingPlatformInfo {
   final String label;
   final IconData icon;
   final Color color;
+
+  /// Chemin asset SVG (ex. `assets/messaging/whatsapp.svg`) — null = icône.
+  final String? logoAsset;
 
   /// Exemple de format attendu pour le champ identifiant (numéro, pseudo…).
   final String hint;
@@ -51,13 +53,15 @@ const messagingPlatforms = <MessagingPlatformInfo>[
     label: 'WhatsApp',
     icon: Icons.chat,
     color: Color(0xFF25D366),
+    logoAsset: 'assets/messaging/whatsapp.svg',
     hint: '+852 1234 5678',
   ),
   MessagingPlatformInfo(
     id: 'imessage',
     label: 'iMessage / SMS',
     icon: Icons.sms,
-    color: Color(0xFF0B93F6),
+    color: Color(0xFF34DA50),
+    logoAsset: 'assets/messaging/imessage.svg',
     hint: '+852 1234 5678',
   ),
   MessagingPlatformInfo(
@@ -65,6 +69,7 @@ const messagingPlatforms = <MessagingPlatformInfo>[
     label: 'WeChat (微信)',
     icon: Icons.chat_bubble,
     color: Color(0xFF07C160),
+    logoAsset: 'assets/messaging/wechat.svg',
     hint: 'ID WeChat',
     openNote:
         "WeChat n'expose pas de lien public vers un contact précis — l'appli s'ouvre, la conversation reste à sélectionner à la main.",
@@ -73,28 +78,32 @@ const messagingPlatforms = <MessagingPlatformInfo>[
     id: 'telegram',
     label: 'Telegram',
     icon: Icons.send,
-    color: Color(0xFF29A9EA),
+    color: Color(0xFF26A5E4),
+    logoAsset: 'assets/messaging/telegram.svg',
     hint: '@pseudo',
   ),
   MessagingPlatformInfo(
     id: 'signal',
     label: 'Signal',
     icon: Icons.shield,
-    color: Color(0xFF3A76F0),
+    color: Color(0xFF3B45FD),
+    logoAsset: 'assets/messaging/signal.svg',
     hint: '+852 1234 5678',
   ),
   MessagingPlatformInfo(
     id: 'messenger',
     label: 'Messenger',
     icon: Icons.forum,
-    color: Color(0xFF00B2FF),
+    color: Color(0xFF0866FF),
+    logoAsset: 'assets/messaging/messenger.svg',
     hint: 'pseudo.facebook',
   ),
   MessagingPlatformInfo(
     id: 'line',
     label: 'Line',
     icon: Icons.chat,
-    color: Color(0xFF06C755),
+    color: Color(0xFF00C300),
+    logoAsset: 'assets/messaging/line.svg',
     hint: 'ID Line',
   ),
   MessagingPlatformInfo(
@@ -102,13 +111,15 @@ const messagingPlatforms = <MessagingPlatformInfo>[
     label: 'Viber',
     icon: Icons.phone_in_talk,
     color: Color(0xFF7360F2),
+    logoAsset: 'assets/messaging/viber.svg',
     hint: '+852 1234 5678',
   ),
   MessagingPlatformInfo(
     id: 'kakaotalk',
     label: 'KakaoTalk',
     icon: Icons.chat,
-    color: Color(0xFFFEE500),
+    color: Color(0xFFFFCD00),
+    logoAsset: 'assets/messaging/kakaotalk.svg',
     hint: 'ID KakaoTalk',
     openNote:
         "KakaoTalk n'expose pas de lien public vers un contact précis — l'appli s'ouvre, la conversation reste à sélectionner à la main.",
@@ -126,6 +137,28 @@ MessagingPlatformInfo platformById(String id) => messagingPlatforms.firstWhere(
       (p) => p.id == id,
       orElse: () => messagingPlatforms.first,
     );
+
+/// Libellé affiché d'une plateforme — la plupart sont des noms de marque
+/// (WhatsApp, Telegram…) qui ne se traduisent pas, seul "Appel téléphonique"
+/// a besoin d'une vraie traduction. Les libellés bruts de
+/// [MessagingPlatformInfo] restent `const` (pas de BuildContext
+/// disponible à la définition de la liste) — ce helper fait la résolution
+/// au moment de l'affichage.
+String platformLabel(BuildContext context, String id) {
+  if (id == 'phone') return AppLocalizations.of(context).messagingPhoneCallLabel;
+  return platformById(id).label;
+}
+
+/// Note d'utilisation traduite (WeChat/KakaoTalk : pas de lien direct vers
+/// un contact précis) — voir [platformLabel] pour le même principe.
+String? platformOpenNote(BuildContext context, String id) {
+  final l10n = AppLocalizations.of(context);
+  return switch (id) {
+    'wechat' => l10n.messagingWechatNote,
+    'kakaotalk' => l10n.messagingKakaotalkNote,
+    _ => null,
+  };
+}
 
 /// URL de lancement pour un canal donné — construite ici plutôt que dans
 /// [MessagingPlatformInfo.buildUrl] pour garder les schémas connus au même
@@ -168,22 +201,24 @@ String? buildMessagingUrl(String platformId, String value) {
 /// dupliquer le comportement (et l'honnêteté sur ses limites : WeChat et
 /// KakaoTalk n'ouvrent que l'appli, jamais le contact précis).
 Future<void> openMessagingChannel(BuildContext context, MessagingChannel channel) async {
-  final platform = platformById(channel.platformId);
+  final l10n = AppLocalizations.of(context);
+  final label = platformLabel(context, channel.platformId);
+  final openNote = platformOpenNote(context, channel.platformId);
   final url = buildMessagingUrl(channel.platformId, channel.value);
   final messenger = ScaffoldMessenger.of(context);
   if (url == null) {
     messenger.showSnackBar(
-      SnackBar(content: Text(platform.openNote ?? "Identifiant incomplet pour ouvrir ${platform.label}.")),
+      SnackBar(content: Text(openNote ?? l10n.messagingIncompleteId(label))),
     );
     return;
   }
   final launched = await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
   if (!launched) {
     messenger.showSnackBar(
-      SnackBar(content: Text("Impossible d'ouvrir ${platform.label} — l'appli est-elle installée ?")),
+      SnackBar(content: Text(l10n.messagingCannotOpenApp(label))),
     );
-  } else if (platform.openNote != null) {
-    messenger.showSnackBar(SnackBar(content: Text(platform.openNote!)));
+  } else if (openNote != null) {
+    messenger.showSnackBar(SnackBar(content: Text(openNote)));
   }
 }
 

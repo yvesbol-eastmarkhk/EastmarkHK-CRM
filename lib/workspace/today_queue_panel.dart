@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import '../core/db/app_database.dart';
 import '../core/models/models.dart';
 import '../core/utils/formatters.dart';
+import '../core/utils/responsive_layout.dart';
 import '../core/utils/task_display.dart';
 import '../core/widgets/log_interaction_sheet.dart';
+import '../l10n/gen/app_localizations.dart';
 import '../state/crm_workspace_state.dart';
 import '../theme/app_theme.dart';
 import '../theme/crm_tokens.dart';
@@ -37,13 +39,16 @@ class _TodayQueuePanelState extends State<TodayQueuePanel> {
   Map<String, Opportunity> _oppsById = {};
   bool _loading = true;
 
-  static const _groups = [
-    ('overdue', 'En retard'),
-    ('today', "Aujourd'hui"),
-    ('tomorrow', 'Demain'),
-    ('week', 'Cette semaine'),
-    ('later', 'Plus tard'),
-  ];
+  List<(String, String)> get _groups {
+    final l10n = AppLocalizations.of(context);
+    return [
+      ('overdue', l10n.queueGroupOverdue),
+      ('today', l10n.queueGroupToday),
+      ('tomorrow', l10n.queueGroupTomorrow),
+      ('week', l10n.queueGroupWeek),
+      ('later', l10n.queueGroupLater),
+    ];
+  }
 
   @override
   void initState() {
@@ -88,7 +93,15 @@ class _TodayQueuePanelState extends State<TodayQueuePanel> {
       _loading = false;
     });
 
-    if (widget.selectedTaskId == null && scheduled.isNotEmpty) {
+    // Auto-sélection de la 1ère tâche : uniquement en layout 3-panneaux
+    // (desktop/iPad), où le panneau détail doit toujours montrer quelque
+    // chose. Sur téléphone (plein écran empilé), ça enfermait l'utilisateur :
+    // « Retour » vide la sélection → la liste se recharge → ré-auto-sélectionne
+    // aussitôt la même tâche → impossible de revenir à la liste.
+    if (widget.selectedTaskId == null &&
+        scheduled.isNotEmpty &&
+        mounted &&
+        !CrmLayout.isPhone(context)) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) widget.onSelectTask(scheduled.first);
       });
@@ -126,17 +139,18 @@ class _TodayQueuePanelState extends State<TodayQueuePanel> {
   }
 
   Future<void> _deleteTask(CrmTask t) async {
+    final l10n = AppLocalizations.of(context);
     final ok = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Supprimer cette relance ?'),
-        content: Text('« ${t.title} »'),
+        title: Text(l10n.queueDeleteTitle),
+        content: Text(l10n.queueDeleteBody(t.title)),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Annuler')),
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(l10n.commonCancel)),
           FilledButton(
             onPressed: () => Navigator.pop(ctx, true),
             style: FilledButton.styleFrom(backgroundColor: Theme.of(ctx).colorScheme.error),
-            child: const Text('Supprimer'),
+            child: Text(l10n.commonDelete),
           ),
         ],
       ),
@@ -150,9 +164,10 @@ class _TodayQueuePanelState extends State<TodayQueuePanel> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return ListPanel(
-      title: "Aujourd'hui",
-      subtitle: _tasks.isEmpty ? 'Rien de programmé' : '${_tasks.length} relance${_tasks.length > 1 ? 's' : ''}',
+      title: l10n.agendaToday,
+      subtitle: _tasks.isEmpty ? l10n.queueNothingScheduled : l10n.queueCount(_tasks.length),
       expand: widget.expand,
       child: _loading
           ? const Center(child: CircularProgressIndicator(strokeWidth: 2))
@@ -169,6 +184,7 @@ class _TodayQueuePanelState extends State<TodayQueuePanel> {
   List<Widget> _buildGroup(String key, String fallbackLabel) {
     final items = _tasks.where((t) => _bucket(t.dueDate) == key).toList();
     if (items.isEmpty) return [];
+    final l10n = AppLocalizations.of(context);
     final scheme = Theme.of(context).colorScheme;
     final headerColor = key == 'overdue'
         ? AppTheme.overdueColor
@@ -201,7 +217,10 @@ class _TodayQueuePanelState extends State<TodayQueuePanel> {
             isDone: t.isDone,
           title: t.companyId != null && _companyNames.containsKey(t.companyId)
               ? _companyNames[t.companyId]!
-              : 'Perso',
+              : l10n.queuePersonal,
+            titleColor: t.companyId != null && _companyNames.containsKey(t.companyId)
+                ? CrmTokens.fuchsia
+                : null,
             subtitle: '${truncateTaskMessage(taskMessage(t))}\n${formatDueLabel(t.dueDate)}',
             subtitleMaxLines: 2,
             accentColor: t.companyId == null
@@ -221,11 +240,11 @@ class _TodayQueuePanelState extends State<TodayQueuePanel> {
                       minimumSize: const Size(0, 28),
                       padding: const EdgeInsets.symmetric(horizontal: 8),
                     ),
-                    child: const Text('Contacté', style: TextStyle(fontSize: 11)),
+                    child: Text(l10n.stageContacted, style: TextStyle(fontSize: 11)),
                   ),
                 IconButton(
-                  tooltip: 'Supprimer',
-                  icon: Icon(Icons.delete_outline, size: 18, color: scheme.error.withValues(alpha: 0.7)),
+                  tooltip: l10n.commonDelete,
+                  icon: Icon(Icons.delete_outline, size: 18, color: CrmTokens.overdue),
                   onPressed: () => _deleteTask(t),
                   visualDensity: VisualDensity.compact,
                 ),
@@ -243,6 +262,7 @@ class _EmptyToday extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(24),
@@ -252,10 +272,10 @@ class _EmptyToday extends StatelessWidget {
             Icon(Icons.check_circle_outline,
                 size: 40, color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.4)),
             const SizedBox(height: 12),
-            const Text('Aucune relance', style: TextStyle(fontWeight: FontWeight.w600)),
+            Text(l10n.queueEmpty, style: const TextStyle(fontWeight: FontWeight.w600)),
             const SizedBox(height: 4),
             Text(
-              'Ajoutez des clients et des opportunités — les rappels apparaîtront ici.',
+              l10n.queueEmptySubtitle,
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: CrmTokens.captionSize, color: Theme.of(context).colorScheme.onSurfaceVariant),
             ),

@@ -40,7 +40,7 @@ class TinyMceEditorState extends State<TinyMceEditor> {
     _currentHtml = widget.initialHtml;
     _webController = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setBackgroundColor(Colors.white)
+      // Pas de setBackgroundColor sur macOS (UnimplementedError opaque).
       ..addJavaScriptChannel(
         'FlutterReady',
         onMessageReceived: (_) {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../l10n/gen/app_localizations.dart';
 import '../screens/settings_screen.dart';
 import '../services/company_logo_service.dart';
 
@@ -28,6 +29,7 @@ class EastmarkWordmark extends StatelessWidget {
 /// header vide. `bottom` permet d'ajouter une barre secondaire (recherche,
 /// sous-titre…) sous le header.
 AppBar crmAppBar(BuildContext context, {PreferredSizeWidget? bottom, List<Widget>? extraActions}) {
+  final l10n = AppLocalizations.of(context);
   return AppBar(
     title: ListenableBuilder(
       listenable: CompanyLogoSettings.instance,
@@ -39,9 +41,9 @@ AppBar crmAppBar(BuildContext context, {PreferredSizeWidget? bottom, List<Widget
     ),
     centerTitle: true,
     actions: [
-      if (extraActions != null) ...extraActions,
+      ...?extraActions,
       IconButton(
-        tooltip: 'Réglages',
+        tooltip: l10n.shellSettingsLabel,
         icon: const Icon(Icons.settings_outlined),
         onPressed: () => Navigator.push(
           context,

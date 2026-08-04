@@ -2,17 +2,32 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>com.apple.security.application-groups</key>
+	<array>
+		<string>group.com.eastmarkhk.shared</string>
+	</array>
+	<!-- Pas de keychain-access-groups en Release Developer ID :
+	     cet entitlement provoque Launch failed / error 163 (AMFI kill 137).
+	     flutter_secure_storage utilise MacOsOptions(usesDataProtectionKeychain: false). -->
 	<key>com.apple.security.app-sandbox</key>
 	<true/>
 	<key>com.apple.security.network.client</key>
 	<true/>
 	<key>com.apple.security.device.audio-input</key>
 	<true/>
-	<key>com.apple.security.files.user-selected.read-only</key>
+	<key>com.apple.security.files.user-selected.read-write</key>
 	<true/>
-	<key>keychain-access-groups</key>
+	<!-- Lire les UserDefaults de l'app e-Invoicing (DMG Developer ID). -->
+	<key>com.apple.security.temporary-exception.shared-preference.read-only</key>
 	<array>
-		<string>$(AppIdentifierPrefix)com.eastmarkhk.eastmarkhkCrm</string>
+		<string>com.eastmarkhk.einvoicing</string>
+	</array>
+	<!-- Prefs + secret FTP fallback d'e-Invoicing (mode distant). -->
+	<key>com.apple.security.temporary-exception.files.home-relative-path.read-only</key>
+	<array>
+		<string>/Library/Containers/com.eastmarkhk.einvoicing/Data/Library/Preferences/</string>
+		<string>/Library/Containers/com.eastmarkhk.einvoicing/Data/Library/Application Support/com.eastmarkhk.einvoicing/</string>
+		<string>/Library/Preferences/com.eastmarkhk.einvoicing.plist</string>
 	</array>
 </dict>
 </plist>

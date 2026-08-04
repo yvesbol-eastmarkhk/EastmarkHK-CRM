@@ -3,13 +3,17 @@ import 'package:flutter/material.dart';
 import '../core/data/messaging_platforms.dart';
 import '../core/db/app_database.dart';
 import '../core/models/models.dart';
+import '../core/services/remote_crm_sync_service.dart';
 import '../core/utils/formatters.dart';
 import '../core/utils/task_display.dart';
 import '../core/widgets/company_avatar.dart';
+import '../core/widgets/company_picker_field.dart';
 import '../core/widgets/log_interaction_sheet.dart';
+import '../l10n/gen/app_localizations.dart';
 import '../state/crm_workspace_state.dart';
 import '../theme/app_theme.dart';
 import '../theme/crm_tokens.dart';
+import '../widgets/messaging_brand_badge.dart';
 import 'crm_workspace_banner.dart';
 
 /// Panneau droit « Aujourd'hui » — focalisé sur la relance (Attio / Pipedrive).
@@ -104,17 +108,18 @@ class _TodayActionPanelState extends State<TodayActionPanel> {
   Future<bool> _confirmDelete() async {
     final t = _task;
     if (t == null) return false;
+    final l10n = AppLocalizations.of(context);
     return await showDialog<bool>(
           context: context,
           builder: (ctx) => AlertDialog(
-            title: const Text('Supprimer cette relance ?'),
-            content: Text('« ${t.title} » sera retirée de votre file.'),
+            title: Text(l10n.queueDeleteTitle),
+            content: Text(l10n.queueRemoveBody(t.title)),
             actions: [
-              TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Annuler')),
+              TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(l10n.commonCancel)),
               FilledButton(
                 onPressed: () => Navigator.pop(ctx, true),
                 style: FilledButton.styleFrom(backgroundColor: Theme.of(ctx).colorScheme.error),
-                child: const Text('Supprimer'),
+                child: Text(l10n.commonDelete),
               ),
             ],
           ),
@@ -137,6 +142,7 @@ class _TodayActionPanelState extends State<TodayActionPanel> {
     t.doneAt = nowIso();
     t.updatedAt = nowIso();
     await AppDatabase.instance.upsertTask(t);
+    await RemoteCrmSyncService.instance.flushPendingPush();
     widget.workspace.clearSelection();
     widget.onRefresh();
   }
@@ -161,26 +167,24 @@ class _TodayActionPanelState extends State<TodayActionPanel> {
     if (t == null) return;
     final companies = await AppDatabase.instance.companies();
     if (!mounted || companies.isEmpty) return;
+    final l10n = AppLocalizations.of(context);
     String? picked = t.companyId;
     final ok = await showDialog<bool>(
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setLocal) => AlertDialog(
-          title: const Text('Associer à un client'),
-          content: DropdownButtonFormField<String>(
-            value: picked,
-            decoration: const InputDecoration(labelText: 'Client'),
-            items: [
-              for (final c in companies)
-                DropdownMenuItem(value: c.id, child: Text(c.name)),
-            ],
-            onChanged: (v) => setLocal(() => picked = v),
+          title: Text(l10n.linkClientTitle),
+          content: CompanyPickerField(
+            companies: companies,
+            selectedId: picked,
+            label: l10n.linkClientLabel,
+            onSelected: (v) => setLocal(() => picked = v),
           ),
           actions: [
-            TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Annuler')),
+            TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(l10n.commonCancel)),
             FilledButton(
               onPressed: picked != null ? () => Navigator.pop(ctx, true) : null,
-              child: const Text('Enregistrer'),
+              child: Text(l10n.commonSave),
             ),
           ],
         ),
@@ -197,6 +201,7 @@ class _TodayActionPanelState extends State<TodayActionPanel> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final border = Theme.of(context).crmBorder;
     if (_loading) {
       return const Center(child: CircularProgressIndicator(strokeWidth: 2));
@@ -205,7 +210,7 @@ class _TodayActionPanelState extends State<TodayActionPanel> {
     if (t == null) {
       return Center(
         child: Text(
-          'Relance introuvable',
+          l10n.actionNotFound,
           style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
         ),
       );
@@ -227,15 +232,15 @@ class _TodayActionPanelState extends State<TodayActionPanel> {
             child: ListView(
               padding: const EdgeInsets.all(20),
               children: [
-                _SectionLabel('Message'),
+                _SectionLabel(l10n.actionMessage),
                 const SizedBox(height: 8),
                 TaskMessageCard(message: taskMessage(t)),
                 const SizedBox(height: 20),
-                _SectionLabel('Échéance'),
+                _SectionLabel(l10n.taskDueSubtitle),
                 const SizedBox(height: 8),
                 _RelanceCard(task: t, opportunity: _opportunity),
                 const SizedBox(height: 20),
-                _SectionLabel('Contact'),
+                _SectionLabel(l10n.actionContact),
                 const SizedBox(height: 8),
                 _ContactCard(contact: _contact),
               ],
@@ -254,7 +259,7 @@ class _TodayActionPanelState extends State<TodayActionPanel> {
                   FilledButton.icon(
                     onPressed: _logContact,
                     icon: const Icon(Icons.call_outlined, size: 18),
-                    label: const Text('Contacté — reprogrammer'),
+                    label: Text(l10n.contactedReschedule),
                   ),
                   const SizedBox(height: 10),
                 ],
@@ -270,7 +275,7 @@ class _TodayActionPanelState extends State<TodayActionPanel> {
                           textStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
                         ),
                         icon: const Icon(Icons.check_circle_outline, size: 22),
-                        label: const Text('Marquer fait'),
+                        label: Text(l10n.oppTaskMarkDone),
                       ),
                     ),
                     const SizedBox(width: 8),
@@ -281,8 +286,8 @@ class _TodayActionPanelState extends State<TodayActionPanel> {
                         foregroundColor: Theme.of(context).colorScheme.error,
                         side: BorderSide(color: Theme.of(context).colorScheme.error.withValues(alpha: 0.6)),
                       ),
-                      icon: const Icon(Icons.delete_outline, size: 20),
-                      label: const Text('Supprimer'),
+                      icon: const Icon(Icons.delete_outline, size: 20, color: Color(0xFFDC2626)),
+                      label: Text(l10n.commonDelete),
                     ),
                   ],
                 ),
@@ -310,6 +315,7 @@ class _Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final scheme = Theme.of(context).colorScheme;
     final missingClient = company == null;
     return Padding(
@@ -324,11 +330,11 @@ class _Header extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Client',
+                  l10n.linkClientLabel,
                   style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: scheme.onSurfaceVariant),
                 ),
                 Text(
-                  company?.name ?? 'Non associé',
+                  company?.name ?? l10n.actionNotLinked,
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
@@ -343,7 +349,7 @@ class _Header extends StatelessWidget {
                       padding: const EdgeInsets.only(top: 4),
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
-                    child: const Text('Associer à un client →', style: TextStyle(fontSize: 12)),
+                    child: Text('${l10n.linkClientButton} →', style: const TextStyle(fontSize: 12)),
                   )
                 else
                   TextButton(
@@ -353,15 +359,15 @@ class _Header extends StatelessWidget {
                       padding: const EdgeInsets.only(top: 4),
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
-                    child: const Text('Voir fiche complète →', style: TextStyle(fontSize: 12)),
+                    child: Text('${l10n.viewFullProfile} →', style: const TextStyle(fontSize: 12)),
                   ),
               ],
             ),
           ),
           IconButton(
-            tooltip: 'Supprimer',
+            tooltip: l10n.commonDelete,
             onPressed: onDelete,
-            icon: Icon(Icons.delete_outline, color: scheme.error.withValues(alpha: 0.8)),
+            icon: const Icon(Icons.delete_outline, color: Color(0xFFDC2626)),
           ),
         ],
       ),
@@ -441,9 +447,10 @@ class _ContactCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     if (contact == null) {
       return Text(
-        'Aucun contact — ajoutez-en depuis la fiche client.',
+        l10n.actionNoContact,
         style: TextStyle(fontSize: CrmTokens.captionSize, color: Theme.of(context).colorScheme.onSurfaceVariant),
       );
     }
@@ -466,18 +473,22 @@ class _ContactCard extends StatelessWidget {
             _ContactLink(
               icon: Icons.phone_outlined,
               label: contact!.phone!,
-              onTap: () => openExternalUrl(context, 'tel:${contact!.phone}', label: 'téléphone'),
+              onTap: () => openExternalUrl(context, 'tel:${contact!.phone}', label: l10n.commonPhone),
             ),
           ],
           if (contact!.email != null && contact!.email!.isNotEmpty)
             _ContactLink(
               icon: Icons.mail_outline,
               label: contact!.email!,
-              onTap: () => openExternalUrl(context, 'mailto:${contact!.email}', label: 'email'),
+              onTap: () => openExternalUrl(context, 'mailto:${contact!.email}', label: l10n.actionEmailLabel),
             ),
           for (final ch in channels)
             _ContactLink(
               icon: platformById(ch.platformId).icon,
+              leading: MessagingBrandBadge(
+                platform: platformById(ch.platformId),
+                size: 18,
+              ),
               label: '${platformById(ch.platformId).label} · ${ch.value}',
               onTap: () => openMessagingChannel(context, ch),
             ),
@@ -488,9 +499,15 @@ class _ContactCard extends StatelessWidget {
 }
 
 class _ContactLink extends StatelessWidget {
-  const _ContactLink({required this.icon, required this.label, required this.onTap});
+  const _ContactLink({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+    this.leading,
+  });
 
   final IconData icon;
+  final Widget? leading;
   final String label;
   final VoidCallback onTap;
 
@@ -503,7 +520,8 @@ class _ContactLink extends StatelessWidget {
         borderRadius: BorderRadius.circular(4),
         child: Row(
           children: [
-            Icon(icon, size: 16, color: Theme.of(context).colorScheme.primary),
+            leading ??
+                Icon(icon, size: 16, color: Theme.of(context).colorScheme.primary),
             const SizedBox(width: 8),
             Expanded(child: Text(label, style: const TextStyle(fontSize: 13))),
           ],

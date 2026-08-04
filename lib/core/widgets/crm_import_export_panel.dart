@@ -1,15 +1,14 @@
 import 'dart:io';
 
-import 'package:cross_file/cross_file.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:share_plus/share_plus.dart';
 
 import '../db/app_database.dart';
 import '../models/models.dart';
 import '../services/crm_data_exchange.dart';
 import '../screens/company_detail_screen.dart';
+import '../../l10n/gen/app_localizations.dart';
+import '../utils/file_export.dart';
 
 /// Import / export CSV et vCard — utilisé depuis Réglages et le tableau de bord.
 class CrmImportExportPanel extends StatelessWidget {
@@ -26,15 +25,25 @@ class CrmImportExportPanel extends StatelessWidget {
     });
   }
 
-  Future<void> _exportCsv(BuildContext context, String name, Future<String> Function() build) async {
+  Future<void> _exportCsv(
+    BuildContext context,
+    String name,
+    Future<String> Function() build,
+  ) async {
+    final l10n = AppLocalizations.of(context);
     try {
       final csv = await build();
-      final dir = await getTemporaryDirectory();
-      final file = File('${dir.path}/$name');
-      await file.writeAsString(csv);
-      await Share.shareXFiles([XFile(file.path)], text: 'Export EastmarkHK CRM — $name');
+      // L'utilisateur choisit le dossier / le nom — pas de fichier temporaire imposé.
+      final path = await FileExport.saveText(
+        suggestedName: name,
+        contents: csv,
+        extensions: const ['csv'],
+      );
+      if (path == null || !context.mounted) return;
+      await _snack(context, l10n.importExported(path));
     } catch (e) {
-      await _snack(context, 'Export impossible : $e');
+      if (!context.mounted) return;
+      await _snack(context, l10n.importExportFailed(e.toString()));
     }
   }
 
@@ -43,6 +52,7 @@ class CrmImportExportPanel extends StatelessWidget {
     String label,
     Future<ImportResult> Function(String) importer,
   ) async {
+    final l10n = AppLocalizations.of(context);
     try {
       final typeGroup = XTypeGroup(label: 'csv', extensions: ['csv', 'txt']);
       final file = await openFile(acceptedTypeGroups: [typeGroup]);
@@ -54,36 +64,36 @@ class CrmImportExportPanel extends StatelessWidget {
       final err = result.errors.isEmpty ? '' : '\n${result.errors.take(3).join('\n')}';
       await _snack(
         context,
-        '$label : ${result.imported} importé(s), ${result.skipped} ignoré(s).$err',
+        l10n.importResult(label, result.imported, result.skipped) + err,
       );
     } catch (e) {
-      await _snack(context, 'Import impossible : $e');
+      if (!context.mounted) return;
+      await _snack(context, l10n.importFailed(e.toString()));
     }
   }
 
   Future<void> _importVCard(BuildContext context) async {
+    final l10n = AppLocalizations.of(context);
     final companies = await AppDatabase.instance.companies();
     if (!context.mounted) return;
     if (companies.isEmpty) {
-      await _snack(context, 'Créez d\'abord un client pour y rattacher les contacts vCard.');
+      await _snack(context, l10n.importNeedClientFirst);
       return;
     }
     String? companyId = companies.length == 1 ? companies.first.id : null;
-    if (companyId == null) {
-      companyId = await showDialog<String>(
-        context: context,
-        builder: (ctx) => SimpleDialog(
-          title: const Text('Client cible'),
-          children: [
-            for (final c in companies)
-              SimpleDialogOption(
-                onPressed: () => Navigator.pop(ctx, c.id),
-                child: Text(c.name),
-              ),
-          ],
-        ),
-      );
-    }
+    companyId ??= await showDialog<String>(
+      context: context,
+      builder: (ctx) => SimpleDialog(
+        title: Text(l10n.importTargetClient),
+        children: [
+          for (final c in companies)
+            SimpleDialogOption(
+              onPressed: () => Navigator.pop(ctx, c.id),
+              child: Text(c.name),
+            ),
+        ],
+      ),
+    );
     if (companyId == null || !context.mounted) return;
     try {
       final typeGroup = XTypeGroup(label: 'vcard', extensions: ['vcf', 'vcard']);
@@ -93,9 +103,10 @@ class CrmImportExportPanel extends StatelessWidget {
       final result = await CrmDataExchange.importVCard(content, companyId: companyId);
       onChanged?.call();
       if (!context.mounted) return;
-      await _snack(context, 'vCard : ${result.imported} contact(s) importé(s).');
+      await _snack(context, l10n.importVcardResult(result.imported));
     } catch (e) {
-      await _snack(context, 'Import vCard impossible : $e');
+      if (!context.mounted) return;
+      await _snack(context, l10n.importVcardFailed(e.toString()));
     }
   }
 
@@ -112,6 +123,7 @@ class CrmImportExportPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     if (compact) {
       return Wrap(
         spacing: 8,
@@ -121,12 +133,12 @@ class CrmImportExportPanel extends StatelessWidget {
           FilledButton.icon(
             onPressed: () => _newClient(context),
             icon: const Icon(Icons.add_business_outlined),
-            label: const Text('Nouveau client'),
+            label: Text(l10n.companyNewButton),
           ),
           OutlinedButton.icon(
-            onPressed: () => _importCsv(context, 'Clients', CrmDataExchange.importCompaniesCsv),
+            onPressed: () => _importCsv(context, l10n.importExportClients, CrmDataExchange.importCompaniesCsv),
             icon: const Icon(Icons.upload_file_outlined),
-            label: const Text('Importer CSV'),
+            label: Text(l10n.importCsvButton),
           ),
           OutlinedButton(
             onPressed: null,
@@ -135,7 +147,7 @@ class CrmImportExportPanel extends StatelessWidget {
               children: [
                 Icon(Icons.extension_outlined, size: 18, color: Theme.of(context).disabledColor),
                 const SizedBox(width: 8),
-                Text('Modules (bientôt)', style: TextStyle(color: Theme.of(context).disabledColor)),
+                Text(l10n.importModulesSoon, style: TextStyle(color: Theme.of(context).disabledColor)),
               ],
             ),
           ),
@@ -146,7 +158,7 @@ class CrmImportExportPanel extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text('Export CSV', style: Theme.of(context).textTheme.titleSmall),
+        Text(l10n.importExportCsvTitle, style: Theme.of(context).textTheme.titleSmall),
         const SizedBox(height: 8),
         Wrap(
           spacing: 8,
@@ -155,48 +167,48 @@ class CrmImportExportPanel extends StatelessWidget {
             OutlinedButton.icon(
               onPressed: () => _exportCsv(context, 'clients.csv', CrmDataExchange.exportCompaniesCsv),
               icon: const Icon(Icons.download_outlined, size: 18),
-              label: const Text('Clients'),
+              label: Text(l10n.importExportClients),
             ),
             OutlinedButton.icon(
               onPressed: () => _exportCsv(context, 'contacts.csv', CrmDataExchange.exportContactsCsv),
               icon: const Icon(Icons.download_outlined, size: 18),
-              label: const Text('Contacts'),
+              label: Text(l10n.importExportContacts),
             ),
             OutlinedButton.icon(
               onPressed: () =>
                   _exportCsv(context, 'opportunites.csv', CrmDataExchange.exportOpportunitiesCsv),
               icon: const Icon(Icons.download_outlined, size: 18),
-              label: const Text('Opportunités'),
+              label: Text(l10n.importExportOpportunities),
             ),
           ],
         ),
         const SizedBox(height: 16),
-        Text('Import', style: Theme.of(context).textTheme.titleSmall),
+        Text(l10n.importTitle, style: Theme.of(context).textTheme.titleSmall),
         const SizedBox(height: 8),
         Wrap(
           spacing: 8,
           runSpacing: 8,
           children: [
             OutlinedButton.icon(
-              onPressed: () => _importCsv(context, 'Clients', CrmDataExchange.importCompaniesCsv),
+              onPressed: () => _importCsv(context, l10n.importExportClients, CrmDataExchange.importCompaniesCsv),
               icon: const Icon(Icons.upload_outlined, size: 18),
-              label: const Text('Clients CSV'),
+              label: Text(l10n.importClientsCsv),
             ),
             OutlinedButton.icon(
-              onPressed: () => _importCsv(context, 'Contacts', CrmDataExchange.importContactsCsv),
+              onPressed: () => _importCsv(context, l10n.importExportContacts, CrmDataExchange.importContactsCsv),
               icon: const Icon(Icons.upload_outlined, size: 18),
-              label: const Text('Contacts CSV'),
+              label: Text(l10n.importContactsCsv),
             ),
             OutlinedButton.icon(
               onPressed: () =>
-                  _importCsv(context, 'Opportunités', CrmDataExchange.importOpportunitiesCsv),
+                  _importCsv(context, l10n.importExportOpportunities, CrmDataExchange.importOpportunitiesCsv),
               icon: const Icon(Icons.upload_outlined, size: 18),
-              label: const Text('Opportunités CSV'),
+              label: Text(l10n.importOpportunitiesCsv),
             ),
             OutlinedButton.icon(
               onPressed: () => _importVCard(context),
               icon: const Icon(Icons.contact_page_outlined, size: 18),
-              label: const Text('Contacts vCard'),
+              label: Text(l10n.importContactsVCard),
             ),
           ],
         ),

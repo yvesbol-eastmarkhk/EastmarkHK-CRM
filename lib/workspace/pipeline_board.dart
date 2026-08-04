@@ -5,7 +5,9 @@ import '../core/db/app_database.dart';
 import '../core/models/models.dart';
 import '../core/screens/opportunity_dialog.dart';
 import '../core/utils/formatters.dart';
+import '../core/utils/responsive_layout.dart';
 import '../core/widgets/empty_state.dart';
+import '../l10n/gen/app_localizations.dart';
 import '../state/crm_workspace_state.dart';
 import '../theme/app_theme.dart';
 import '../theme/crm_tokens.dart';
@@ -35,6 +37,8 @@ class _PipelineBoardState extends State<PipelineBoard> {
   List<Opportunity> _opps = [];
   Map<String, String> _companyNames = {};
   bool _loading = true;
+  final _scrollController = ScrollController();
+  double _colWidth = 260;
 
   @override
   void initState() {
@@ -55,7 +59,19 @@ class _PipelineBoardState extends State<PipelineBoard> {
   void dispose() {
     PipelineSettings.instance.removeListener(_onPipelineChanged);
     widget.workspace.removeListener(_load);
+    _scrollController.dispose();
     super.dispose();
+  }
+
+  void _scrollToStage(int index) {
+    if (!_scrollController.hasClients) return;
+    final target = index * (_colWidth + 8);
+    final max = _scrollController.position.maxScrollExtent;
+    _scrollController.animateTo(
+      target.clamp(0, max),
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeOut,
+    );
   }
 
   Future<void> _load() async {
@@ -106,8 +122,11 @@ class _PipelineBoardState extends State<PipelineBoard> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final scheme = Theme.of(context).colorScheme;
     final openCount = _opps.where((o) => o.wonLost == null).length;
+    final phone = CrmLayout.isPhone(context);
+    final stages = PipelineSettings.instance.stages;
 
     if (_loading) {
       return const Center(child: CircularProgressIndicator(strokeWidth: 2));
@@ -124,9 +143,9 @@ class _PipelineBoardState extends State<PipelineBoard> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('Pipeline', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+                    Text(l10n.pipelineTitle, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
                     Text(
-                      openCount == 0 ? 'Aucune opportunité' : '$openCount ouverte${openCount > 1 ? 's' : ''}',
+                      openCount == 0 ? l10n.boardNoOpenOpps : l10n.boardOpenCount(openCount),
                       style: TextStyle(fontSize: CrmTokens.captionSize, color: scheme.onSurfaceVariant),
                     ),
                   ],
@@ -134,26 +153,39 @@ class _PipelineBoardState extends State<PipelineBoard> {
                 const Spacer(),
                 FilledButton(
                   onPressed: _addOpportunity,
-                  child: const Text('Nouvelle opportunité', style: TextStyle(fontSize: 12)),
+                  child: Text(l10n.pipelineNewOpportunity, style: const TextStyle(fontSize: 12)),
                 ),
               ],
             ),
           ),
+          // Sur téléphone, une seule colonne tient à l'écran : on ajoute des
+          // onglets par étape pour naviguer sans deviner qu'il faut glisser
+          // horizontalement (sinon la colonne suivante n'est visible qu'à
+          // moitié, cf. retour utilisateur — "Pipeline pas utilisable").
+          if (phone && _opps.isNotEmpty) _buildStageTabs(context, stages),
           Expanded(
             child: _opps.isEmpty
                 ? EmptyState(
                     icon: Icons.view_kanban_outlined,
-                    title: 'Pipeline vide',
-                    subtitle: 'Créez une opportunité, puis glissez-la entre les étapes.',
-                    actionLabel: 'Créer',
+                    title: l10n.pipelineBoardEmptyTitle,
+                    subtitle: l10n.pipelineBoardEmptySubtitle,
+                    actionLabel: l10n.commonCreate,
                     onAction: _addOpportunity,
                   )
-                : ListView(
-                    scrollDirection: Axis.horizontal,
-                    padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
-                    children: [
-                      for (final stage in PipelineSettings.instance.stages) _buildColumn(context, stage),
-                    ],
+                : LayoutBuilder(
+                    builder: (context, constraints) {
+                      _colWidth = phone
+                          ? constraints.maxWidth - 24
+                          : (widget.compact ? 220.0 : 260.0);
+                      return ListView(
+                        controller: _scrollController,
+                        scrollDirection: Axis.horizontal,
+                        padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+                        children: [
+                          for (final stage in stages) _buildColumn(context, stage, phone),
+                        ],
+                      );
+                    },
                   ),
           ),
         ],
@@ -161,11 +193,104 @@ class _PipelineBoardState extends State<PipelineBoard> {
     );
   }
 
-  Widget _buildColumn(BuildContext context, String stage) {
+  // Grille (2 lignes) plutôt qu'un scroll horizontal — pour que les 6 étapes
+  // soient toutes visibles dès l'ouverture, sans deviner qu'il faut glisser
+  // (retour utilisateur). Nombre de colonnes calculé pour tenir sur 2 lignes
+  // quel que soit le nombre d'étapes configurées.
+  Widget _buildStageTabs(BuildContext context, List<String> stages) {
+    final border = Theme.of(context).crmBorder;
+    // Peu d'étapes (≤3) : une seule ligne suffit déjà à tout montrer.
+    // Au-delà, 2 lignes plutôt qu'une seule très large ou un scroll caché.
+    final columns = stages.length <= 3 ? stages.length : (stages.length / 2).ceil();
+    final rows = <List<int>>[];
+    for (var i = 0; i < stages.length; i += columns) {
+      rows.add(List.generate(
+        (i + columns).clamp(0, stages.length) - i,
+        (k) => i + k,
+      ));
+    }
+    return Container(
+      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: border))),
+      padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
+      child: Column(
+        children: [
+          for (var r = 0; r < rows.length; r++) ...[
+            if (r > 0) const SizedBox(height: 6),
+            Row(
+              children: [
+                for (var c = 0; c < columns; c++) ...[
+                  if (c > 0) const SizedBox(width: 6),
+                  Expanded(
+                    child: c < rows[r].length
+                        ? _stageTabChip(context, stages[rows[r][c]], rows[r][c])
+                        : const SizedBox.shrink(),
+                  ),
+                ],
+              ],
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _stageTabChip(BuildContext context, String stage, int index) {
+    final scheme = Theme.of(context).colorScheme;
+    final color = _stageColors[stage] ?? scheme.primary;
+    final count = _opps.where((o) => o.stage == stage).length;
+    return Material(
+      color: color.withValues(alpha: 0.08),
+      borderRadius: BorderRadius.circular(CrmTokens.radiusMd),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(CrmTokens.radiusMd),
+        onTap: () => _scrollToStage(index),
+        child: Container(
+          height: 36,
+          padding: const EdgeInsets.symmetric(horizontal: 6),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(CrmTokens.radiusMd),
+            border: Border.all(color: color.withValues(alpha: 0.35)),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                width: 6,
+                height: 6,
+                decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+              ),
+              const SizedBox(width: 5),
+              Flexible(
+                child: Text(
+                  PipelineSettings.instance.labelFor(stage),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+                ),
+              ),
+              const SizedBox(width: 4),
+              // Quantité en fuchsia — attire l'œil, distincte de la couleur
+              // (neutre) de l'étape elle-même.
+              Text(
+                '$count',
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w800,
+                  color: CrmTokens.fuchsia,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildColumn(BuildContext context, String stage, bool phone) {
     final scheme = Theme.of(context).colorScheme;
     final stageOpps = _opps.where((o) => o.stage == stage).toList();
     final color = _stageColors[stage] ?? scheme.primary;
-    final colWidth = widget.compact ? 220.0 : 260.0;
+    final colWidth = _colWidth;
 
     return DragTarget<Opportunity>(
       onWillAcceptWithDetails: (d) => d.data.stage != stage,
@@ -205,16 +330,27 @@ class _PipelineBoardState extends State<PipelineBoard> {
                 ),
               ),
               Expanded(
-                child: ListView(
-                  padding: const EdgeInsets.fromLTRB(6, 0, 6, 6),
-                  children: [
-                    for (final o in stageOpps)
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 6),
-                        child: _oppTile(o, colWidth, key: ValueKey(o.id)),
+                child: stageOpps.isEmpty
+                    ? Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Text(
+                            AppLocalizations.of(context).boardNoOpenOpps,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 12, color: scheme.onSurfaceVariant),
+                          ),
+                        ),
+                      )
+                    : ListView(
+                        padding: const EdgeInsets.fromLTRB(6, 0, 6, 6),
+                        children: [
+                          for (final o in stageOpps)
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 6),
+                              child: _oppTile(o, colWidth, phone, key: ValueKey(o.id)),
+                            ),
+                        ],
                       ),
-                  ],
-                ),
               ),
             ],
           ),
@@ -223,31 +359,35 @@ class _PipelineBoardState extends State<PipelineBoard> {
     );
   }
 
-  Widget _oppTile(Opportunity o, double colWidth, {Key? key}) {
+  Widget _oppTile(Opportunity o, double colWidth, bool phone, {Key? key}) {
     return KeyedSubtree(
       key: key,
       child: _oppCard(
         o,
         onOpen: () => _openOpportunity(o),
-        dragHandle: LongPressDraggable<Opportunity>(
-        data: o,
-        delay: const Duration(milliseconds: 120),
-        feedback: Material(
-          elevation: 8,
-          color: Colors.transparent,
-          child: SizedBox(width: colWidth - 20, child: _oppCard(o, dragging: true)),
-        ),
-        childWhenDragging: Opacity(
-          opacity: 0.35,
-          child: _dragHandle(o, active: false),
-        ),
-        child: _dragHandle(o),
-        ),
+        onMoveStage: phone ? (s) => _moveStage(o, s) : null,
+        dragHandle: phone
+            ? null
+            : LongPressDraggable<Opportunity>(
+                data: o,
+                delay: const Duration(milliseconds: 120),
+                feedback: Material(
+                  elevation: 8,
+                  color: Colors.transparent,
+                  child: SizedBox(width: colWidth - 20, child: _oppCard(o, dragging: true)),
+                ),
+                childWhenDragging: Opacity(
+                  opacity: 0.35,
+                  child: _dragHandle(o, active: false),
+                ),
+                child: _dragHandle(o),
+              ),
       ),
     );
   }
 
   Widget _dragHandle(Opportunity o, {bool active = true}) {
+    final l10n = AppLocalizations.of(context);
     final scheme = Theme.of(context).colorScheme;
     final color = _stageColors[o.stage] ?? scheme.primary;
     final border = Theme.of(context).crmBorder;
@@ -265,7 +405,7 @@ class _PipelineBoardState extends State<PipelineBoard> {
           Icon(Icons.drag_indicator, size: 16, color: active ? color : scheme.outline),
           const SizedBox(width: 4),
           Text(
-            'Glisser pour déplacer',
+            l10n.pipelineDragHint,
             style: TextStyle(fontSize: 10, color: active ? color : scheme.onSurfaceVariant),
           ),
         ],
@@ -278,7 +418,9 @@ class _PipelineBoardState extends State<PipelineBoard> {
     bool dragging = false,
     VoidCallback? onOpen,
     Widget? dragHandle,
+    ValueChanged<String>? onMoveStage,
   }) {
+    final l10n = AppLocalizations.of(context);
     final scheme = Theme.of(context).colorScheme;
     final color = _stageColors[o.stage] ?? scheme.primary;
     final companyName = o.companyId == null ? null : _companyNames[o.companyId!];
@@ -317,6 +459,20 @@ class _PipelineBoardState extends State<PipelineBoard> {
                               background: color.withValues(alpha: 0.2),
                             ),
                           ),
+                          if (onMoveStage != null)
+                            PopupMenuButton<String>(
+                              icon: Icon(Icons.swap_horiz_rounded, size: 18, color: scheme.primary),
+                              tooltip: l10n.pipelineMoveTooltip,
+                              onSelected: onMoveStage,
+                              itemBuilder: (ctx) => [
+                                for (final s in PipelineSettings.instance.stages)
+                                  if (s != o.stage)
+                                    PopupMenuItem(
+                                      value: s,
+                                      child: Text(PipelineSettings.instance.labelFor(s)),
+                                    ),
+                              ],
+                            ),
                           Icon(
                             Icons.open_in_new_rounded,
                             size: 18,
@@ -356,12 +512,12 @@ class _PipelineBoardState extends State<PipelineBoard> {
                       Divider(height: 1, color: border.withValues(alpha: 0.7)),
                       const SizedBox(height: 6),
                       Text(
-                        'Créée le ${formatDateFr(o.createdAt)}',
+                        l10n.pipelineCreatedOn(formatDateFr(o.createdAt)),
                         style: TextStyle(fontSize: 10, color: scheme.onSurfaceVariant),
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        'Stade depuis le ${formatDateFr(o.stageUpdatedAt)}',
+                        l10n.pipelineStageSince(formatDateFr(o.stageUpdatedAt)),
                         style: TextStyle(fontSize: 10, color: color, fontWeight: FontWeight.w600),
                       ),
                     ],

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../l10n/gen/app_localizations.dart';
 import '../theme/app_theme.dart';
 
 /// Boutons `<` `>` pour agrandir / réduire une colonne du workspace.
@@ -21,6 +22,7 @@ class ColumnWidthControls extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final border = Theme.of(context).crmBorder;
     final disabled = Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.35);
     final iconSize = compact ? 18.0 : 20.0;
@@ -47,17 +49,17 @@ class ColumnWidthControls extends StatelessWidget {
       icon: Icons.chevron_left,
       enabled: canWider,
       onPressed: onWider,
-      tooltip: 'Élargir',
+      tooltip: l10n.colWiden,
     );
     final narrow = button(
       icon: Icons.chevron_right,
       enabled: canNarrower,
       onPressed: onNarrower,
-      tooltip: 'Réduire',
+      tooltip: l10n.colNarrow,
     );
 
     return Tooltip(
-      message: 'Largeur de cette colonne',
+      message: l10n.colWidthLabel,
       child: Container(
         decoration: BoxDecoration(
           border: Border.all(color: border),

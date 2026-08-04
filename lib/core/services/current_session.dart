@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../db/app_database.dart';
 import '../models/user_account.dart';
 import 'auth_service.dart';
+import 'device_passkey_service.dart';
 
 /// Utilisateur actif de l'application sur cet appareil. Tant qu'aucun
 /// compte n'existe (premier lancement), l'app se comporte comme si on
@@ -31,10 +32,11 @@ class CurrentSession extends ChangeNotifier {
   /// souvenir du dernier utilisateur est un confort, pas une preuve d'identité.
   bool _unlockedThisSession = false;
 
-  bool get isAdmin => _user?.isAdmin ?? false;
+  bool get isAdmin => _noAccountsYet || (_user?.isAdmin ?? false);
 
-  /// Premier lancement sans aucun compte — création admin obligatoire.
-  bool get needsBootstrap => _noAccountsYet;
+  /// Ancien flux « créer un admin pour sécuriser » — désactivé.
+  /// Sans compte on entre directement dans le CRM (mode ouvert).
+  bool get needsBootstrap => false;
 
   /// `true` si l'app doit afficher l'écran de connexion avant d'entrer dans
   /// le CRM (des comptes existent et aucun n'a encore été déverrouillé ce
@@ -43,19 +45,42 @@ class CurrentSession extends ChangeNotifier {
 
   Future<void> ensureLoaded() async {
     if (_loaded) return;
+    // Nettoie les doublons sync (yvesbol / Yvesbol) avant de restaurer la session.
+    final removed = await AppDatabase.instance.dedupeUsersByUsername();
+    for (final id in removed) {
+      try {
+        await DevicePasskeyService.removeToken(id);
+      } catch (_) {}
+    }
+    // Même nettoyage pour les sociétés (ex. import CSV réimporté, ou société
+    // créée séparément sur 2 appareils avant leur 1ʳᵉ sync) — fusionne sans
+    // perte (contacts/opportunités/tâches réattribués à la fiche gardée).
+    try {
+      await AppDatabase.instance.dedupeCompaniesByName();
+    } catch (_) {}
     final accounts = await AppDatabase.instance.users();
     _noAccountsYet = accounts.isEmpty;
+    final prefs = await SharedPreferences.getInstance();
     if (!_noAccountsYet) {
-      final prefs = await SharedPreferences.getInstance();
       final lastId = prefs.getString(_prefKey);
       if (lastId != null) {
+        UserAccount? found;
         for (final a in accounts) {
           if (a.id == lastId) {
-            _user = a;
+            found = a;
             break;
           }
         }
+        if (found != null) {
+          _user = found;
+        } else {
+          // Compte mémorisé soft-deleted ou absent — oublier.
+          await prefs.remove(_prefKey);
+          _user = null;
+        }
       }
+    } else {
+      await prefs.remove(_prefKey);
     }
     _loaded = true;
   }

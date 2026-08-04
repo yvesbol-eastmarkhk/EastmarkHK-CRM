@@ -12,6 +12,10 @@ class CrmWorkspaceState extends ChangeNotifier {
   String? activeModuleId;
   String? selectedCompanyId;
   String? selectedTaskId;
+  /// Affaire ouverte dans le panneau détail (timeline unifiée) — coexiste
+  /// avec [selectedCompanyId] mais prend le pas dessus dans le panneau
+  /// détail, pour rester dans le workspace 3-panneaux (pas de plein écran).
+  String? selectedOpportunityId;
   /// Sur « Aujourd'hui », ouvrir la fiche complète au lieu du panneau relance.
   bool todayFullRecord = false;
   int _version = 0;
@@ -21,9 +25,18 @@ class CrmWorkspaceState extends ChangeNotifier {
   void goTo(CrmSection s) {
     section = s;
     activeModuleId = null;
-    if (s != CrmSection.today && s != CrmSection.dashboard) {
+    selectedOpportunityId = null;
+    if (s != CrmSection.today) {
       selectedTaskId = null;
       todayFullRecord = false;
+    }
+    if (s == CrmSection.dashboard) {
+      // Le tableau de bord n'affiche jamais de fiche société/tâche : sans ce
+      // nettoyage, une sélection faite dans « Aujourd'hui » (auto-sélection
+      // de la 1ère tâche au chargement, qui pose aussi selectedCompanyId)
+      // restait active et le panneau affichait la fiche société à la place
+      // du dashboard en y revenant — d'où la mise en page « en pagaille ».
+      selectedCompanyId = null;
     }
     notifyListeners();
   }
@@ -31,6 +44,7 @@ class CrmWorkspaceState extends ChangeNotifier {
   void goToModule(String moduleId) {
     activeModuleId = moduleId;
     selectedTaskId = null;
+    selectedOpportunityId = null;
     todayFullRecord = false;
     notifyListeners();
   }
@@ -38,6 +52,7 @@ class CrmWorkspaceState extends ChangeNotifier {
   void selectCompany(String? id) {
     selectedCompanyId = id;
     selectedTaskId = null;
+    selectedOpportunityId = null;
     todayFullRecord = false;
     notifyListeners();
   }
@@ -45,7 +60,14 @@ class CrmWorkspaceState extends ChangeNotifier {
   void selectTask(CrmTask task) {
     selectedTaskId = task.id;
     selectedCompanyId = task.companyId;
+    selectedOpportunityId = null;
     todayFullRecord = false;
+    notifyListeners();
+  }
+
+  /// Ouvre la fiche d'affaire (timeline unifiée) dans le panneau détail.
+  void selectOpportunity(String? id) {
+    selectedOpportunityId = id;
     notifyListeners();
   }
 
@@ -57,6 +79,7 @@ class CrmWorkspaceState extends ChangeNotifier {
   void clearSelection() {
     selectedCompanyId = null;
     selectedTaskId = null;
+    selectedOpportunityId = null;
     todayFullRecord = false;
     notifyListeners();
   }

@@ -1,17 +1,23 @@
+import 'package:flutter/widgets.dart';
+
+import '../../l10n/gen/app_localizations.dart';
+
 /// Rôles — deux au départ, d'autres pourront s'ajouter (par module) plus
 /// tard sans changer le schéma (le champ reste une chaîne libre en base).
 enum UserRole {
   administrator,
   user;
 
-  String get label => switch (this) {
-        UserRole.administrator => 'Administrateur',
-        UserRole.user => 'Utilisateur',
-      };
-
   static UserRole fromDb(String? v) =>
       v == 'administrator' ? UserRole.administrator : UserRole.user;
 }
+
+/// Libellé traduit d'un rôle — voir roleLabel plutôt qu'un getter `.label`
+/// sur l'enum lui-même : un enum `const` n'a pas accès à un BuildContext.
+String roleLabel(BuildContext context, UserRole role) => switch (role) {
+      UserRole.administrator => AppLocalizations.of(context).roleAdministrator,
+      UserRole.user => AppLocalizations.of(context).roleUser,
+    };
 
 class UserAccount {
   UserAccount({

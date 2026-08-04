@@ -1,0 +1,40 @@
+name: CI
+
+# Vérification rapide sur runner Ubuntu (analyse statique + tests unitaires).
+# Pas de build mobile/desktop ici — les binaires sont produits localement
+# (tool/build_dmg.sh, tool/install_devices.sh), voir le README.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Doit rester alignée avec la version utilisée en local (voir `flutter --version`).
+  FLUTTER_VERSION: 3.47.0-0.3.pre
+  FLUTTER_CHANNEL: beta
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: ${{ env.FLUTTER_CHANNEL }}
+          cache: true
+
+      - run: flutter pub get
+
+      # Les remarques de style restent visibles dans le journal sans bloquer la
+      # livraison ; erreurs et avertissements, eux, font échouer le job.
+      - run: flutter analyze --no-fatal-infos
+
+      - run: flutter test

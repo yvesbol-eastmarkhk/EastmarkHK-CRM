@@ -6,8 +6,9 @@
 <link rel="stylesheet" href="jodit.fat.min.css">
 <script src="jodit.fat.min.js"></script>
 <style>
-  html, body { margin: 0; padding: 0; height: 100%; background: #ffffff; }
-  .jodit-container { height: 100% !important; }
+  html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #ffffff; }
+  .jodit-container { height: 100% !important; border: none !important; }
+  .jodit-workplace { overflow: auto !important; }
   .jodit-placeholder { font-style: normal; opacity: 0.55; }
 </style>
 </head>
@@ -49,11 +50,45 @@
   });
 
   function setEditorContent(html) {
-    jodit.value = html;
+    jodit.value = html || '';
+  }
+
+  function getEditorContent() {
+    return jodit.value || '';
+  }
+
+  // Vrai si la sélection navigateur actuelle est bien à l'intérieur de la
+  // zone éditable Jodit. Après un blur (ex. l'utilisateur a tapé sur le
+  // bouton micro Flutter, à côté de la WebView), la sélection peut être
+  // vide ou pointer ailleurs — il ne faut alors surtout pas insérer sur
+  // une sélection invalide (Jodit se rabat sinon sur "tout remplacer").
+  function isSelectionInEditor() {
+    try {
+      var sel = window.getSelection();
+      if (!sel || sel.rangeCount === 0) return false;
+      var node = sel.getRangeAt(0).commonAncestorContainer;
+      return jodit.editor.contains(node);
+    } catch (e) { return false; }
+  }
+
+  // Place le curseur à la toute fin du contenu existant, sans rien effacer.
+  function placeCaretAtEnd() {
+    try {
+      var editor = jodit.editor;
+      var range = document.createRange();
+      range.selectNodeContents(editor);
+      range.collapse(false);
+      var sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+    } catch (e) {}
   }
 
   function focusEditor() {
-    jodit.focus();
+    try {
+      jodit.focus();
+      if (!isSelectionInEditor()) placeCaretAtEnd();
+    } catch (e) {}
   }
 
   function escapePlainText(text) {
@@ -66,7 +101,25 @@
 
   function pasteAtCursor(plainText) {
     if (!plainText) return;
+    // Filet de sécurité dictée : si la sélection s'est perdue (bouton
+    // micro Flutter, va-et-vient de focus), on continue à la fin du texte
+    // au lieu de remplacer tout le contenu existant.
+    if (!isSelectionInEditor()) placeCaretAtEnd();
     jodit.selection.insertHTML(escapePlainText(plainText));
+  }
+
+  // Dictée : ajoute toujours le texte à la toute fin du contenu, en
+  // manipulant directement le HTML plutôt que la sélection navigateur.
+  // Le bouton micro est un widget Flutter voisin de la WebView — la
+  // sélection/curseur DOM n'est pas fiable après un stop/reprise (elle est
+  // parfois perdue, parfois "récupérée" par Jodit via un fallback interne
+  // qui sélectionne tout). En ne dépendant jamais de Selection/Range, cette
+  // fonction ne peut plus jamais effacer le texte déjà dicté.
+  function appendDictationText(plainText) {
+    if (!plainText) return;
+    var current = jodit.value || '';
+    var sep = current && !/(<br\s*\/?>|<\/p>)\s*$/i.test(current) ? ' ' : '';
+    jodit.value = current + sep + escapePlainText(plainText);
   }
 
   function copySelectionToClipboard() {

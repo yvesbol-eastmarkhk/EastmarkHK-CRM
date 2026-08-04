@@ -11,6 +11,7 @@ class CrmPage extends StatelessWidget {
     this.subtitle,
     this.actions = const [],
     this.toolbar,
+    this.showBackButton = true,
     required this.child,
   });
 
@@ -18,11 +19,18 @@ class CrmPage extends StatelessWidget {
   final String? subtitle;
   final List<Widget> actions;
   final Widget? toolbar;
+  /// À désactiver quand l'écran fournit déjà son propre retour (ex.
+  /// [CrmOverlayPage], qui a sa bannière avec flèche retour).
+  final bool showBackButton;
   final Widget child;
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    // Écran poussé via Navigator.push (pas la nav principale du workspace) :
+    // on ajoute nous-mêmes une flèche retour, CrmPage ne passant pas par un
+    // AppBar (qui l'aurait fournie automatiquement).
+    final canPop = showBackButton && Navigator.canPop(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -36,6 +44,15 @@ class CrmPage extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              if (canPop) ...[
+                IconButton(
+                  onPressed: () => Navigator.maybePop(context),
+                  icon: const Icon(Icons.arrow_back),
+                  tooltip: 'Retour',
+                  visualDensity: VisualDensity.compact,
+                ),
+                const SizedBox(width: 4),
+              ],
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

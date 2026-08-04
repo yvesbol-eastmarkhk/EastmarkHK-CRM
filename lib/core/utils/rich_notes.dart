@@ -25,6 +25,148 @@ import 'package:flutter/material.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' as html_parser;
 
+import '../../l10n/gen/app_localizations.dart';
+
+/// True si [html] est vide ou ne contient que des balises vides Jodit
+/// (`<p><br></p>`, `&nbsp;`, etc.).
+bool isBlankNotesHtml(String? html) {
+  if (html == null) return true;
+  final trimmed = html.trim();
+  if (trimmed.isEmpty) return true;
+  try {
+    final text = html_parser.parseFragment(trimmed).text ?? '';
+    return text.replaceAll(RegExp(r'[\s\u00A0]+'), '').isEmpty;
+  } catch (_) {
+    return trimmed.isEmpty;
+  }
+}
+
+/// Renvoie [html] trimé, ou `null` s'il est vide / sans contenu visible.
+String? notesHtmlOrNull(String? html) {
+  final trimmed = html?.trim();
+  if (trimmed == null || isBlankNotesHtml(trimmed)) return null;
+  return trimmed;
+}
+
+/// Texte brut d'une note HTML (aperçu liste, recherche…) — sans balises.
+String notesPlainText(String? html) {
+  if (html == null || html.trim().isEmpty) return '';
+  try {
+    final text = html_parser.parseFragment(html).text ?? '';
+    return text.replaceAll(RegExp(r'[\s\u00A0]+'), ' ').trim();
+  } catch (_) {
+    return html.replaceAll(RegExp(r'<[^>]*>'), ' ').replaceAll(RegExp(r'\s+'), ' ').trim();
+  }
+}
+
+/// Marqueur du titre produit dans une description de ligne devis/facture.
+const kLineTitleAttr = 'data-emhk-line-title';
+
+String _escapeHtmlAttr(String s) => s
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;');
+
+/// Compose HTML ligne : titre produit (fort, marqué) + corps Jodit.
+String composeLineDescriptionHtml({
+  required String title,
+  required String bodyHtml,
+}) {
+  final t = title.trim();
+  final titlePart = t.isEmpty
+      ? ''
+      : '<p $kLineTitleAttr="1"><strong>${_escapeHtmlAttr(t)}</strong></p>';
+  var body = bodyHtml.trim();
+  // Retire un éventuel titre déjà présent dans le corps.
+  body = splitLineDescriptionHtml(body).bodyHtml.trim();
+  if (isBlankNotesHtml(body)) return titlePart;
+  if (titlePart.isEmpty) return body;
+  return '$titlePart$body';
+}
+
+/// Découpe une description de ligne en titre apparent + corps HTML.
+({String title, String bodyHtml}) splitLineDescriptionHtml(String? html) {
+  final raw = (html ?? '').trim();
+  if (raw.isEmpty) return (title: '', bodyHtml: '');
+
+  // Format actuel : <p data-emhk-line-title="1"><strong>…</strong></p>…
+  try {
+    final fragment = html_parser.parseFragment(raw);
+    String title = '';
+    final bodyNodes = <dom.Node>[];
+    for (final node in fragment.nodes) {
+      if (node is dom.Element &&
+          node.localName == 'p' &&
+          node.attributes[kLineTitleAttr] == '1' &&
+          title.isEmpty) {
+        title = node.text.replaceAll(RegExp(r'\s+'), ' ').trim();
+        continue;
+      }
+      bodyNodes.add(node);
+    }
+    if (title.isNotEmpty) {
+      return (title: title, bodyHtml: _serializeHtmlNodes(bodyNodes));
+    }
+  } catch (_) {}
+
+  // Ancien format plain : « Nom (REF)\nDescription… »
+  if (!raw.contains('<')) {
+    final nl = raw.indexOf('\n');
+    if (nl >= 0) {
+      return (
+        title: raw.substring(0, nl).trim(),
+        bodyHtml: '<p>${_escapeHtmlAttr(raw.substring(nl + 1).trim())}</p>',
+      );
+    }
+    return (title: raw, bodyHtml: '');
+  }
+
+  // HTML sans marqueur : premier <p><strong>…</strong></p> = titre.
+  try {
+    final fragment = html_parser.parseFragment(raw);
+    String title = '';
+    final bodyNodes = <dom.Node>[];
+    for (final node in fragment.nodes) {
+      if (title.isEmpty &&
+          node is dom.Element &&
+          node.localName == 'p' &&
+          node.children.length == 1 &&
+          node.children.first.localName == 'strong') {
+        title = node.text.replaceAll(RegExp(r'\s+'), ' ').trim();
+        continue;
+      }
+      bodyNodes.add(node);
+    }
+    if (title.isNotEmpty) {
+      return (title: title, bodyHtml: _serializeHtmlNodes(bodyNodes));
+    }
+  } catch (_) {}
+
+  return (title: '', bodyHtml: raw);
+}
+
+String _serializeHtmlNodes(List<dom.Node> nodes) {
+  final buf = StringBuffer();
+  for (final n in nodes) {
+    if (n is dom.Element) {
+      buf.write(n.outerHtml);
+    } else if (n is dom.Text) {
+      buf.write(n.data);
+    }
+  }
+  return buf.toString().trim();
+}
+
+/// Aperçu lecture seule d'une note HTML (client, tâche…).
+Widget buildNotesPreview(BuildContext context, String html, {TextStyle? style}) {
+  final base = style ?? Theme.of(context).textTheme.bodyMedium ?? const TextStyle();
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: buildRichNoteBlocks(context, html, base),
+  );
+}
+
 /// Balises traitées comme des blocs (leur propre ligne/widget) — tout le
 /// reste est considéré comme du texte en ligne et regroupé en paragraphes.
 const _blockTags = {
@@ -437,10 +579,11 @@ const richNoteColors = <Color>[
 /// dépendance externe, juste une palette fixe suffisante pour annoter un
 /// texte (urgent en rouge, à valider en orange…).
 Future<Color?> showRichNoteColorPicker(BuildContext context) {
+  final l10n = AppLocalizations.of(context);
   return showDialog<Color>(
     context: context,
     builder: (ctx) => AlertDialog(
-      title: const Text('Couleur du texte'),
+      title: Text(l10n.richColorPickerTitle),
       content: Wrap(
         spacing: 10,
         runSpacing: 10,
@@ -454,7 +597,7 @@ Future<Color?> showRichNoteColorPicker(BuildContext context) {
         ],
       ),
       actions: [
-        TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Annuler')),
+        TextButton(onPressed: () => Navigator.pop(ctx), child: Text(l10n.commonCancel)),
       ],
     ),
   );

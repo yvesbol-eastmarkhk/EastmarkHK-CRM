@@ -17,6 +17,7 @@ class Company {
     this.notes,
     this.country,
     this.addressJson,
+    this.einvoiceCustomerUuid,
     required this.createdAt,
     required this.updatedAt,
     this.deletedAt,
@@ -31,6 +32,10 @@ class Company {
   String? notes;
   String? country;
   String? addressJson;
+
+  /// UUID du customer e-Invoicing lié — lien stable quand le pays n'a pas
+  /// de n° fiscal (HK…) ou quand le nom commercial diverge.
+  String? einvoiceCustomerUuid;
   final String createdAt;
   String updatedAt;
   String? deletedAt;
@@ -45,6 +50,7 @@ class Company {
         'notes': notes,
         'country': country,
         'address_json': addressJson,
+        'einvoice_customer_uuid': einvoiceCustomerUuid,
         'created_at': createdAt,
         'updated_at': updatedAt,
         'deleted_at': deletedAt,
@@ -63,6 +69,7 @@ class Company {
         notes: m['notes'] as String?,
         country: m['country'] as String?,
         addressJson: m['address_json'] as String?,
+        einvoiceCustomerUuid: m['einvoice_customer_uuid'] as String?,
         createdAt: m['created_at'] as String,
         updatedAt: m['updated_at'] as String,
         deletedAt: m['deleted_at'] as String?,

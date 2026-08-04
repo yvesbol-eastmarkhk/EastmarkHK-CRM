@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../l10n/gen/app_localizations.dart';
 import '../services/pipeline_settings.dart';
 import '../../theme/app_theme.dart';
 import '../../theme/crm_tokens.dart';
@@ -47,16 +48,17 @@ class _PipelineScreenState extends State<PipelineScreen> {
   Future<void> _addOpportunity() async {
     final title = TextEditingController();
     final amount = TextEditingController();
+    final l10n = AppLocalizations.of(context);
     final ok = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Nouvelle opportunité'),
+        title: Text(l10n.pipelineNewOpportunity),
         content: SizedBox(
-          width: 420,
+          width: 560,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              DictationField(controller: title, label: 'Titre', autofocus: true),
+              DictationField(controller: title, label: l10n.pipelineTitleLabel, autofocus: true),
               const SizedBox(height: 12),
               TextField(
                 controller: amount,
@@ -64,7 +66,7 @@ class _PipelineScreenState extends State<PipelineScreen> {
                 keyboardType: const TextInputType.numberWithOptions(decimal: true),
                 inputFormatters: [AmountInputFormatter()],
                 decoration: InputDecoration(
-                  labelText: 'Montant',
+                  labelText: l10n.pipelineAmountLabel,
                   prefixText: '${CurrencySettings.instance.current.symbol} ',
                 ),
               ),
@@ -72,8 +74,8 @@ class _PipelineScreenState extends State<PipelineScreen> {
           ),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Annuler')),
-          FilledButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Créer')),
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(l10n.commonCancel)),
+          FilledButton(onPressed: () => Navigator.pop(ctx, true), child: Text(l10n.commonCreate)),
         ],
       ),
     );
@@ -109,6 +111,7 @@ class _PipelineScreenState extends State<PipelineScreen> {
   Widget _oppCard(BuildContext context, Opportunity o, {bool dragging = false}) {
     final scheme = Theme.of(context).colorScheme;
     final color = _stageColors[o.stage] ?? scheme.primary;
+    final l10n = AppLocalizations.of(context);
     return Card(
       elevation: dragging ? 6 : 0,
       color: scheme.surface,
@@ -145,7 +148,7 @@ class _PipelineScreenState extends State<PipelineScreen> {
               ),
             ),
             PopupMenuButton<String>(
-              tooltip: 'Déplacer',
+              tooltip: l10n.pipelineMoveTooltip,
               icon: const Icon(Icons.more_vert, size: 18),
               onSelected: (s) => _moveStage(o, s),
               itemBuilder: (_) => [
@@ -164,21 +167,21 @@ class _PipelineScreenState extends State<PipelineScreen> {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final openCount = _opps.where((o) => o.wonLost == null).length;
+    final l10n = AppLocalizations.of(context);
     return CrmPage(
-      title: 'Pipeline',
+      title: l10n.pipelineTitle,
       subtitle: openCount == 0
-          ? 'Aucune opportunité ouverte'
-          : '$openCount opportunité${openCount > 1 ? 's' : ''} ouverte${openCount > 1 ? 's' : ''}',
-      actions: [CrmPrimaryButton(label: 'Nouvelle opportunité', onPressed: _addOpportunity)],
+          ? l10n.pipelineNoOpen
+          : l10n.pipelineOpenCount(openCount),
+      actions: [CrmPrimaryButton(label: l10n.pipelineNewOpportunity, onPressed: _addOpportunity)],
       child: _loading
           ? const Center(child: CircularProgressIndicator())
           : _opps.isEmpty
               ? EmptyState(
                   icon: Icons.view_kanban_outlined,
-                  title: 'Votre pipeline est vide',
-                  subtitle:
-                      'Créez une opportunité puis glissez-la d\'étape en étape.',
-                  actionLabel: 'Nouvelle opportunité',
+                  title: l10n.pipelineEmptyTitle,
+                  subtitle: l10n.pipelineEmptySubtitle,
+                  actionLabel: l10n.pipelineNewOpportunity,
                   onAction: _addOpportunity,
                 )
               : ListView(

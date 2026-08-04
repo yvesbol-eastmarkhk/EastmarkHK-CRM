@@ -1,10 +1,13 @@
+import 'dart:io' show Platform;
 import 'dart:math' as math;
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 
-import '../constants/crm_constants.dart';
+import '../../l10n/gen/app_localizations.dart';
 import '../db/app_database.dart';
 import '../models/models.dart';
+import '../services/ai_assistant_service.dart';
 import '../services/current_session.dart';
 import '../services/currency_settings.dart';
 import '../services/pipeline_settings.dart';
@@ -13,7 +16,7 @@ import '../utils/responsive_form.dart';
 import '../widgets/dictation_field.dart';
 import '../widgets/jodit_editor.dart';
 import '../../modules/invoicing/invoicing_module.dart';
-import '../../platform/entitlement_service.dart';
+import '../modules/module_registry.dart';
 import '../../theme/app_theme.dart';
 
 /// Dialogue création / édition d'une opportunité (Jodit, relance, stade…).
@@ -29,6 +32,10 @@ Future<bool> showOpportunityDialog(
   String? savedNotesHtml = existing?.notes;
   var stage = existing?.stage ?? 'lead';
   var probability = existing?.probability ?? 50;
+  var aiBusy = false;
+  // Assistant IA (Apple Foundation Models) : macOS uniquement, et seulement
+  // pour la création — pas de réécriture d'une opportunité existante.
+  final aiAvailable = !kIsWeb && Platform.isMacOS && existing == null;
   DateTime? expectedClose;
   if (existing?.expectedClose != null) {
     final parsed = DateTime.tryParse(existing!.expectedClose!);
@@ -50,10 +57,10 @@ Future<bool> showOpportunityDialog(
       }
     }
   }
-  if (!context.mounted) return false;
   await PipelineSettings.instance.ensureLoaded();
   final pipelineStages = PipelineSettings.instance.stages;
   final stageLabels = PipelineSettings.instance.labels;
+  if (!context.mounted) return false;
   final dialogWidth = math.min(1100.0, MediaQuery.sizeOf(context).width * 0.95);
   final dialogHeight = math.min(760.0, MediaQuery.sizeOf(context).height * 0.88);
   final ok = await showDialog<bool>(
@@ -62,15 +69,54 @@ Future<bool> showOpportunityDialog(
     builder: (ctx) => StatefulBuilder(
       builder: (ctx, setDialogState) {
         final compact = dialogWidth < kCompactFormBreakpoint;
+        final l10n = AppLocalizations.of(ctx);
         return AlertDialog(
-          title: Text(existing == null ? 'Nouvelle opportunité' : 'Modifier l\'opportunité'),
+          title: Text(existing == null ? l10n.pipelineNewOpportunity : l10n.oppEditTitle),
           content: SizedBox(
             width: dialogWidth,
             height: dialogHeight,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                DictationField(controller: title, label: 'Titre'),
+                if (aiAvailable) ...[
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: OutlinedButton.icon(
+                      onPressed: aiBusy
+                          ? null
+                          : () async {
+                              final prompt = await _askAiPrompt(ctx);
+                              if (prompt == null || prompt.trim().isEmpty) return;
+                              setDialogState(() => aiBusy = true);
+                              final draft = await AiAssistantService.draftOpportunity(prompt);
+                              if (!ctx.mounted) return;
+                              setDialogState(() {
+                                aiBusy = false;
+                                if (draft == null) return;
+                                title.text = draft.title;
+                                if (draft.amount != null) {
+                                  amount.text = formatAmountForEditing(draft.amount);
+                                }
+                                if (draft.probability != null) probability = draft.probability!;
+                              });
+                              if (draft == null) {
+                                ScaffoldMessenger.maybeOf(ctx)?.showSnackBar(SnackBar(
+                                  content: Text(l10n.aiUnavailable),
+                                ));
+                              } else if (draft.notes.isNotEmpty) {
+                                notesKey.currentState?.setHtml(_plainTextToHtml(draft.notes));
+                              }
+                            },
+                      icon: aiBusy
+                          ? const SizedBox(
+                              width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
+                          : const Icon(Icons.auto_awesome, size: 18),
+                      label: Text(aiBusy ? l10n.aiGenerating : l10n.aiAssistant),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                ],
+                DictationField(controller: title, label: l10n.pipelineTitleLabel),
                 const SizedBox(height: 12),
                 formRowOrColumn(
                   context: context,
@@ -85,7 +131,7 @@ Future<bool> showOpportunityDialog(
                         keyboardType: const TextInputType.numberWithOptions(decimal: true),
                         inputFormatters: [AmountInputFormatter()],
                         decoration: InputDecoration(
-                          labelText: 'Montant',
+                          labelText: l10n.pipelineAmountLabel,
                           prefixText: '${CurrencySettings.instance.current.symbol} ',
                         ),
                       ),
@@ -95,8 +141,8 @@ Future<bool> showOpportunityDialog(
                       compact: compact,
                       child: DropdownButtonFormField<String>(
                         initialValue: stage,
-                        decoration:
-                            const InputDecoration(labelText: 'Stade', border: OutlineInputBorder()),
+                        decoration: InputDecoration(
+                            labelText: l10n.oppStageLabel, border: OutlineInputBorder()),
                         items: [
                           for (final s in pipelineStages)
                             DropdownMenuItem(
@@ -120,7 +166,7 @@ Future<bool> showOpportunityDialog(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          Text('Probabilité : $probability %',
+                          Text(l10n.oppProbability(probability),
                               style: Theme.of(context).textTheme.bodySmall),
                           Slider(
                             value: probability.toDouble(),
@@ -138,10 +184,10 @@ Future<bool> showOpportunityDialog(
                       compact: compact,
                       child: ListTile(
                         contentPadding: EdgeInsets.zero,
-                        title: const Text('Clôture prévue'),
+                        title: Text(l10n.oppClosePlannedLabel),
                         subtitle: Text(
                           expectedClose == null
-                              ? 'Non définie'
+                              ? l10n.oppNotSet
                               : formatDateFr(expectedClose!.toIso8601String()),
                         ),
                         trailing: IconButton(
@@ -195,7 +241,7 @@ Future<bool> showOpportunityDialog(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  hasFollowUp ? 'Relance programmée' : 'Rappel de relance',
+                                  hasFollowUp ? l10n.oppFollowupScheduled : l10n.oppFollowupReminder,
                                   style: TextStyle(
                                     fontSize: 12,
                                     fontWeight: FontWeight.w600,
@@ -206,7 +252,7 @@ Future<bool> showOpportunityDialog(
                                 Text(
                                   hasFollowUp
                                       ? formatDateFr(followUpDate!.toIso8601String())
-                                      : 'Optionnel — planifiez un suivi client',
+                                      : l10n.oppFollowupOptional,
                                   style: TextStyle(
                                     color: dueColor,
                                     fontWeight: hasFollowUp ? FontWeight.w600 : FontWeight.normal,
@@ -217,7 +263,7 @@ Future<bool> showOpportunityDialog(
                           ),
                           if (hasFollowUp)
                             IconButton(
-                              tooltip: 'Retirer la relance',
+                              tooltip: l10n.oppRemoveFollowup,
                               visualDensity: VisualDensity.compact,
                               icon: Icon(Icons.close, size: 18, color: scheme.onSurfaceVariant),
                               onPressed: () => setDialogState(() => followUpDate = null),
@@ -235,7 +281,7 @@ Future<bool> showOpportunityDialog(
                               if (picked != null) setDialogState(() => followUpDate = picked);
                             },
                             icon: const Icon(Icons.calendar_today_outlined, size: 18),
-                            label: Text(hasFollowUp ? 'Modifier' : 'Programmer'),
+                            label: Text(hasFollowUp ? l10n.commonEdit : l10n.oppSchedule),
                           ),
                         ],
                       ),
@@ -243,7 +289,7 @@ Future<bool> showOpportunityDialog(
                   },
                 ),
                 const SizedBox(height: 4),
-                Text('Détails (produit, Incoterms, conditions de paiement, tableau…)',
+                Text(l10n.oppDetailsHint,
                     style: Theme.of(context).textTheme.bodySmall),
                 const SizedBox(height: 4),
                 Expanded(
@@ -253,13 +299,13 @@ Future<bool> showOpportunityDialog(
             ),
           ),
           actions: [
-            TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Annuler')),
+            TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(l10n.commonCancel)),
             FilledButton(
               onPressed: () {
                 savedNotesHtml = notesKey.currentState?.getHtml();
                 Navigator.pop(ctx, true);
               },
-              child: Text(existing == null ? 'Créer' : 'Enregistrer'),
+              child: Text(existing == null ? l10n.commonCreate : l10n.commonSave),
             ),
           ],
         );
@@ -362,7 +408,7 @@ Future<bool> showOpportunityDialog(
     await AppDatabase.instance.softDeleteTask(existingFollowUpTask.id);
   }
 
-  if (stage == 'won' && effectiveCompanyId != null && EntitlementService.instance.isActive('invoicing')) {
+  if (stage == 'won' && effectiveCompanyId != null && ModuleRegistry.instance.isUsedInCrm('invoicing')) {
     final oppForQuote = existing ??
         Opportunity(
           id: opportunityId,
@@ -381,14 +427,15 @@ Future<bool> showOpportunityDialog(
           stageUpdatedAt: now,
         );
     if (context.mounted) {
+      final l10n = AppLocalizations.of(context);
       final create = await showDialog<bool>(
         context: context,
         builder: (ctx) => AlertDialog(
-          title: const Text('Opportunité gagnée'),
-          content: const Text('Créer un devis pré-rempli pour ce client ?'),
+          title: Text(l10n.oppWonTitle),
+          content: Text(l10n.oppCreateQuotePrompt),
           actions: [
-            TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Plus tard')),
-            FilledButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Créer le devis')),
+            TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(l10n.oppLater)),
+            FilledButton(onPressed: () => Navigator.pop(ctx, true), child: Text(l10n.oppCreateQuoteButton)),
           ],
         ),
       );
@@ -399,4 +446,56 @@ Future<bool> showOpportunityDialog(
   }
 
   return true;
+}
+
+/// Petit dialogue de saisie du besoin client pour l'assistant IA.
+/// Renvoie la description, ou null si annulé.
+Future<String?> _askAiPrompt(BuildContext context) {
+  final controller = TextEditingController();
+  final l10n = AppLocalizations.of(context);
+  return showDialog<String>(
+    context: context,
+    builder: (ctx) => AlertDialog(
+      title: Text(l10n.aiAssistant),
+      content: SizedBox(
+        width: 640,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(l10n.aiPromptHint),
+            const SizedBox(height: 12),
+            TextField(
+              controller: controller,
+              autofocus: true,
+              minLines: 3,
+              maxLines: 6,
+              decoration: InputDecoration(
+                border: const OutlineInputBorder(),
+                hintText: l10n.aiPromptExample,
+              ),
+              onSubmitted: (v) => Navigator.pop(ctx, v),
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(onPressed: () => Navigator.pop(ctx), child: Text(l10n.commonCancel)),
+        FilledButton.icon(
+          onPressed: () => Navigator.pop(ctx, controller.text),
+          icon: const Icon(Icons.auto_awesome, size: 18),
+          label: Text(l10n.aiGenerateButton),
+        ),
+      ],
+    ),
+  );
+}
+
+/// Convertit les notes texte de l'IA en HTML sûr pour l'éditeur Jodit.
+String _plainTextToHtml(String text) {
+  final escaped = text
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;');
+  return '<p>${escaped.trim().replaceAll('\n', '<br>')}</p>';
 }

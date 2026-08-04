@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../l10n/gen/app_localizations.dart';
 import '../../theme/crm_tokens.dart';
 import '../../ui/crm_data_table.dart';
 import '../../ui/crm_page.dart';
@@ -68,14 +69,15 @@ class _CompaniesScreenState extends State<CompaniesScreen> {
   }
 
   Future<void> _deleteCompany(Company c) async {
+    final l10n = AppLocalizations.of(context);
     final ok = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Supprimer ce client ?'),
+        title: Text(l10n.companyDeleteTitle),
         content: Text(c.name),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Annuler')),
-          FilledButton.tonal(onPressed: () => Navigator.pop(ctx, true), child: const Text('Supprimer')),
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(l10n.commonCancel)),
+          FilledButton.tonal(onPressed: () => Navigator.pop(ctx, true), child: Text(l10n.commonDelete)),
         ],
       ),
     );
@@ -87,37 +89,38 @@ class _CompaniesScreenState extends State<CompaniesScreen> {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context);
     return CrmPage(
-      title: 'Clients',
-      subtitle: '${_companies.length} société${_companies.length > 1 ? 's' : ''}',
-      actions: [CrmPrimaryButton(label: 'Nouveau client', onPressed: _addCompany)],
+      title: l10n.companyListTitle,
+      subtitle: l10n.companyCount(_companies.length),
+      actions: [CrmPrimaryButton(label: l10n.companyNewButton, onPressed: _addCompany)],
       toolbar: TextField(
         controller: _search,
         onChanged: (_) => _load(),
-        decoration: const InputDecoration(
-          prefixIcon: Icon(Icons.search, size: 18),
-          hintText: 'Filtrer par nom, notes…',
+        decoration: InputDecoration(
+          prefixIcon: const Icon(Icons.search, size: 18),
+          hintText: l10n.companySearchHint,
           isDense: true,
         ),
       ),
       child: _loading
           ? const Center(child: CircularProgressIndicator(strokeWidth: 2))
           : CrmDataTable<Company>(
-              columns: const [
-                CrmColumn('Client', flex: 3),
-                CrmColumn('Notes', flex: 2),
-                CrmColumn('Modifié', flex: 1),
+              columns: [
+                CrmColumn(l10n.companyColumnClient, flex: 3),
+                CrmColumn(l10n.companyColumnNotes, flex: 2),
+                CrmColumn(l10n.companyColumnModified, flex: 1),
                 CrmColumn('', width: 40),
               ],
               rows: _companies,
               onRowTap: _openCompany,
               empty: EmptyState(
                 icon: Icons.business_outlined,
-                title: _search.text.isEmpty ? 'Aucun client' : 'Aucun résultat',
+                title: _search.text.isEmpty ? l10n.companyEmptyNoName : l10n.companyEmptyNoResult,
                 subtitle: _search.text.isEmpty
-                    ? 'Ajoutez votre premier client — ou dictez-le avec le micro.'
-                    : 'Essayez un autre terme.',
-                actionLabel: _search.text.isEmpty ? 'Nouveau client' : null,
+                    ? l10n.companyEmptySubtitle
+                    : l10n.companyEmptySearchSubtitle,
+                actionLabel: _search.text.isEmpty ? l10n.companyNewButton : null,
                 onAction: _search.text.isEmpty ? _addCompany : null,
               ),
               rowBuilder: (c, _) => [
@@ -129,10 +132,11 @@ class _CompaniesScreenState extends State<CompaniesScreen> {
                       const SizedBox(width: 10),
                       Expanded(
                         child: Text(
-                          c.name.isEmpty ? '(Sans nom)' : c.name,
-                          style: const TextStyle(
+                          c.name.isEmpty ? l10n.companyWithoutName : c.name,
+                          style: TextStyle(
                             fontSize: CrmTokens.titleSize,
                             fontWeight: FontWeight.w500,
+                            color: c.name.isEmpty ? null : CrmTokens.fuchsia,
                           ),
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -160,7 +164,7 @@ class _CompaniesScreenState extends State<CompaniesScreen> {
                   child: IconButton(
                     icon: Icon(Icons.more_horiz, size: 18, color: scheme.onSurfaceVariant),
                     onPressed: () => _deleteCompany(c),
-                    tooltip: 'Supprimer',
+                    tooltip: l10n.commonDelete,
                   ),
                 ),
               ],

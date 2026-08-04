@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../l10n/gen/app_localizations.dart';
 import '../services/pipeline_settings.dart';
 
 /// Édition des étapes du pipeline — libellés et ordre, avec won/lost verrouillés.
@@ -65,19 +66,19 @@ class _PipelineSettingsDialogState extends State<_PipelineSettingsDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final openStages = _openStages;
     return AlertDialog(
-      title: const Text('Étapes du pipeline'),
+      title: Text(l10n.pipelineSettingsTitle),
       content: SizedBox(
-        width: 480,
+        width: 620,
         child: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                'Personnalisez les libellés et l\'ordre des étapes ouvertes. '
-                'Gagné et Perdu restent en fin de pipeline.',
+                l10n.pipelineSettingsHint,
                 style: Theme.of(context).textTheme.bodySmall,
               ),
               const SizedBox(height: 16),
@@ -85,7 +86,7 @@ class _PipelineSettingsDialogState extends State<_PipelineSettingsDialog> {
                 Row(
                   children: [
                     IconButton(
-                      tooltip: 'Monter',
+                      tooltip: l10n.pipelineMoveUp,
                       onPressed: i > 0
                           ? () => setState(() {
                                 final s = openStages.removeAt(i);
@@ -96,7 +97,7 @@ class _PipelineSettingsDialogState extends State<_PipelineSettingsDialog> {
                       icon: const Icon(Icons.arrow_upward, size: 18),
                     ),
                     IconButton(
-                      tooltip: 'Descendre',
+                      tooltip: l10n.pipelineMoveDown,
                       onPressed: i < openStages.length - 1
                           ? () => setState(() {
                                 final s = openStages.removeAt(i);
@@ -110,7 +111,7 @@ class _PipelineSettingsDialogState extends State<_PipelineSettingsDialog> {
                       child: TextField(
                         controller: _controllers[openStages[i]],
                         decoration: InputDecoration(
-                          labelText: 'Étape ${i + 1}',
+                          labelText: l10n.pipelineStepLabel(i + 1),
                           border: const OutlineInputBorder(),
                           isDense: true,
                         ),
@@ -118,14 +119,14 @@ class _PipelineSettingsDialogState extends State<_PipelineSettingsDialog> {
                     ),
                     if (openStages.length > 1)
                       IconButton(
-                        tooltip: 'Supprimer',
+                        tooltip: l10n.commonDelete,
                         onPressed: () => setState(() {
                           final id = openStages.removeAt(i);
                           _controllers.remove(id)?.dispose();
                           _labels.remove(id);
                           _rebuildStages(openStages);
                         }),
-                        icon: const Icon(Icons.delete_outline, size: 18),
+                        icon: const Icon(Icons.delete_outline, size: 18, color: Color(0xFFDC2626)),
                       ),
                   ],
                 ),
@@ -135,32 +136,32 @@ class _PipelineSettingsDialogState extends State<_PipelineSettingsDialog> {
                 onPressed: () => setState(() {
                   final id = 'etape_${DateTime.now().millisecondsSinceEpoch}';
                   openStages.add(id);
-                  _labels[id] = 'Nouvelle étape';
-                  _controllers[id] = TextEditingController(text: 'Nouvelle étape');
+                  _labels[id] = l10n.pipelineNewStage;
+                  _controllers[id] = TextEditingController(text: l10n.pipelineNewStage);
                   _rebuildStages(openStages);
                 }),
                 icon: const Icon(Icons.add, size: 18),
-                label: const Text('Ajouter une étape'),
+                label: Text(l10n.pipelineAddStage),
               ),
               const SizedBox(height: 16),
               TextField(
-                decoration: const InputDecoration(
-                  labelText: 'Gagné',
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  labelText: l10n.pipelineWon,
+                  border: const OutlineInputBorder(),
                   isDense: true,
                 ),
                 enabled: false,
-                controller: TextEditingController(text: _labels['won'] ?? 'Gagné'),
+                controller: TextEditingController(text: _labels['won'] ?? l10n.pipelineWon),
               ),
               const SizedBox(height: 8),
               TextField(
-                decoration: const InputDecoration(
-                  labelText: 'Perdu',
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  labelText: l10n.pipelineLost,
+                  border: const OutlineInputBorder(),
                   isDense: true,
                 ),
                 enabled: false,
-                controller: TextEditingController(text: _labels['lost'] ?? 'Perdu'),
+                controller: TextEditingController(text: _labels['lost'] ?? l10n.pipelineLost),
               ),
             ],
           ),
@@ -172,16 +173,16 @@ class _PipelineSettingsDialogState extends State<_PipelineSettingsDialog> {
             await PipelineSettings.instance.resetToDefaults();
             if (context.mounted) Navigator.pop(context);
           },
-          child: const Text('Réinitialiser'),
+          child: Text(l10n.pipelineReset),
         ),
-        TextButton(onPressed: () => Navigator.pop(context), child: const Text('Annuler')),
+        TextButton(onPressed: () => Navigator.pop(context), child: Text(l10n.commonCancel)),
         FilledButton(
           onPressed: () async {
             _syncLabelsFromControllers();
             await PipelineSettings.instance.setStages(_stages, _labels);
             if (context.mounted) Navigator.pop(context);
           },
-          child: const Text('Enregistrer'),
+          child: Text(l10n.commonSave),
         ),
       ],
     );
