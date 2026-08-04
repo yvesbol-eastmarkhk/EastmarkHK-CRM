@@ -16,6 +16,20 @@ String truncateTaskMessage(String message, {int max = 72}) {
   return '${trimmed.substring(0, max).trim()}…';
 }
 
+/// Sous-titre liste des tâches — 3 lignes séparées pour que la date de
+/// création (24h) ne soit jamais mangée par l’ellipsis de l’échéance.
+///
+/// 1. message tronqué
+/// 2. échéance (ou « Pas d’échéance »)
+/// 3. date/heure de création
+String taskListSubtitle({
+  required String message,
+  required String dueLabel,
+  required String createdLabel,
+}) {
+  return '${truncateTaskMessage(message)}\n$dueLabel\n$createdLabel';
+}
+
 /// Heure par défaut si l'utilisateur ne choisit pas d'heure :
 /// - même jour → +1 h après [referenceNow]
 /// - autre jour → 09:00

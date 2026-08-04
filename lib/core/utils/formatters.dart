@@ -2,6 +2,7 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 import '../services/currency_settings.dart';
+import '../../l10n/gen/app_localizations.dart';
 
 /// Formats imposés partout dans le CRM (indépendants de la langue de
 /// l'interface) :
@@ -14,7 +15,6 @@ final _numberFormat = NumberFormat('#,##0.00', 'en_US');
 final _numberFormatNoDecimals = NumberFormat('#,##0', 'en_US');
 final _dateFormatFr = DateFormat('dd/MM/yyyy');
 final _dateTimeFormatFr = DateFormat('dd/MM/yyyy HH:mm');
-final _weekdayDateFr = DateFormat('EEE dd/MM/yyyy', 'fr_FR');
 
 /// Formate un montant avec le symbole de la devise courante, ex. "€1,234.56".
 String formatAmount(num? amount, {bool decimals = true}) {
@@ -38,10 +38,13 @@ String formatDateFr(String? iso) {
   return _dateFormatFr.format(d.toLocal());
 }
 
-/// Libellé d'échéance lisible — inclut l'heure si définie.
-/// [noDueLabel] : passer `l10n.tasksNoDue` pour l’UI localisée.
-String formatDueLabel(String? iso, {String? noDueLabel}) {
-  if (iso == null || iso.isEmpty) return noDueLabel ?? 'Sans date';
+/// Libellé d'échéance lisible — textes via [l10n], jour de semaine selon [locale].
+String formatDueLabel(
+  String? iso,
+  AppLocalizations l10n, {
+  String locale = 'en',
+}) {
+  if (iso == null || iso.isEmpty) return l10n.tasksNoDue;
   final parsed = DateTime.tryParse(iso);
   if (parsed == null) return iso;
   final local = parsed.toLocal();
@@ -53,18 +56,28 @@ String formatDueLabel(String? iso, {String? noDueLabel}) {
   final timeStr = local.hour != 0 || local.minute != 0
       ? ' · ${DateFormat('HH:mm').format(local)}'
       : '';
+  final dateWithTime = '$dateStr$timeStr';
   if (diff < 0) {
-    final days = -diff;
-    return 'En retard · $days j · $dateStr$timeStr';
+    return l10n.dueLabelOverdue(-diff, dateWithTime);
   }
-  if (diff == 0) return 'Aujourd\'hui · $dateStr$timeStr';
-  if (diff == 1) return 'Demain · $dateStr$timeStr';
-  if (diff <= 7) return '${_weekdayDateFr.format(local)} · dans $diff j$timeStr';
-  return '${_weekdayDateFr.format(local)} · dans $diff j$timeStr';
+  if (diff == 0) return l10n.dueLabelToday(dateWithTime);
+  if (diff == 1) return l10n.dueLabelTomorrow(dateWithTime);
+  // Jour de semaine selon la langue UI — repli jj/mm/aaaa si locale intl absente.
+  String weekdayDate;
+  try {
+    weekdayDate = DateFormat('EEE dd/MM/yyyy', locale).format(local);
+  } catch (_) {
+    weekdayDate = dateStr;
+  }
+  return l10n.dueLabelInDays(weekdayDate, diff);
 }
 
 /// En-tête de groupe pour la file « Aujourd'hui » — inclut la plage de dates.
-String formatDueGroupLabel(String bucketKey, List<String> isoDates) {
+String formatDueGroupLabel(
+  String bucketKey,
+  List<String> isoDates,
+  AppLocalizations l10n,
+) {
   if (isoDates.isEmpty) return bucketKey;
   final parsed = isoDates.map(DateTime.tryParse).whereType<DateTime>().toList();
   if (parsed.isEmpty) return bucketKey;
@@ -72,11 +85,15 @@ String formatDueGroupLabel(String bucketKey, List<String> isoDates) {
   final first = _dateFormatFr.format(parsed.first.toLocal());
   final last = _dateFormatFr.format(parsed.last.toLocal());
   return switch (bucketKey) {
-    'overdue' => 'En retard',
-    'today' => "Aujourd'hui · $first",
-    'tomorrow' => 'Demain · $first',
-    'week' => first == last ? 'Cette semaine · $first' : 'Cette semaine · $first → $last',
-    _ => first == last ? 'Plus tard · $first' : 'Plus tard · $first → $last',
+    'overdue' => l10n.queueGroupOverdue,
+    'today' => l10n.dueGroupTodayWithDate(first),
+    'tomorrow' => l10n.dueGroupTomorrowWithDate(first),
+    'week' => first == last
+        ? l10n.dueGroupWeekWithDate(first)
+        : l10n.dueGroupWeekWithRange(first, last),
+    _ => first == last
+        ? l10n.dueGroupLaterWithDate(first)
+        : l10n.dueGroupLaterWithRange(first, last),
   };
 }
 

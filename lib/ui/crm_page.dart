@@ -48,7 +48,7 @@ class CrmPage extends StatelessWidget {
                 IconButton(
                   onPressed: () => Navigator.maybePop(context),
                   icon: const Icon(Icons.arrow_back),
-                  tooltip: 'Retour',
+                  tooltip: MaterialLocalizations.of(context).backButtonTooltip,
                   visualDensity: VisualDensity.compact,
                 ),
                 const SizedBox(width: 4),

@@ -2427,6 +2427,102 @@ abstract class AppLocalizations {
   /// **'Pas d’échéance'**
   String get tasksNoDue;
 
+  /// No description provided for @dueLabelOverdue.
+  ///
+  /// In fr, this message translates to:
+  /// **'En retard · {days} j · {date}'**
+  String dueLabelOverdue(int days, String date);
+
+  /// No description provided for @dueLabelToday.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aujourd’hui · {date}'**
+  String dueLabelToday(String date);
+
+  /// No description provided for @dueLabelTomorrow.
+  ///
+  /// In fr, this message translates to:
+  /// **'Demain · {date}'**
+  String dueLabelTomorrow(String date);
+
+  /// No description provided for @dueLabelInDays.
+  ///
+  /// In fr, this message translates to:
+  /// **'{weekdayDate} · dans {days} j'**
+  String dueLabelInDays(String weekdayDate, int days);
+
+  /// No description provided for @dueGroupTodayWithDate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aujourd’hui · {date}'**
+  String dueGroupTodayWithDate(String date);
+
+  /// No description provided for @dueGroupTomorrowWithDate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Demain · {date}'**
+  String dueGroupTomorrowWithDate(String date);
+
+  /// No description provided for @dueGroupWeekWithDate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cette semaine · {date}'**
+  String dueGroupWeekWithDate(String date);
+
+  /// No description provided for @dueGroupWeekWithRange.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cette semaine · {from} → {to}'**
+  String dueGroupWeekWithRange(String from, String to);
+
+  /// No description provided for @dueGroupLaterWithDate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Plus tard · {date}'**
+  String dueGroupLaterWithDate(String date);
+
+  /// No description provided for @dueGroupLaterWithRange.
+  ///
+  /// In fr, this message translates to:
+  /// **'Plus tard · {from} → {to}'**
+  String dueGroupLaterWithRange(String from, String to);
+
+  /// No description provided for @bannerSyncNotEnabledTooltip.
+  ///
+  /// In fr, this message translates to:
+  /// **'Synchronisation non activée — cliquer pour l’activer'**
+  String get bannerSyncNotEnabledTooltip;
+
+  /// No description provided for @bannerSyncInProgressTooltip.
+  ///
+  /// In fr, this message translates to:
+  /// **'Synchronisation en cours…'**
+  String get bannerSyncInProgressTooltip;
+
+  /// No description provided for @bannerSyncErrorTooltip.
+  ///
+  /// In fr, this message translates to:
+  /// **'Erreur sync — cliquer pour réessayer'**
+  String get bannerSyncErrorTooltip;
+
+  /// No description provided for @bannerSyncLastAtTooltip.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dernière sync : {date}'**
+  String bannerSyncLastAtTooltip(String date);
+
+  /// No description provided for @bannerSyncIdleTooltip.
+  ///
+  /// In fr, this message translates to:
+  /// **'Synchroniser'**
+  String get bannerSyncIdleTooltip;
+
+  /// No description provided for @bannerCompanyPlaceholder.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre entreprise'**
+  String get bannerCompanyPlaceholder;
+
   /// No description provided for @tasksDateButton.
   ///
   /// In fr, this message translates to:

@@ -1448,5 +1448,110 @@
   "activityTaskCreated": "작업이 생성됨",
   "dictationOfflineTip": "오프라인 받아쓰기는 목소리 대신 소음(TV)을 인식하는 경우가 많습니다. Windows 설정 → 개인 정보 → 음성에서 “온라인 음성 인식”을 켠 뒤 소음을 줄이고 다시 시도하세요.",
   "dictationLanguageFallbackTip": "이 언어 변형은 Windows에 설치되어 있지 않습니다. 가까운 변형을 사용합니다. 설정 → 시간 및 언어 → 음성에서 원하는 음성 팩을 설치하세요.",
-  "dictationStarting": "받아쓰기 시작 중…"
+  "dictationStarting": "받아쓰기 시작 중…",
+  "dueLabelOverdue": "Overdue · {days} d · {date}",
+  "@dueLabelOverdue": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "dueLabelToday": "Today · {date}",
+  "@dueLabelToday": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "dueLabelTomorrow": "Tomorrow · {date}",
+  "@dueLabelTomorrow": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "dueLabelInDays": "{weekdayDate} · in {days} d",
+  "@dueLabelInDays": {
+    "placeholders": {
+      "weekdayDate": {
+        "type": "String"
+      },
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "dueGroupTodayWithDate": "Today · {date}",
+  "@dueGroupTodayWithDate": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "dueGroupTomorrowWithDate": "Tomorrow · {date}",
+  "@dueGroupTomorrowWithDate": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "dueGroupWeekWithDate": "This week · {date}",
+  "@dueGroupWeekWithDate": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "dueGroupWeekWithRange": "This week · {from} → {to}",
+  "@dueGroupWeekWithRange": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "dueGroupLaterWithDate": "Later · {date}",
+  "@dueGroupLaterWithDate": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "dueGroupLaterWithRange": "Later · {from} → {to}",
+  "@dueGroupLaterWithRange": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "bannerSyncNotEnabledTooltip": "Sync not enabled — tap to set up",
+  "bannerSyncInProgressTooltip": "Syncing…",
+  "bannerSyncErrorTooltip": "Sync error — tap to retry",
+  "bannerSyncLastAtTooltip": "Last sync: {date}",
+  "@bannerSyncLastAtTooltip": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "bannerSyncIdleTooltip": "Sync",
+  "bannerCompanyPlaceholder": "Your company"
 }

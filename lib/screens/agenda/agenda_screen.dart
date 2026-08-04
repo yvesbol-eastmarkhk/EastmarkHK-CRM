@@ -25,7 +25,8 @@ class AgendaScreen extends StatelessWidget {
     final pending = today.where((t) => t.needsApproval).length;
     const todayAccent = Color(0xFF1D4ED8);
     const upcomingAccent = Color(0xFFD97706);
-    final monthLabel = DateFormat.yMMMM('fr_FR').format(DateTime.now());
+    final locale = Localizations.localeOf(context).toString();
+    final monthLabel = DateFormat.yMMMM(locale).format(DateTime.now());
     final phone = CrmLayout.isPhone(context);
     final pad = phone
         ? const EdgeInsets.fromLTRB(16, 12, 16, 88)
@@ -55,7 +56,7 @@ class AgendaScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  DateFormat.yMMMMEEEEd('fr_FR').format(DateTime.now()),
+                  DateFormat.yMMMMEEEEd(locale).format(DateTime.now()),
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: scheme.onSurfaceVariant,
                       ),

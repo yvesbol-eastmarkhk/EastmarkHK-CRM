@@ -457,7 +457,8 @@ class _RelanceCard extends StatelessWidget {
               Text(
                 formatDueLabel(
                   task.dueDate,
-                  noDueLabel: AppLocalizations.of(context).tasksNoDue,
+                  AppLocalizations.of(context),
+                  locale: Localizations.localeOf(context).toString(),
                 ),
                 style: TextStyle(
                   fontSize: CrmTokens.captionSize,
@@ -522,7 +523,7 @@ class _ContactCard extends StatelessWidget {
                 platform: platformById(ch.platformId),
                 size: 18,
               ),
-              label: '${platformById(ch.platformId).label} · ${ch.value}',
+              label: '${platformLabel(context, ch.platformId)} · ${ch.value}',
               onTap: () => openMessagingChannel(context, ch),
             ),
         ],

@@ -1,7 +1,7 @@
 name: eastmarkhk_crm
 description: EastmarkHK CRM — contacts, pipeline, tâches, dictée, modules (facturation, scanner, stock, leads, IA, sync)
 publish_to: 'none'
-version: 1.0.2+22
+version: 1.0.2+23
 
 environment:
   sdk: ^3.12.2
@@ -130,7 +130,7 @@ msix_config:
   identity_name: EastmarkHK.CRM
   # Partner Center > Product identity > Package/Properties/Publisher :
   # publisher: CN=XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
-  msix_version: 1.0.2.22
+  msix_version: 1.0.2.23
   logo_path: assets/branding/app_icon_v3.png
   capabilities: internetClient, microphone
   languages: en-us, fr-fr, nl-nl, de-de, es-es, it-it, pt-pt, pt-br, ja-jp, ko-kr, zh-cn, th-th, vi-vn, tr-tr, pl-pl, ru-ru, ar-sa, id-id, sv-se, el-gr, da-dk, fi-fi, cs-cz, sk-sk, hu-hu, ro-ro, bg-bg, hr-hr, uk-ua

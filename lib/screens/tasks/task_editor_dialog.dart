@@ -119,7 +119,7 @@ class _TaskEditScreenState extends State<TaskEditScreen> {
     final suggested = switch (_actionType) {
       TaskActionType.chat => _channelId == null
           ? l10n.taskSuggestedMessage
-          : l10n.taskSuggestedPlatformMessage(platformById(_channelId!).label),
+          : l10n.taskSuggestedPlatformMessage(platformLabel(context, _channelId!)),
       TaskActionType.call => l10n.taskSuggestedCall,
       TaskActionType.email => l10n.taskSuggestedEmail,
       TaskActionType.meeting => l10n.taskSuggestedMeeting,
@@ -132,7 +132,7 @@ class _TaskEditScreenState extends State<TaskEditScreen> {
       l10n.taskSuggestedMeeting,
       l10n.taskSuggestedFollowup,
       if (_channelId != null)
-        l10n.taskSuggestedPlatformMessage(platformById(_channelId!).label),
+        l10n.taskSuggestedPlatformMessage(platformLabel(context, _channelId!)),
     ];
     final current = _title.text.trim();
     if (current.isEmpty || autoTitles.contains(current)) {
@@ -226,7 +226,9 @@ class _TaskEditScreenState extends State<TaskEditScreen> {
     final l10n = AppLocalizations.of(context);
     final dueLabel = _due == null
         ? l10n.taskEditorChooseDue
-        : DateFormat.yMMMMEEEEd('fr_FR').add_Hm().format(_due!);
+        : DateFormat.yMMMMEEEEd(Localizations.localeOf(context).toString())
+            .add_Hm()
+            .format(_due!);
 
     return CallbackShortcuts(
       bindings: {
@@ -413,7 +415,7 @@ class _TaskEditScreenState extends State<TaskEditScreen> {
                                   const SizedBox(width: 12),
                                   Expanded(
                                     child: Text(
-                                      p.label,
+                                      platformLabel(context, p.id),
                                       style: const TextStyle(
                                         fontWeight: FontWeight.w600,
                                       ),

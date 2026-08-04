@@ -103,7 +103,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final pendingApproval =
         open.where((t) => t.status == TaskStatus.submitted).length;
     final showInvoicing = ModuleRegistry.instance.isUsedInCrm('invoicing');
-    final monthLabel = DateFormat.yMMMM('fr_FR').format(DateTime.now());
+    final locale = Localizations.localeOf(context).toString();
+    final monthLabel = DateFormat.yMMMM(locale).format(DateTime.now());
 
     return CustomScrollView(
       slivers: [
@@ -371,7 +372,9 @@ class _ActivityRow extends StatelessWidget {
     final when = DateTime.tryParse(event.createdAt);
     final whenLabel = when == null
         ? event.createdAt
-        : DateFormat.MMMd('fr_FR').add_Hm().format(
+        : DateFormat.MMMd(Localizations.localeOf(context).toString())
+            .add_Hm()
+            .format(
               when.isUtc ? when.toLocal() : when,
             );
     return InkWell(

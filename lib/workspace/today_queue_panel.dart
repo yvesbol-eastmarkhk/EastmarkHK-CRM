@@ -194,6 +194,7 @@ class _TodayQueuePanelState extends State<TodayQueuePanel> {
     final label = formatDueGroupLabel(
       key,
       items.map((t) => t.dueDate).whereType<String>().toList(),
+      l10n,
     );
 
     return [
@@ -221,8 +222,15 @@ class _TodayQueuePanelState extends State<TodayQueuePanel> {
             titleColor: t.companyId != null && _companyNames.containsKey(t.companyId)
                 ? CrmTokens.fuchsia
                 : null,
-            subtitle:
-                '${truncateTaskMessage(taskMessage(t))}\n${formatDueLabel(t.dueDate, noDueLabel: l10n.tasksNoDue)} · ${formatDateTimeFr(t.createdAt)}',
+            subtitle: taskListSubtitle(
+              message: taskMessage(t),
+              dueLabel: formatDueLabel(
+                t.dueDate,
+                l10n,
+                locale: Localizations.localeOf(context).toString(),
+              ),
+              createdLabel: formatDateTimeFr(t.createdAt),
+            ),
             subtitleMaxLines: 3,
             accentColor: t.companyId == null
                 ? Theme.of(context).colorScheme.error

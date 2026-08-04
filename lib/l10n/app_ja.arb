@@ -1448,5 +1448,110 @@
   "activityTaskCreated": "タスクを作成しました",
   "dictationOfflineTip": "オフライン音声入力は、声ではなく周囲の音（テレビなど）を拾いがちです。Windows の設定 → プライバシー → 音声で「オンライン音声認識」をオンにし、ノイズを減らしてから再試行してください。",
   "dictationLanguageFallbackTip": "この言語バリアントは Windows にインストールされていません。近い言語を使用します。設定 → 時刻と言語 → 音声 で目的の音声パックをインストールしてください。",
-  "dictationStarting": "音声入力を開始しています…"
+  "dictationStarting": "音声入力を開始しています…",
+  "dueLabelOverdue": "期限超過 · {days}日 · {date}",
+  "@dueLabelOverdue": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "dueLabelToday": "今日 · {date}",
+  "@dueLabelToday": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "dueLabelTomorrow": "明日 · {date}",
+  "@dueLabelTomorrow": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "dueLabelInDays": "{weekdayDate} · {days}日後",
+  "@dueLabelInDays": {
+    "placeholders": {
+      "weekdayDate": {
+        "type": "String"
+      },
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "dueGroupTodayWithDate": "今日 · {date}",
+  "@dueGroupTodayWithDate": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "dueGroupTomorrowWithDate": "明日 · {date}",
+  "@dueGroupTomorrowWithDate": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "dueGroupWeekWithDate": "今週 · {date}",
+  "@dueGroupWeekWithDate": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "dueGroupWeekWithRange": "今週 · {from} → {to}",
+  "@dueGroupWeekWithRange": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "dueGroupLaterWithDate": "あとで · {date}",
+  "@dueGroupLaterWithDate": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "dueGroupLaterWithRange": "あとで · {from} → {to}",
+  "@dueGroupLaterWithRange": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "bannerSyncNotEnabledTooltip": "同期未有効 — タップして設定",
+  "bannerSyncInProgressTooltip": "同期中…",
+  "bannerSyncErrorTooltip": "同期エラー — タップして再試行",
+  "bannerSyncLastAtTooltip": "前回の同期：{date}",
+  "@bannerSyncLastAtTooltip": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "bannerSyncIdleTooltip": "同期",
+  "bannerCompanyPlaceholder": "会社名"
 }

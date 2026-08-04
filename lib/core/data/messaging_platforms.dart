@@ -227,10 +227,11 @@ Future<void> openMessagingChannel(BuildContext context, MessagingChannel channel
 /// visionneuse de contact pour l'email et le téléphone.
 Future<void> openExternalUrl(BuildContext context, String url, {String? label}) async {
   final messenger = ScaffoldMessenger.of(context);
+  final l10n = AppLocalizations.of(context);
   final launched = await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
   if (!launched) {
     messenger.showSnackBar(
-      SnackBar(content: Text("Impossible d'ouvrir${label != null ? ' $label' : ''}.")),
+      SnackBar(content: Text(l10n.messagingCannotOpen(label ?? ''))),
     );
   }
 }

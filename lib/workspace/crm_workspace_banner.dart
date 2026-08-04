@@ -110,12 +110,13 @@ class _CrmWorkspaceBannerState extends State<CrmWorkspaceBanner> {
   }
 
   Widget _syncButton(ColorScheme scheme) {
+    final l10n = AppLocalizations.of(context);
     if (!_sync.remoteModeEnabled) {
       // Pas encore configurée (mot de passe sync jamais saisi) — plutôt que
       // masquer l'icône (aucun moyen de l'activer depuis l'en-tête), on la
       // garde visible en gris ; un tap ouvre Réglages pour l'activer.
       return IconButton(
-        tooltip: 'Synchronisation non activée — cliquer pour l\u2019activer',
+        tooltip: l10n.bannerSyncNotEnabledTooltip,
         visualDensity: VisualDensity.compact,
         onPressed: widget.onSettings,
         icon: Icon(Icons.cloud_outlined, size: 20, color: scheme.onSurfaceVariant),
@@ -127,12 +128,12 @@ class _CrmWorkspaceBannerState extends State<CrmWorkspaceBanner> {
         DateTime.now().difference(_sync.lastSyncAt!) < const Duration(minutes: 10);
     final showError = _sync.lastError != null && !recentOk;
     final tooltip = _sync.isSyncingVisible
-        ? 'Synchronisation en cours…'
+        ? l10n.bannerSyncInProgressTooltip
         : showError
-            ? 'Erreur sync — cliquer pour réessayer'
+            ? l10n.bannerSyncErrorTooltip
             : _sync.lastSyncAt != null
-                ? 'Dernière sync : ${_sync.lastSyncAt!.toLocal()}'
-                : 'Synchroniser';
+                ? l10n.bannerSyncLastAtTooltip('${_sync.lastSyncAt!.toLocal()}')
+                : l10n.bannerSyncIdleTooltip;
     final icon = _sync.isSyncingVisible
         ? SizedBox(
             width: 16,
@@ -173,7 +174,7 @@ class _CrmWorkspaceBannerState extends State<CrmWorkspaceBanner> {
       );
     }
     return Text(
-      'Votre entreprise',
+      AppLocalizations.of(context).bannerCompanyPlaceholder,
       textAlign: TextAlign.center,
       style: TextStyle(
         fontSize: 14,

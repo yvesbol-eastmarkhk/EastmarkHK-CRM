@@ -1448,5 +1448,110 @@
   "activityTaskCreated": "Uppgift skapad",
   "dictationOfflineTip": "Offline-diktering fångar ofta brus (TV) i stället för din röst. Aktivera ”Online-taligenkänning” i Windows-inställningar → Sekretess → Tal, minska bakgrundsljudet och försök igen.",
   "dictationLanguageFallbackTip": "Denna språkvariant är inte installerad i Windows — en nära matchning används. Installera önskat talpaket i Inställningar → Tid och språk → Tal.",
-  "dictationStarting": "Startar diktering…"
+  "dictationStarting": "Startar diktering…",
+  "dueLabelOverdue": "Overdue · {days} d · {date}",
+  "@dueLabelOverdue": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "dueLabelToday": "Today · {date}",
+  "@dueLabelToday": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "dueLabelTomorrow": "Tomorrow · {date}",
+  "@dueLabelTomorrow": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "dueLabelInDays": "{weekdayDate} · in {days} d",
+  "@dueLabelInDays": {
+    "placeholders": {
+      "weekdayDate": {
+        "type": "String"
+      },
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "dueGroupTodayWithDate": "Today · {date}",
+  "@dueGroupTodayWithDate": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "dueGroupTomorrowWithDate": "Tomorrow · {date}",
+  "@dueGroupTomorrowWithDate": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "dueGroupWeekWithDate": "This week · {date}",
+  "@dueGroupWeekWithDate": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "dueGroupWeekWithRange": "This week · {from} → {to}",
+  "@dueGroupWeekWithRange": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "dueGroupLaterWithDate": "Later · {date}",
+  "@dueGroupLaterWithDate": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "dueGroupLaterWithRange": "Later · {from} → {to}",
+  "@dueGroupLaterWithRange": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "bannerSyncNotEnabledTooltip": "Sync not enabled — tap to set up",
+  "bannerSyncInProgressTooltip": "Syncing…",
+  "bannerSyncErrorTooltip": "Sync error — tap to retry",
+  "bannerSyncLastAtTooltip": "Last sync: {date}",
+  "@bannerSyncLastAtTooltip": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "bannerSyncIdleTooltip": "Sync",
+  "bannerCompanyPlaceholder": "Your company"
 }

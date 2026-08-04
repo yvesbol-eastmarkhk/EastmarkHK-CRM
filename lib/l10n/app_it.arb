@@ -1448,5 +1448,110 @@
   "activityTaskCreated": "Attività creata",
   "dictationOfflineTip": "Dettatura offline: spesso cattura il rumore (TV) invece della voce. Attiva il «riconoscimento vocale online» in Impostazioni Windows → Privacy → Voce, riduci il rumore e riprova.",
   "dictationLanguageFallbackTip": "Questa variante di lingua non è installata su Windows: viene usata una variante simile. Installa il pacchetto vocale in Impostazioni → Ora e lingua → Voce.",
-  "dictationStarting": "Avvio della dettatura…"
+  "dictationStarting": "Avvio della dettatura…",
+  "dueLabelOverdue": "In ritardo · {days} g · {date}",
+  "@dueLabelOverdue": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "dueLabelToday": "Oggi · {date}",
+  "@dueLabelToday": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "dueLabelTomorrow": "Domani · {date}",
+  "@dueLabelTomorrow": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "dueLabelInDays": "{weekdayDate} · tra {days} g",
+  "@dueLabelInDays": {
+    "placeholders": {
+      "weekdayDate": {
+        "type": "String"
+      },
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "dueGroupTodayWithDate": "Oggi · {date}",
+  "@dueGroupTodayWithDate": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "dueGroupTomorrowWithDate": "Domani · {date}",
+  "@dueGroupTomorrowWithDate": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "dueGroupWeekWithDate": "Questa settimana · {date}",
+  "@dueGroupWeekWithDate": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "dueGroupWeekWithRange": "Questa settimana · {from} → {to}",
+  "@dueGroupWeekWithRange": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "dueGroupLaterWithDate": "Più tardi · {date}",
+  "@dueGroupLaterWithDate": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "dueGroupLaterWithRange": "Più tardi · {from} → {to}",
+  "@dueGroupLaterWithRange": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "bannerSyncNotEnabledTooltip": "Sincronizzazione non attiva — tocca per configurare",
+  "bannerSyncInProgressTooltip": "Sincronizzazione…",
+  "bannerSyncErrorTooltip": "Errore sync — tocca per riprovare",
+  "bannerSyncLastAtTooltip": "Ultima sync: {date}",
+  "@bannerSyncLastAtTooltip": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "bannerSyncIdleTooltip": "Sincronizza",
+  "bannerCompanyPlaceholder": "La tua azienda"
 }

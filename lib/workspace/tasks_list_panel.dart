@@ -134,10 +134,15 @@ class _TasksListPanelState extends State<TasksListPanel> {
                         title: t.companyId != null && _companyNames.containsKey(t.companyId)
                             ? _companyNames[t.companyId]!
                             : l10n.tasksListNoClient,
-                        subtitle:
-                            '${truncateTaskMessage(taskMessage(t))}\n'
-                            '${t.dueDate == null ? l10n.tasksNoDue : formatDueLabel(t.dueDate)}'
-                            ' · ${formatDateTimeFr(t.createdAt)}',
+                        subtitle: taskListSubtitle(
+                          message: taskMessage(t),
+                          dueLabel: formatDueLabel(
+                            t.dueDate,
+                            l10n,
+                            locale: Localizations.localeOf(context).toString(),
+                          ),
+                          createdLabel: formatDateTimeFr(t.createdAt),
+                        ),
                         subtitleMaxLines: 3,
                         accentColor: t.isDone
                             ? null

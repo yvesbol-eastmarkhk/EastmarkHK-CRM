@@ -566,7 +566,7 @@ class _IconRail extends StatelessWidget {
           (CrmSection.today, Icons.calendar_month_outlined, l10n.shellAgendaLabel),
           (CrmSection.clients, Icons.business_outlined, l10n.shellClientsLabel),
           (CrmSection.pipeline, Icons.view_kanban_outlined, l10n.pipelineTitle),
-          (CrmSection.tasks, Icons.check_circle_outline, l10n.shellTasksLabel),
+          (CrmSection.tasks, Icons.task_alt_outlined, l10n.shellTasksLabel),
         ];
         // Toutes les destinations module (ex. e-Invoicing + Produits).
         final moduleDests = ModuleRegistry.instance.navDestinations(context);
@@ -911,7 +911,7 @@ class _MobileShell extends StatelessWidget {
                     _MobileNavItem(Icons.calendar_month_outlined, l10n.shellAgendaLabel),
                     _MobileNavItem(Icons.business_outlined, l10n.shellClientsLabel),
                     _MobileNavItem(Icons.view_kanban_outlined, l10n.pipelineTitle),
-                    _MobileNavItem(Icons.check_circle_outline, l10n.shellTasksLabel),
+                    _MobileNavItem(Icons.task_alt_outlined, l10n.shellTasksLabel),
                   ],
                 ),
             ],

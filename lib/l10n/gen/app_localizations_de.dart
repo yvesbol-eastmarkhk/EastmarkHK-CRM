@@ -1289,6 +1289,77 @@ class AppLocalizationsDe extends AppLocalizations {
   String get tasksNoDue => 'No due date';
 
   @override
+  String dueLabelOverdue(int days, String date) {
+    return 'Überfällig · $days T · $date';
+  }
+
+  @override
+  String dueLabelToday(String date) {
+    return 'Heute · $date';
+  }
+
+  @override
+  String dueLabelTomorrow(String date) {
+    return 'Morgen · $date';
+  }
+
+  @override
+  String dueLabelInDays(String weekdayDate, int days) {
+    return '$weekdayDate · in $days T';
+  }
+
+  @override
+  String dueGroupTodayWithDate(String date) {
+    return 'Heute · $date';
+  }
+
+  @override
+  String dueGroupTomorrowWithDate(String date) {
+    return 'Morgen · $date';
+  }
+
+  @override
+  String dueGroupWeekWithDate(String date) {
+    return 'Diese Woche · $date';
+  }
+
+  @override
+  String dueGroupWeekWithRange(String from, String to) {
+    return 'Diese Woche · $from → $to';
+  }
+
+  @override
+  String dueGroupLaterWithDate(String date) {
+    return 'Später · $date';
+  }
+
+  @override
+  String dueGroupLaterWithRange(String from, String to) {
+    return 'Später · $from → $to';
+  }
+
+  @override
+  String get bannerSyncNotEnabledTooltip =>
+      'Sync nicht aktiviert — tippen zum Einrichten';
+
+  @override
+  String get bannerSyncInProgressTooltip => 'Synchronisierung…';
+
+  @override
+  String get bannerSyncErrorTooltip => 'Sync-Fehler — tippen zum Wiederholen';
+
+  @override
+  String bannerSyncLastAtTooltip(String date) {
+    return 'Letzte Sync: $date';
+  }
+
+  @override
+  String get bannerSyncIdleTooltip => 'Synchronisieren';
+
+  @override
+  String get bannerCompanyPlaceholder => 'Ihr Unternehmen';
+
+  @override
   String get tasksDateButton => 'Date';
 
   @override

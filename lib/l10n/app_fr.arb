@@ -562,6 +562,81 @@
   "tasksMessageHint": "Message (ex. Appeler le client, exécuter une tâche…)",
   "tasksDueLabel": "Échéance",
   "tasksNoDue": "Pas d’échéance",
+  "dueLabelOverdue": "En retard · {days} j · {date}",
+  "@dueLabelOverdue": {
+    "placeholders": {
+      "days": {"type": "int"},
+      "date": {"type": "String"}
+    }
+  },
+  "dueLabelToday": "Aujourd’hui · {date}",
+  "@dueLabelToday": {
+    "placeholders": {
+      "date": {"type": "String"}
+    }
+  },
+  "dueLabelTomorrow": "Demain · {date}",
+  "@dueLabelTomorrow": {
+    "placeholders": {
+      "date": {"type": "String"}
+    }
+  },
+  "dueLabelInDays": "{weekdayDate} · dans {days} j",
+  "@dueLabelInDays": {
+    "placeholders": {
+      "weekdayDate": {"type": "String"},
+      "days": {"type": "int"}
+    }
+  },
+  "dueGroupTodayWithDate": "Aujourd’hui · {date}",
+  "@dueGroupTodayWithDate": {
+    "placeholders": {
+      "date": {"type": "String"}
+    }
+  },
+  "dueGroupTomorrowWithDate": "Demain · {date}",
+  "@dueGroupTomorrowWithDate": {
+    "placeholders": {
+      "date": {"type": "String"}
+    }
+  },
+  "dueGroupWeekWithDate": "Cette semaine · {date}",
+  "@dueGroupWeekWithDate": {
+    "placeholders": {
+      "date": {"type": "String"}
+    }
+  },
+  "dueGroupWeekWithRange": "Cette semaine · {from} → {to}",
+  "@dueGroupWeekWithRange": {
+    "placeholders": {
+      "from": {"type": "String"},
+      "to": {"type": "String"}
+    }
+  },
+  "dueGroupLaterWithDate": "Plus tard · {date}",
+  "@dueGroupLaterWithDate": {
+    "placeholders": {
+      "date": {"type": "String"}
+    }
+  },
+  "dueGroupLaterWithRange": "Plus tard · {from} → {to}",
+  "@dueGroupLaterWithRange": {
+    "placeholders": {
+      "from": {"type": "String"},
+      "to": {"type": "String"}
+    }
+  },
+  "bannerSyncNotEnabledTooltip": "Synchronisation non activée — cliquer pour l’activer",
+  "bannerSyncInProgressTooltip": "Synchronisation en cours…",
+  "bannerSyncErrorTooltip": "Erreur sync — cliquer pour réessayer",
+  "bannerSyncLastAtTooltip": "Dernière sync : {date}",
+  "@bannerSyncLastAtTooltip": {
+    "placeholders": {
+      "date": {"type": "String"}
+    }
+  },
+  "bannerSyncIdleTooltip": "Synchroniser",
+  "bannerCompanyPlaceholder": "Votre entreprise",
   "tasksDateButton": "Date",
   "tasksTimeButton": "Heure",
   "tasksClearButton": "Effacer",

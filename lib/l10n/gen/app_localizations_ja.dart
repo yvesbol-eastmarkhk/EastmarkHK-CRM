@@ -1260,6 +1260,76 @@ class AppLocalizationsJa extends AppLocalizations {
   String get tasksNoDue => 'No due date';
 
   @override
+  String dueLabelOverdue(int days, String date) {
+    return '期限超過 · $days日 · $date';
+  }
+
+  @override
+  String dueLabelToday(String date) {
+    return '今日 · $date';
+  }
+
+  @override
+  String dueLabelTomorrow(String date) {
+    return '明日 · $date';
+  }
+
+  @override
+  String dueLabelInDays(String weekdayDate, int days) {
+    return '$weekdayDate · $days日後';
+  }
+
+  @override
+  String dueGroupTodayWithDate(String date) {
+    return '今日 · $date';
+  }
+
+  @override
+  String dueGroupTomorrowWithDate(String date) {
+    return '明日 · $date';
+  }
+
+  @override
+  String dueGroupWeekWithDate(String date) {
+    return '今週 · $date';
+  }
+
+  @override
+  String dueGroupWeekWithRange(String from, String to) {
+    return '今週 · $from → $to';
+  }
+
+  @override
+  String dueGroupLaterWithDate(String date) {
+    return 'あとで · $date';
+  }
+
+  @override
+  String dueGroupLaterWithRange(String from, String to) {
+    return 'あとで · $from → $to';
+  }
+
+  @override
+  String get bannerSyncNotEnabledTooltip => '同期未有効 — タップして設定';
+
+  @override
+  String get bannerSyncInProgressTooltip => '同期中…';
+
+  @override
+  String get bannerSyncErrorTooltip => '同期エラー — タップして再試行';
+
+  @override
+  String bannerSyncLastAtTooltip(String date) {
+    return '前回の同期：$date';
+  }
+
+  @override
+  String get bannerSyncIdleTooltip => '同期';
+
+  @override
+  String get bannerCompanyPlaceholder => '会社名';
+
+  @override
   String get tasksDateButton => 'Date';
 
   @override

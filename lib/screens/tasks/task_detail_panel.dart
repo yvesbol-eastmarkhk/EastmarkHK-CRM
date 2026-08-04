@@ -211,7 +211,7 @@ class _TaskDetailPanelState extends State<TaskDetailPanel> {
                         size: 22,
                       )
                     : Icon(_actionIcon(task), size: 16),
-                label: Text(_actionLabel(l10n, task)),
+                label: Text(_actionLabel(context, l10n, task)),
                 visualDensity: VisualDensity.compact,
               ),
             if (task.phase != null && task.phase!.isNotEmpty)
@@ -312,9 +312,9 @@ class _TaskDetailPanelState extends State<TaskDetailPanel> {
     );
   }
 
-  String _actionLabel(AppLocalizations l10n, CrmTask task) {
+  String _actionLabel(BuildContext context, AppLocalizations l10n, CrmTask task) {
     if (task.actionType == TaskActionType.chat && task.channelId != null) {
-      return platformById(task.channelId!).label;
+      return platformLabel(context, task.channelId!);
     }
     return switch (task.actionType) {
       TaskActionType.chat => l10n.taskActionMessage,
@@ -483,7 +483,9 @@ class _HistoryTile extends StatelessWidget {
     final when = DateTime.tryParse(event.createdAt);
     final whenLocal = when == null
         ? event.createdAt
-        : DateFormat.yMMMd('fr_FR').add_Hm().format(
+        : DateFormat.yMMMd(Localizations.localeOf(context).toString())
+            .add_Hm()
+            .format(
               when.isUtc ? when.toLocal() : when,
             );    final icon = switch (event.kind) {
       'document' => Icons.receipt_long_outlined,

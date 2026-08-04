@@ -600,7 +600,7 @@ class _CompanyDetailScreenState extends State<CompanyDetailScreen> with SingleTi
           : Text(formatDateFr(t.dueDate),
               style: TextStyle(color: AppTheme.dueDateColor(t.dueDate, done: t.isDone, neutral: Theme.of(context).colorScheme.onSurfaceVariant))),
       trailing: IconButton(
-        tooltip: 'Modifier',
+        tooltip: AppLocalizations.of(context).commonEdit,
         icon: const Icon(Icons.edit_outlined, size: 20, color: CrmTokens.accent),
         onPressed: () async {
           final changed = await showAddTaskDialog(

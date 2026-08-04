@@ -1251,6 +1251,76 @@ class AppLocalizationsZh extends AppLocalizations {
   String get tasksNoDue => 'No due date';
 
   @override
+  String dueLabelOverdue(int days, String date) {
+    return '逾期 · $days 天 · $date';
+  }
+
+  @override
+  String dueLabelToday(String date) {
+    return '今天 · $date';
+  }
+
+  @override
+  String dueLabelTomorrow(String date) {
+    return '明天 · $date';
+  }
+
+  @override
+  String dueLabelInDays(String weekdayDate, int days) {
+    return '$weekdayDate · $days 天后';
+  }
+
+  @override
+  String dueGroupTodayWithDate(String date) {
+    return '今天 · $date';
+  }
+
+  @override
+  String dueGroupTomorrowWithDate(String date) {
+    return '明天 · $date';
+  }
+
+  @override
+  String dueGroupWeekWithDate(String date) {
+    return '本周 · $date';
+  }
+
+  @override
+  String dueGroupWeekWithRange(String from, String to) {
+    return '本周 · $from → $to';
+  }
+
+  @override
+  String dueGroupLaterWithDate(String date) {
+    return '稍后 · $date';
+  }
+
+  @override
+  String dueGroupLaterWithRange(String from, String to) {
+    return '稍后 · $from → $to';
+  }
+
+  @override
+  String get bannerSyncNotEnabledTooltip => '未启用同步 — 点按以设置';
+
+  @override
+  String get bannerSyncInProgressTooltip => '正在同步…';
+
+  @override
+  String get bannerSyncErrorTooltip => '同步错误 — 点按重试';
+
+  @override
+  String bannerSyncLastAtTooltip(String date) {
+    return '上次同步：$date';
+  }
+
+  @override
+  String get bannerSyncIdleTooltip => '同步';
+
+  @override
+  String get bannerCompanyPlaceholder => '您的公司';
+
+  @override
   String get tasksDateButton => 'Date';
 
   @override

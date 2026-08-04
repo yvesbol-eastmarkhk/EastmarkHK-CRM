@@ -1448,5 +1448,110 @@
   "activityTaskCreated": "Taak aangemaakt",
   "dictationOfflineTip": "Offline dictee — pikt vaak lawaai (TV) op in plaats van uw stem. Zet «Online spraakherkenning» aan in Windows-instellingen → Privacy → Spraak, verminder achtergrondgeluid en probeer opnieuw.",
   "dictationLanguageFallbackTip": "Deze taalvariant is niet geïnstalleerd op Windows — er wordt een nauwe match gebruikt. Installeer het gewenste spraakpakket via Instellingen → Tijd en taal → Spraak.",
-  "dictationStarting": "Dictee starten…"
+  "dictationStarting": "Dictee starten…",
+  "dueLabelOverdue": "Te laat · {days} d · {date}",
+  "@dueLabelOverdue": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "dueLabelToday": "Vandaag · {date}",
+  "@dueLabelToday": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "dueLabelTomorrow": "Morgen · {date}",
+  "@dueLabelTomorrow": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "dueLabelInDays": "{weekdayDate} · over {days} d",
+  "@dueLabelInDays": {
+    "placeholders": {
+      "weekdayDate": {
+        "type": "String"
+      },
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "dueGroupTodayWithDate": "Vandaag · {date}",
+  "@dueGroupTodayWithDate": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "dueGroupTomorrowWithDate": "Morgen · {date}",
+  "@dueGroupTomorrowWithDate": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "dueGroupWeekWithDate": "Deze week · {date}",
+  "@dueGroupWeekWithDate": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "dueGroupWeekWithRange": "Deze week · {from} → {to}",
+  "@dueGroupWeekWithRange": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "dueGroupLaterWithDate": "Later · {date}",
+  "@dueGroupLaterWithDate": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "dueGroupLaterWithRange": "Later · {from} → {to}",
+  "@dueGroupLaterWithRange": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "bannerSyncNotEnabledTooltip": "Sync niet geactiveerd — tik om in te stellen",
+  "bannerSyncInProgressTooltip": "Bezig met synchroniseren…",
+  "bannerSyncErrorTooltip": "Syncfout — tik om opnieuw te proberen",
+  "bannerSyncLastAtTooltip": "Laatste sync: {date}",
+  "@bannerSyncLastAtTooltip": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "bannerSyncIdleTooltip": "Synchroniseren",
+  "bannerCompanyPlaceholder": "Uw bedrijf"
 }

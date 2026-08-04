@@ -174,7 +174,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     _load();
   }
 
-  List<(String name, double value)> _topClients({int limit = 5}) {
+  List<(String name, double value)> _topClients(AppLocalizations l10n, {int limit = 5}) {
     final totals = <String, double>{};
     for (final o in _opps.where((o) => o.wonLost == null && o.amount != null)) {
       if (o.companyId == null) continue;
@@ -183,7 +183,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final entries = totals.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
     return [
       for (final e in entries.take(limit))
-        (_companyNames[e.key] ?? 'Client', e.value),
+        (_companyNames[e.key] ?? l10n.shellNewClient, e.value),
     ];
   }
 
@@ -313,7 +313,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final openStages = PipelineSettings.instance.openStages;
     final stageLabels = PipelineSettings.instance.labels;
     final forecast = _forecastRevenue();
-    final topClients = _topClients();
+    final topClients = _topClients(l10n);
     final wonLostMonths = _wonLostByMonth();
     return CrmPage(
       title: widget.embedded ? l10n.dashboardTitleEmbedded : l10n.dashboardTitle,
