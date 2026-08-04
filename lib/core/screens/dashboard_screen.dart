@@ -13,6 +13,7 @@ import '../services/current_session.dart';
 import '../modules/module_registry.dart';
 import '../services/pipeline_settings.dart';
 import '../services/remote_crm_sync_service.dart';
+import '../utils/activity_labels.dart';
 import '../utils/formatters.dart';
 import '../utils/responsive_layout.dart';
 import '../utils/task_display.dart';
@@ -219,6 +220,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ActivityType.quoteSent => Icons.request_quote_outlined,
         ActivityType.reply => Icons.reply_outlined,
         ActivityType.remark => Icons.priority_high_outlined,
+        ActivityType.task => Icons.task_alt_outlined,
       };
 
   bool get _isEmpty =>
@@ -674,11 +676,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           for (var i = 0; i < _recentActivities.length; i++) ...[
                             if (i > 0)
                               Divider(height: 1, color: scheme.outlineVariant.withValues(alpha: 0.4)),
-                            Padding(
+                            Builder(builder: (context) {
+                              final a = _recentActivities[i];
+                              final label = (a.body != null && a.body!.isNotEmpty)
+                                  ? a.body!
+                                  : localizedActivityTitle(l10n, a.title);
+                              return Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                               child: Row(
                                 children: [
-                                  Icon(_activityIcon(_recentActivities[i].type),
+                                  Icon(_activityIcon(a.type),
                                       size: 18, color: scheme.onSurfaceVariant),
                                   const SizedBox(width: 12),
                                   Expanded(
@@ -686,18 +693,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          _recentActivities[i].body ?? _recentActivities[i].title,
+                                          label,
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
                                           style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
                                         ),
                                         const SizedBox(height: 2),
                                         Text(
-                                          _recentActivities[i].companyId != null &&
-                                                  _companyNames.containsKey(_recentActivities[i].companyId)
-                                              ? '${_companyNames[_recentActivities[i].companyId]} · '
-                                                  '${formatDateTimeFr(_recentActivities[i].happenedAt)}'
-                                              : formatDateTimeFr(_recentActivities[i].happenedAt),
+                                          a.companyId != null &&
+                                                  _companyNames.containsKey(a.companyId)
+                                              ? '${_companyNames[a.companyId]} · '
+                                                  '${formatDateTimeFr(a.happenedAt)}'
+                                              : formatDateTimeFr(a.happenedAt),
                                           style: TextStyle(fontSize: 12, color: scheme.onSurfaceVariant),
                                         ),
                                       ],
@@ -705,7 +712,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   ),
                                 ],
                               ),
-                            ),
+                            );
+                            }),
                           ],
                         ],
                       ),

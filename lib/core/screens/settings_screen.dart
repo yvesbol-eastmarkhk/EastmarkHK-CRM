@@ -5,6 +5,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../l10n/gen/app_localizations.dart';
+import '../constants/sync_defaults.dart';
 import '../db/app_database.dart';
 import '../services/app_locale_settings.dart';
 import '../services/company_logo_service.dart';
@@ -53,8 +54,8 @@ enum _SyncMode { local, remote }
 
 class _SettingsScreenState extends State<SettingsScreen> {
   final _companyName = TextEditingController();
-  final _syncServer = TextEditingController(text: 'https://emhk.eastmarkhk.com/crm');
-  final _syncAccount = TextEditingController(text: 'emhk@eastmarkhk.com');
+  final _syncServer = TextEditingController(text: SyncDefaults.serverUrl);
+  final _syncAccount = TextEditingController(text: SyncDefaults.account);
   final _syncPassword = TextEditingController();
 
   String _country = 'BE';
@@ -136,7 +137,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         var server = values['sync_server']!;
         // Migration crm.* → domaine unifié /crm.
         if (server.contains('crm.eastmarkhk.com')) {
-          server = 'https://emhk.eastmarkhk.com/crm';
+          server = SyncDefaults.serverUrl;
           // Persister tout de suite — sinon sync reste sur DNS mort.
           // ignore: discarded_futures
           AppDatabase.instance.setSetting('sync_server', server);
@@ -146,7 +147,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       if (values['sync_account']?.isNotEmpty ?? false) {
         var account = values['sync_account']!;
         if (account == 'crm@eastmarkhk.com') {
-          account = 'emhk@eastmarkhk.com';
+          account = SyncDefaults.account;
           // ignore: discarded_futures
           AppDatabase.instance.setSetting('sync_account', account);
         }
@@ -379,7 +380,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           decoration: InputDecoration(
                             labelText: l10n.settingsServerLabel,
                             border: const OutlineInputBorder(),
-                            hintText: 'https://emhk.eastmarkhk.com/crm',
+                            hintText: SyncDefaults.serverUrl,
                           ),
                           keyboardType: TextInputType.url,
                           enabled: remote,
@@ -389,7 +390,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           decoration: InputDecoration(
                             labelText: l10n.settingsAccountLabel,
                             border: const OutlineInputBorder(),
-                            hintText: 'emhk@eastmarkhk.com',
+                            hintText: SyncDefaults.account,
                           ),
                           keyboardType: TextInputType.emailAddress,
                           enabled: remote,
@@ -504,7 +505,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           listenable: AppLocaleSettings.instance,
                           builder: (context, _) => _SettingsRow(
                             label: l10n.settingsAppLanguageLabel,
-                            value: AppLocaleSettings.instance.currentLabel(),
+                            value: AppLocaleSettings.instance.currentLabel(l10n.systemLanguage),
                             icon: Icons.translate,
                             onTap: () => showAppLanguagePicker(context),
                           ),
@@ -513,7 +514,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           listenable: DictationSettings.instance,
                           builder: (context, _) => _SettingsRow(
                             label: l10n.settingsDictationLanguageLabel,
-                            value: DictationSettings.instance.currentLabel(),
+                            value: DictationSettings.instance.currentLabel(l10n.systemLanguage),
                             icon: Icons.mic_none_outlined,
                             onTap: () => showDictationLanguagePicker(context),
                           ),
@@ -524,7 +525,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             final c = CurrencySettings.instance.current;
                             return _SettingsRow(
                               label: l10n.settingsCurrencyLabel,
-                              value: '${c.symbol} ${c.code} — ${c.label}',
+                              value: '${c.symbol} ${c.code}',
                               leading: CountryFlagIcon(
                                 countryCode: c.flag,
                                 width: 22,

@@ -1444,5 +1444,9 @@
   "invUnlinkConfirmBody": "ਅਗਲਾ ਕੋਟੇਸ਼ਨ ਜਾਂ ਇਨਵੌਇਸ e-Invoicing ਵਿੱਚ ਕਲਾਇੰਟ ਨੂੰ ਦੁਬਾਰਾ ਚੁਣਨ ਜਾਂ ਬਣਾਉਣ ਲਈ ਕਹੇਗਾ।",
   "invUnlinkDone": "e-Invoicing ਲਿੰਕ ਹਟਾ ਦਿੱਤਾ ਗਿਆ।",
   "invAppStoreUrlMissing": "ਇਸ ਬਿਲਡ ਲਈ e-Invoicing ਅਜੇ App Store 'ਤੇ ਸੂਚੀਬੱਧ ਨਹੀਂ ਹੈ। eastmarkhk.com ਵਰਤੋ ਜਾਂ ਪਹਿਲਾਂ ਤੋਂ ਸਥਾਪਿਤ ਐਪ ਲਾਂਚ ਕਰੋ।",
-  "shellSyncNeedsPassword": "ਸਾਂਝਾ ਡੇਟਾਬੇਸ: ਇਸ ਡਿਵਾਈਸ ਨੂੰ ਦੁਬਾਰਾ ਜੋੜਨ ਲਈ ਸੈਟਿੰਗਾਂ ਵਿੱਚ ਸਿੰਕ ਪਾਸਵਰਡ ਦਰਜ ਕਰੋ।"
+  "shellSyncNeedsPassword": "ਸਾਂਝਾ ਡੇਟਾਬੇਸ: ਇਸ ਡਿਵਾਈਸ ਨੂੰ ਦੁਬਾਰਾ ਜੋੜਨ ਲਈ ਸੈਟਿੰਗਾਂ ਵਿੱਚ ਸਿੰਕ ਪਾਸਵਰਡ ਦਰਜ ਕਰੋ।",
+  "activityTaskCreated": "Task created",
+  "dictationOfflineTip": "Offline dictation — it often picks up noise (TV) instead of your voice. Turn ON “Online speech recognition” in Windows Settings → Privacy → Speech, reduce background noise, then try again.",
+  "dictationLanguageFallbackTip": "This language variant is not installed on Windows — a close match is used. Install the desired speech pack in Settings → Time & language → Speech.",
+  "dictationStarting": "Starting dictation…"
 }

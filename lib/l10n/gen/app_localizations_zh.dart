@@ -2998,4 +2998,18 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get tasksEditTaskTitle => 'Edit task';
+
+  @override
+  String get activityTaskCreated => '已创建任务';
+
+  @override
+  String get dictationOfflineTip =>
+      '离线听写——常会识别到噪音（电视）而非您的声音。请在 Windows 设置 → 隐私 → 语音 中开启“联机语音识别”，降低环境噪音后重试。';
+
+  @override
+  String get dictationLanguageFallbackTip =>
+      'Windows 未安装此语言变体——将使用相近变体。请在设置 → 时间和语言 → 语音中安装所需语音包。';
+
+  @override
+  String get dictationStarting => '正在启动听写…';
 }

@@ -3031,4 +3031,18 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get tasksEditTaskTitle => 'Edit task';
+
+  @override
+  String get activityTaskCreated => 'कार्य बनाया गया';
+
+  @override
+  String get dictationOfflineTip =>
+      'ऑफ़लाइन डिक्टेशन अक्सर आपकी आवाज़ की बजाय शोर (टीवी) पकड़ता है। Windows सेटिंग्स → गोपनीयता → वाक् में «ऑनलाइन वाक् पहचान» चालू करें, शोर कम करें और फिर कोशिश करें।';
+
+  @override
+  String get dictationLanguageFallbackTip =>
+      'यह भाषा संस्करण Windows पर स्थापित नहीं है — निकट मिलान का उपयोग होता है। सेटिंग्स → समय और भाषा → वाक् में वांछित स्पीच पैक स्थापित करें।';
+
+  @override
+  String get dictationStarting => 'डिक्टेशन शुरू हो रहा है…';
 }

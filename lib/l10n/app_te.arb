@@ -1533,5 +1533,9 @@
   "invUnlinkConfirmBody": "తదుపరి కోటేషన్ లేదా ఇన్‌వాయిస్ మళ్లీ e-Invoicingలో క్లయింట్‌ను ఎంచుకోవడానికి లేదా సృష్టించడానికి అడుగుతుంది.",
   "invUnlinkDone": "e-Invoicing లింక్ తీసివేయబడింది.",
   "invAppStoreUrlMissing": "ఈ బిల్డ్ కోసం e-Invoicing ఇంకా App Storeలో జాబితా చేయబడలేదు. eastmarkhk.comను ఉపయోగించండి లేదా ఇప్పటికే ఇన్‌స్టాల్ చేసిన యాప్‌ను ప్రారంభించండి.",
-  "shellSyncNeedsPassword": "భాగస్వామ్య డేటాబేస్: ఈ పరికరాన్ని మళ్లీ కనెక్ట్ చేయడానికి సెట్టింగ్‌లలో సింక్ పాస్‌వర్డ్‌ను నమోదు చేయండి."
+  "shellSyncNeedsPassword": "భాగస్వామ్య డేటాబేస్: ఈ పరికరాన్ని మళ్లీ కనెక్ట్ చేయడానికి సెట్టింగ్‌లలో సింక్ పాస్‌వర్డ్‌ను నమోదు చేయండి.",
+  "activityTaskCreated": "Task created",
+  "dictationOfflineTip": "Offline dictation — it often picks up noise (TV) instead of your voice. Turn ON “Online speech recognition” in Windows Settings → Privacy → Speech, reduce background noise, then try again.",
+  "dictationLanguageFallbackTip": "This language variant is not installed on Windows — a close match is used. Install the desired speech pack in Settings → Time & language → Speech.",
+  "dictationStarting": "Starting dictation…"
 }

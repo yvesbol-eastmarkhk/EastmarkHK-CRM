@@ -3042,4 +3042,18 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get tasksEditTaskTitle => 'Edit task';
+
+  @override
+  String get activityTaskCreated => 'Sarcină creată';
+
+  @override
+  String get dictationOfflineTip =>
+      'Dictare offline — deseori capturează zgomotul (TV) în locul vocii. Activați «Recunoașterea vorbirii online» în Setări Windows → Confidențialitate → Vorbire, reduceți zgomotul și reîncercați.';
+
+  @override
+  String get dictationLanguageFallbackTip =>
+      'Această variantă de limbă nu este instalată pe Windows — se folosește una apropiată. Instalați pachetul de vorbire dorit în Setări → Oră și limbă → Vorbire.';
+
+  @override
+  String get dictationStarting => 'Se pornește dictarea…';
 }

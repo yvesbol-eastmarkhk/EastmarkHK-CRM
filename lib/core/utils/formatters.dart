@@ -39,8 +39,9 @@ String formatDateFr(String? iso) {
 }
 
 /// Libellé d'échéance lisible — inclut l'heure si définie.
-String formatDueLabel(String? iso) {
-  if (iso == null || iso.isEmpty) return 'Sans date';
+/// [noDueLabel] : passer `l10n.tasksNoDue` pour l’UI localisée.
+String formatDueLabel(String? iso, {String? noDueLabel}) {
+  if (iso == null || iso.isEmpty) return noDueLabel ?? 'Sans date';
   final parsed = DateTime.tryParse(iso);
   if (parsed == null) return iso;
   final local = parsed.toLocal();

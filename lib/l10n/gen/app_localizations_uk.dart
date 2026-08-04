@@ -3042,4 +3042,18 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get tasksEditTaskTitle => 'Edit task';
+
+  @override
+  String get activityTaskCreated => 'Завдання створено';
+
+  @override
+  String get dictationOfflineTip =>
+      'Офлайн-диктування часто розпізнає шум (ТВ), а не ваш голос. Увімкніть «Розпізнавання мовлення через Інтернет» у Параметри Windows → Конфіденційність → Мовлення, зменште шум і повторіть.';
+
+  @override
+  String get dictationLanguageFallbackTip =>
+      'Цей варіант мови не встановлено у Windows — використовується близький. Встановіть потрібний мовний пакет: Параметри → Час і мова → Мовлення.';
+
+  @override
+  String get dictationStarting => 'Запуск диктування…';
 }

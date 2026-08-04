@@ -3032,4 +3032,18 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get tasksEditTaskTitle => 'Edit task';
+
+  @override
+  String get activityTaskCreated => 'Uppgift skapad';
+
+  @override
+  String get dictationOfflineTip =>
+      'Offline-diktering fångar ofta brus (TV) i stället för din röst. Aktivera ”Online-taligenkänning” i Windows-inställningar → Sekretess → Tal, minska bakgrundsljudet och försök igen.';
+
+  @override
+  String get dictationLanguageFallbackTip =>
+      'Denna språkvariant är inte installerad i Windows — en nära matchning används. Installera önskat talpaket i Inställningar → Tid och språk → Tal.';
+
+  @override
+  String get dictationStarting => 'Startar diktering…';
 }

@@ -3042,4 +3042,18 @@ class AppLocalizationsEl extends AppLocalizations {
 
   @override
   String get tasksEditTaskTitle => 'Edit task';
+
+  @override
+  String get activityTaskCreated => 'Η εργασία δημιουργήθηκε';
+
+  @override
+  String get dictationOfflineTip =>
+      'Η υπαγόρευση εκτός σύνδεσης συχνά συλλαμβάνει θόρυβο (TV) αντί της φωνής σας. Ενεργοποιήστε την «Αναγνώριση ομιλίας μέσω Διαδικτύου» στις Ρυθμίσεις Windows → Απόρρητο → Ομιλία, μειώστε τον θόρυβο και δοκιμάστε ξανά.';
+
+  @override
+  String get dictationLanguageFallbackTip =>
+      'Αυτή η παραλλαγή γλώσσας δεν είναι εγκατεστημένη στα Windows — χρησιμοποιείται μια κοντινή. Εγκαταστήστε το επιθυμητό πακέτο ομιλίας στις Ρυθμίσεις → Ώρα και γλώσσα → Ομιλία.';
+
+  @override
+  String get dictationStarting => 'Έναρξη υπαγόρευσης…';
 }

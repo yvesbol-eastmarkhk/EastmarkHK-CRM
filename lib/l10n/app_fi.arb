@@ -1444,5 +1444,9 @@
   "invUnlinkConfirmBody": "Seuraava tarjous tai lasku pyytää valitsemaan tai luomaan asiakkaan e-Invoicingissa uudelleen.",
   "invUnlinkDone": "e-Invoicing-linkitys poistettu.",
   "invAppStoreUrlMissing": "e-Invoicingia ei ole vielä listattu App Storessa tälle versiolle. Käytä eastmarkhk.comia tai käynnistä jo asennettu sovellus.",
-  "shellSyncNeedsPassword": "Jaettu tietokanta: syötä synkronointisalasana Asetuksissa yhdistääksesi tämän laitteen uudelleen."
+  "shellSyncNeedsPassword": "Jaettu tietokanta: syötä synkronointisalasana Asetuksissa yhdistääksesi tämän laitteen uudelleen.",
+  "activityTaskCreated": "Tehtävä luotu",
+  "dictationOfflineTip": "Offline-sanelu poimii usein melua (TV) äänesi sijaan. Ota «Online-puheentunnistus» käyttöön Windowsin asetuksissa → Tietosuoja → Puhe, vähennä melua ja yritä uudelleen.",
+  "dictationLanguageFallbackTip": "Tätä kielivarianttia ei ole asennettu Windowsiin — käytetään läheistä vastinetta. Asenna haluttu puhepaketti: Asetukset → Aika ja kieli → Puhe.",
+  "dictationStarting": "Aloitetaan sanelu…"
 }

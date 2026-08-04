@@ -3030,4 +3030,18 @@ class AppLocalizationsNo extends AppLocalizations {
 
   @override
   String get tasksEditTaskTitle => 'Edit task';
+
+  @override
+  String get activityTaskCreated => 'Oppgave opprettet';
+
+  @override
+  String get dictationOfflineTip =>
+      'Frakoblet diktering plukker ofte opp støy (TV) i stedet for stemmen din. Slå på «Online talegjenkjenning» i Windows-innstillinger → Personvern → Tale, demp støyen og prøv igjen.';
+
+  @override
+  String get dictationLanguageFallbackTip =>
+      'Denne språkvarianten er ikke installert i Windows — en nær match brukes. Installer ønsket talepakke i Innstillinger → Tid og språk → Tale.';
+
+  @override
+  String get dictationStarting => 'Starter diktering…';
 }

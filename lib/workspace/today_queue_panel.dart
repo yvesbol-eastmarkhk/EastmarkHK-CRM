@@ -221,8 +221,9 @@ class _TodayQueuePanelState extends State<TodayQueuePanel> {
             titleColor: t.companyId != null && _companyNames.containsKey(t.companyId)
                 ? CrmTokens.fuchsia
                 : null,
-            subtitle: '${truncateTaskMessage(taskMessage(t))}\n${formatDueLabel(t.dueDate)}',
-            subtitleMaxLines: 2,
+            subtitle:
+                '${truncateTaskMessage(taskMessage(t))}\n${formatDueLabel(t.dueDate, noDueLabel: l10n.tasksNoDue)} · ${formatDateTimeFr(t.createdAt)}',
+            subtitleMaxLines: 3,
             accentColor: t.companyId == null
                 ? Theme.of(context).colorScheme.error
                 : AppTheme.dueDateColor(

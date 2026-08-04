@@ -3042,4 +3042,18 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get tasksEditTaskTitle => 'Modifier la tâche';
+
+  @override
+  String get activityTaskCreated => 'Tâche créée';
+
+  @override
+  String get dictationOfflineTip =>
+      'Dictée hors ligne — elle capture souvent le bruit (TV) au lieu de votre voix. Activez « Reconnaissance vocale en ligne » dans Paramètres Windows → Confidentialité → Discours, baissez le bruit, puis réessayez.';
+
+  @override
+  String get dictationLanguageFallbackTip =>
+      'Cette variante de langue n’est pas installée sur Windows — une variante proche est utilisée. Installez le pack Speech souhaité dans Paramètres → Heure et langue → Speech.';
+
+  @override
+  String get dictationStarting => 'Démarrage de la dictée…';
 }

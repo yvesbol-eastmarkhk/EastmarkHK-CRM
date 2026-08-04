@@ -4,13 +4,14 @@ import '../core/db/app_database.dart';
 import '../core/models/models.dart';
 import '../core/screens/tasks_screen.dart';
 import '../core/services/remote_crm_sync_service.dart';
+import '../core/utils/formatters.dart';
 import '../core/utils/task_display.dart';
 import '../l10n/gen/app_localizations.dart';
 import '../state/crm_workspace_state.dart';
 import '../theme/app_theme.dart';
 import 'list_panel.dart';
 
-/// Liste des tâches / Follow-ups — clic ouvre le client (et la tâche) à droite.
+/// Liste des tâches / Follow-ups — clic ouvre l'aperçu tâche à droite.
 class TasksListPanel extends StatefulWidget {
   const TasksListPanel({
     super.key,
@@ -132,8 +133,9 @@ class _TasksListPanelState extends State<TasksListPanel> {
                         title: t.companyId != null && _companyNames.containsKey(t.companyId)
                             ? _companyNames[t.companyId]!
                             : l10n.tasksListNoClient,
-                        subtitle: truncateTaskMessage(taskMessage(t)),
-                        subtitleMaxLines: 2,
+                        subtitle:
+                            '${truncateTaskMessage(taskMessage(t))}\n${formatDateTimeFr(t.createdAt)}',
+                        subtitleMaxLines: 3,
                         accentColor: t.isDone
                             ? null
                             : t.companyId == null

@@ -1444,5 +1444,9 @@
   "invUnlinkConfirmBody": "次回の見積書または請求書作成時に、e-Invoicingで顧客を再度選択または作成するよう求められます。",
   "invUnlinkDone": "e-Invoicingリンクを解除しました。",
   "invAppStoreUrlMissing": "このビルドではe-InvoicingはまだApp Storeに掲載されていません。eastmarkhk.comを使用するか、既にインストール済みのアプリを起動してください。",
-  "shellSyncNeedsPassword": "共有データベース：このデバイスを再接続するには、設定で同期パスワードを入力してください。"
+  "shellSyncNeedsPassword": "共有データベース：このデバイスを再接続するには、設定で同期パスワードを入力してください。",
+  "activityTaskCreated": "タスクを作成しました",
+  "dictationOfflineTip": "オフライン音声入力は、声ではなく周囲の音（テレビなど）を拾いがちです。Windows の設定 → プライバシー → 音声で「オンライン音声認識」をオンにし、ノイズを減らしてから再試行してください。",
+  "dictationLanguageFallbackTip": "この言語バリアントは Windows にインストールされていません。近い言語を使用します。設定 → 時刻と言語 → 音声 で目的の音声パックをインストールしてください。",
+  "dictationStarting": "音声入力を開始しています…"
 }

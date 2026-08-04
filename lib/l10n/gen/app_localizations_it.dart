@@ -3034,4 +3034,18 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get tasksEditTaskTitle => 'Edit task';
+
+  @override
+  String get activityTaskCreated => 'Attività creata';
+
+  @override
+  String get dictationOfflineTip =>
+      'Dettatura offline: spesso cattura il rumore (TV) invece della voce. Attiva il «riconoscimento vocale online» in Impostazioni Windows → Privacy → Voce, riduci il rumore e riprova.';
+
+  @override
+  String get dictationLanguageFallbackTip =>
+      'Questa variante di lingua non è installata su Windows: viene usata una variante simile. Installa il pacchetto vocale in Impostazioni → Ora e lingua → Voce.';
+
+  @override
+  String get dictationStarting => 'Avvio della dettatura…';
 }

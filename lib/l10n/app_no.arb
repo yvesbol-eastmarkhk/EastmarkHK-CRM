@@ -1444,5 +1444,9 @@
   "invUnlinkConfirmBody": "Neste tilbud eller faktura vil be deg velge eller opprette klienten i e-Invoicing på nytt.",
   "invUnlinkDone": "e-Invoicing-kobling fjernet.",
   "invAppStoreUrlMissing": "e-Invoicing er ennå ikke oppført i App Store for denne bygningen. Bruk eastmarkhk.com eller start en allerede installert app.",
-  "shellSyncNeedsPassword": "Delt database: angi synkroniseringspassordet i Innstillinger for å koble denne enheten til på nytt."
+  "shellSyncNeedsPassword": "Delt database: angi synkroniseringspassordet i Innstillinger for å koble denne enheten til på nytt.",
+  "activityTaskCreated": "Oppgave opprettet",
+  "dictationOfflineTip": "Frakoblet diktering plukker ofte opp støy (TV) i stedet for stemmen din. Slå på «Online talegjenkjenning» i Windows-innstillinger → Personvern → Tale, demp støyen og prøv igjen.",
+  "dictationLanguageFallbackTip": "Denne språkvarianten er ikke installert i Windows — en nær match brukes. Installer ønsket talepakke i Innstillinger → Tid og språk → Tale.",
+  "dictationStarting": "Starter diktering…"
 }

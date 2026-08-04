@@ -3033,4 +3033,18 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get tasksEditTaskTitle => 'Edit task';
+
+  @override
+  String get activityTaskCreated => 'Taak aangemaakt';
+
+  @override
+  String get dictationOfflineTip =>
+      'Offline dictee — pikt vaak lawaai (TV) op in plaats van uw stem. Zet «Online spraakherkenning» aan in Windows-instellingen → Privacy → Spraak, verminder achtergrondgeluid en probeer opnieuw.';
+
+  @override
+  String get dictationLanguageFallbackTip =>
+      'Deze taalvariant is niet geïnstalleerd op Windows — er wordt een nauwe match gebruikt. Installeer het gewenste spraakpakket via Instellingen → Tijd en taal → Spraak.';
+
+  @override
+  String get dictationStarting => 'Dictee starten…';
 }

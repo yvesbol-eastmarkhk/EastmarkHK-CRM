@@ -1444,5 +1444,9 @@
   "invUnlinkConfirmBody": "Następna oferta lub faktura ponownie poprosi o wybranie lub utworzenie klienta w e-Invoicing.",
   "invUnlinkDone": "Powiązanie z e-Invoicing usunięte.",
   "invAppStoreUrlMissing": "e-Invoicing nie jest jeszcze wymieniona w App Store dla tej wersji. Użyj eastmarkhk.com lub uruchom już zainstalowaną aplikację.",
-  "shellSyncNeedsPassword": "Wspólna baza danych: wprowadź hasło synchronizacji w Ustawieniach, aby ponownie połączyć to urządzenie."
+  "shellSyncNeedsPassword": "Wspólna baza danych: wprowadź hasło synchronizacji w Ustawieniach, aby ponownie połączyć to urządzenie.",
+  "activityTaskCreated": "Utworzono zadanie",
+  "dictationOfflineTip": "Dyktowanie offline — często przechwytuje hałas (TV) zamiast głosu. Włącz «Rozpoznawanie mowy online» w Ustawieniach Windows → Prywatność → Mowa, zmniejsz hałas i spróbuj ponownie.",
+  "dictationLanguageFallbackTip": "Ta odmiana języka nie jest zainstalowana w Windows — używana jest zbliżona. Zainstaluj żądany pakiet mowy w Ustawienia → Czas i język → Mowa.",
+  "dictationStarting": "Uruchamianie dyktowania…"
 }

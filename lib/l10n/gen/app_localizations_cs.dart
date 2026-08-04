@@ -3038,4 +3038,18 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get tasksEditTaskTitle => 'Edit task';
+
+  @override
+  String get activityTaskCreated => 'Úkol vytvořen';
+
+  @override
+  String get dictationOfflineTip =>
+      'Offline diktování — často zachytí hluk (TV) místo vašeho hlasu. Zapněte „Online rozpoznávání řeči“ v Nastavení Windows → Soukromí → Řeč, snižte hluk a zkuste znovu.';
+
+  @override
+  String get dictationLanguageFallbackTip =>
+      'Tato jazyková varianta není ve Windows nainstalována — použije se blízká. Nainstalujte požadovaný balíček řeči v Nastavení → Čas a jazyk → Řeč.';
+
+  @override
+  String get dictationStarting => 'Spouštění diktování…';
 }

@@ -1444,5 +1444,9 @@
   "invUnlinkConfirmBody": "Следећа понуда или фактура ће поново тражити да изаберете или направите клијента у e-Invoicing.",
   "invUnlinkDone": "Веза са e-Invoicing уклоњена.",
   "invAppStoreUrlMissing": "e-Invoicing још увек није наведен на App Store-у за ову верзију. Користите eastmarkhk.com или покрените већ инсталирану апликацију.",
-  "shellSyncNeedsPassword": "Дељена база података: унесите лозинку за синхронизацију у Подешавањима да бисте поново повезали овај уређај."
+  "shellSyncNeedsPassword": "Дељена база података: унесите лозинку за синхронизацију у Подешавањима да бисте поново повезали овај уређај.",
+  "activityTaskCreated": "Task created",
+  "dictationOfflineTip": "Offline dictation — it often picks up noise (TV) instead of your voice. Turn ON “Online speech recognition” in Windows Settings → Privacy → Speech, reduce background noise, then try again.",
+  "dictationLanguageFallbackTip": "This language variant is not installed on Windows — a close match is used. Install the desired speech pack in Settings → Time & language → Speech.",
+  "dictationStarting": "Starting dictation…"
 }

@@ -3009,4 +3009,18 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get tasksEditTaskTitle => 'Edit task';
+
+  @override
+  String get activityTaskCreated => '작업이 생성됨';
+
+  @override
+  String get dictationOfflineTip =>
+      '오프라인 받아쓰기는 목소리 대신 소음(TV)을 인식하는 경우가 많습니다. Windows 설정 → 개인 정보 → 음성에서 “온라인 음성 인식”을 켠 뒤 소음을 줄이고 다시 시도하세요.';
+
+  @override
+  String get dictationLanguageFallbackTip =>
+      '이 언어 변형은 Windows에 설치되어 있지 않습니다. 가까운 변형을 사용합니다. 설정 → 시간 및 언어 → 음성에서 원하는 음성 팩을 설치하세요.';
+
+  @override
+  String get dictationStarting => '받아쓰기 시작 중…';
 }

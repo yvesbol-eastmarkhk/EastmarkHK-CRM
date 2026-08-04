@@ -48,6 +48,7 @@ String _kindDisplayLabel(AppLocalizations l10n, _InteractionKind k) {
     ActivityType.reply => l10n.logKindReply,
     ActivityType.remark => l10n.logKindRemark,
     ActivityType.moduleEvent => k.label,
+    ActivityType.task => l10n.shellTasksLabel,
   };
 }
 

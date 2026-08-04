@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 
+import 'app_locale_settings.dart';
+
 /// Entrée curatée pour le sélecteur (évite speech_to_text à l'ouverture).
 typedef DictationLocaleOption = ({String id, String label});
 
@@ -73,13 +75,15 @@ class DictationSettings extends ChangeNotifier {
     _loaded = true;
   }
 
-  /// Initialise le moteur (mobile) — jamais bloquant, jamais crash.
+  /// Initialise le moteur — jamais bloquant, jamais crash.
+  /// macOS/Windows : pont natif ; mobile : speech_to_text.
   Future<List<LocaleName>> loadAvailableLocales() async {
-    final desktop = !kIsWeb &&
+    if (!kIsWeb &&
         (defaultTargetPlatform == TargetPlatform.macOS ||
             defaultTargetPlatform == TargetPlatform.windows ||
-            defaultTargetPlatform == TargetPlatform.linux);
-    if (desktop) return [];
+            defaultTargetPlatform == TargetPlatform.linux)) {
+      return [];
+    }
 
     try {
       if (!_speechReady) {
@@ -106,18 +110,24 @@ class DictationSettings extends ChangeNotifier {
   }
 
   /// Locale réellement utilisée pour la dictée (jamais un hardcode FR).
-  /// `null` / « langue du système » → locale appareil (`PlatformDispatcher`).
+  /// Priorité : choix explicite → langue d'interface app → locale OS.
   String effectiveLocaleId() {
     final chosen = _localeId?.trim();
     if (chosen != null && chosen.isNotEmpty) return chosen;
+
+    // Si l'UI est forcée (ex. Français) mais l'OS est en_GB, dicter dans
+    // la langue de l'app évite des transcriptions « inventées » en anglais.
+    final app = AppLocaleSettings.instance.locale;
+    if (app != null) {
+      return localeIdFromLanguage(app.languageCode, app.countryCode);
+    }
     return localeIdFromSystem();
   }
 
-  /// Mappe la locale OS (ex. en_US, en_GB) vers un id speech_to_text.
-  static String localeIdFromSystem() {
-    final loc = PlatformDispatcher.instance.locale;
-    final lang = loc.languageCode.toLowerCase();
-    final country = (loc.countryCode ?? '').toUpperCase();
+  /// Mappe une langue (+ pays optionnel) vers un id de dictée curaté.
+  static String localeIdFromLanguage(String languageCode, [String? countryCode]) {
+    final lang = languageCode.toLowerCase();
+    final country = (countryCode ?? '').toUpperCase();
     final exact = country.isEmpty ? lang : '${lang}_$country';
 
     for (final l in curatedLocales) {
@@ -129,15 +139,21 @@ class DictationSettings extends ChangeNotifier {
     for (final l in curatedLocales) {
       if (l.id.split('_').first.toLowerCase() == lang) return l.id;
     }
-    // Dernier recours : anglais, pas français.
     return 'en_US';
   }
 
-  String currentLabel() {
+  /// Mappe la locale OS (ex. en_US, en_GB) vers un id speech_to_text.
+  static String localeIdFromSystem() {
+    final loc = PlatformDispatcher.instance.locale;
+    return localeIdFromLanguage(loc.languageCode, loc.countryCode);
+  }
+
+  /// [systemLanguageLabel] = `AppLocalizations.systemLanguage` (langue UI).
+  String currentLabel(String systemLanguageLabel) {
     if (_localeId == null) {
       final sys = localeIdFromSystem();
       final code = sys.split('_').first.toUpperCase();
-      return 'Langue du système ($code)';
+      return '$systemLanguageLabel ($code)';
     }
     for (final l in curatedLocales) {
       if (l.id == _localeId) return l.label;

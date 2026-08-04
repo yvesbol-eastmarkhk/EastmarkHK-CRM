@@ -4,21 +4,25 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import '../../l10n/gen/app_localizations.dart';
+import '../services/app_locale_settings.dart';
+import '../services/desktop_speech_service.dart';
 import '../services/dictation_settings.dart';
-import '../services/macos_speech_service.dart';
+import '../utils/activity_labels.dart';
 import 'dictation_language_picker.dart';
 
-/// Micro actif sur iOS/Android (speech_to_text) et macOS (pont Swift natif).
+/// Micro actif sur iOS/Android (speech_to_text) et desktop natif (macOS/Windows).
 bool get _dictationSupported =>
     defaultTargetPlatform == TargetPlatform.iOS ||
     defaultTargetPlatform == TargetPlatform.android ||
-    defaultTargetPlatform == TargetPlatform.macOS;
+    defaultTargetPlatform == TargetPlatform.macOS ||
+    defaultTargetPlatform == TargetPlatform.windows;
 
-bool get _useMacosSpeech => defaultTargetPlatform == TargetPlatform.macOS;
+bool get _useNativeSpeech => DesktopSpeechService.instance.isSupported;
 
 /// Éditeur WYSIWYG Jodit (MIT) dans une WebView locale (`assets/jodit/`).
 ///
@@ -228,8 +232,8 @@ class JoditEditorState extends State<JoditEditor> {
       if (_listening) {
         _dictationGen++;
         try {
-          if (_useMacosSpeech) {
-            await MacosSpeechService.instance.stop();
+          if (_useNativeSpeech) {
+            await DesktopSpeechService.instance.stop();
           } else {
             await _speech.stop();
           }
@@ -239,17 +243,28 @@ class JoditEditorState extends State<JoditEditor> {
       }
 
       await DictationSettings.instance.ensureLoaded();
+      await AppLocaleSettings.instance.ensureLoaded();
 
-      if (_useMacosSpeech) {
+      if (defaultTargetPlatform == TargetPlatform.windows && !_useNativeSpeech) {
+        final mic = await Permission.microphone.request();
+        if (!mic.isGranted) {
+          if (mounted) {
+            ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+              SnackBar(content: Text(l10n.dictationUnavailable)),
+            );
+          }
+          return;
+        }
+      }
+
+      if (_useNativeSpeech) {
         _dictationBase = '';
         final gen = ++_dictationGen;
-        // S'assure que le curseur reste à la fin du texte existant — sinon
-        // la sélection (perdue quand on a tapé sur ce bouton micro Flutter)
-        // ferait insérer/remplacer n'importe où dans l'éditeur.
         await _webController.runJavaScript('focusEditor();');
-        final ok = await MacosSpeechService.instance.start(
+        // Ne passe en « listening » qu'après démarrage natif (évite perte début).
+        final ok = await DesktopSpeechService.instance.start(
           localeId: DictationSettings.instance.effectiveLocaleId(),
-          onResult: (words, {required isFinal}) {
+          onResult: (words, {required bool isFinal}) {
             if (!mounted || gen != _dictationGen || words.isEmpty) return;
             final prev = _dictationBase;
             _dictationBase = words;
@@ -259,21 +274,39 @@ class JoditEditorState extends State<JoditEditor> {
             final toPaste = prev.isEmpty ? addition.trimLeft() : addition;
             if (toPaste.isEmpty) return;
             _pasteText(toPaste);
-            if (isFinal && mounted) setState(() => _listening = false);
           },
           onDone: () {
             if (mounted && gen == _dictationGen) setState(() => _listening = false);
           },
+          onError: (message) {
+            if (!mounted || gen != _dictationGen) return;
+            setState(() => _listening = false);
+            ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+              SnackBar(content: Text(message), duration: const Duration(seconds: 6)),
+            );
+          },
+          onInfo: (message) {
+            if (!mounted || gen != _dictationGen) return;
+            final tip = localizedDictationInfo(AppLocalizations.of(context), message);
+            ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+              SnackBar(content: Text(tip), duration: const Duration(seconds: 8)),
+            );
+          },
         );
         if (!ok || !mounted) {
           if (mounted) {
+            setState(() => _listening = false);
+            final err = DesktopSpeechService.instance.lastError;
             ScaffoldMessenger.maybeOf(context)?.showSnackBar(
-              SnackBar(content: Text(l10n.dictationUnavailable)),
+              SnackBar(
+                content: Text(err?.isNotEmpty == true ? err! : l10n.dictationUnavailable),
+                duration: const Duration(seconds: 6),
+              ),
             );
           }
           return;
         }
-        setState(() => _listening = true);
+        if (mounted) setState(() => _listening = true);
         return;
       }
 
@@ -345,8 +378,8 @@ class JoditEditorState extends State<JoditEditor> {
     if (_listening) {
       _dictationGen++;
       try {
-        if (_useMacosSpeech) {
-          await MacosSpeechService.instance.stop();
+        if (_useNativeSpeech) {
+          await DesktopSpeechService.instance.stop();
         } else {
           await _speech.stop();
         }

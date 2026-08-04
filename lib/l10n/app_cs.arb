@@ -1444,5 +1444,9 @@
   "invUnlinkConfirmBody": "Příští nabídka nebo faktura si znovu vyžádá výběr nebo vytvoření klienta v e-Invoicing.",
   "invUnlinkDone": "Propojení s e-Invoicing zrušeno.",
   "invAppStoreUrlMissing": "e-Invoicing zatím není pro tuto verzi uvedena v App Store. Použijte eastmarkhk.com nebo spusťte již nainstalovanou aplikaci.",
-  "shellSyncNeedsPassword": "Sdílená databáze: zadejte synchronizační heslo v Nastavení pro opětovné připojení tohoto zařízení."
+  "shellSyncNeedsPassword": "Sdílená databáze: zadejte synchronizační heslo v Nastavení pro opětovné připojení tohoto zařízení.",
+  "activityTaskCreated": "Úkol vytvořen",
+  "dictationOfflineTip": "Offline diktování — často zachytí hluk (TV) místo vašeho hlasu. Zapněte „Online rozpoznávání řeči“ v Nastavení Windows → Soukromí → Řeč, snižte hluk a zkuste znovu.",
+  "dictationLanguageFallbackTip": "Tato jazyková varianta není ve Windows nainstalována — použije se blízká. Nainstalujte požadovaný balíček řeči v Nastavení → Čas a jazyk → Řeč.",
+  "dictationStarting": "Spouštění diktování…"
 }

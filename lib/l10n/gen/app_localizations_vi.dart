@@ -3031,4 +3031,18 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get tasksEditTaskTitle => 'Edit task';
+
+  @override
+  String get activityTaskCreated => 'Đã tạo nhiệm vụ';
+
+  @override
+  String get dictationOfflineTip =>
+      'Chính tả ngoại tuyến thường nhận tiếng ồn (TV) thay vì giọng bạn. Bật «Nhận dạng giọng nói trực tuyến» trong Cài đặt Windows → Quyền riêng tư → Lời nói, giảm tiếng ồn rồi thử lại.';
+
+  @override
+  String get dictationLanguageFallbackTip =>
+      'Biến thể ngôn ngữ này chưa được cài trên Windows — đang dùng biến thể gần. Cài gói lời nói mong muốn trong Cài đặt → Thời gian & ngôn ngữ → Lời nói.';
+
+  @override
+  String get dictationStarting => 'Đang bắt đầu chính tả…';
 }

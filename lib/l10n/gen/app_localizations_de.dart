@@ -3037,4 +3037,18 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get tasksEditTaskTitle => 'Edit task';
+
+  @override
+  String get activityTaskCreated => 'Aufgabe erstellt';
+
+  @override
+  String get dictationOfflineTip =>
+      'Offline-Diktat — oft wird Hintergrundgeräusch (TV) statt Ihrer Stimme erkannt. Aktivieren Sie „Online-Spracherkennung“ unter Windows-Einstellungen → Datenschutz → Sprache, reduzieren Sie Lärm und versuchen Sie es erneut.';
+
+  @override
+  String get dictationLanguageFallbackTip =>
+      'Diese Sprachvariante ist unter Windows nicht installiert — es wird eine ähnliche Variante verwendet. Installieren Sie das gewünschte Sprachpaket unter Einstellungen → Zeit und Sprache → Sprache.';
+
+  @override
+  String get dictationStarting => 'Diktat wird gestartet…';
 }

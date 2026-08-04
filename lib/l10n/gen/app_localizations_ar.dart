@@ -3031,4 +3031,18 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get tasksEditTaskTitle => 'Edit task';
+
+  @override
+  String get activityTaskCreated => 'تم إنشاء المهمة';
+
+  @override
+  String get dictationOfflineTip =>
+      'الإملاء دون اتصال يلتقط غالبًا الضوضاء (التلفاز) بدل صوتك. فعّل «التعرّف على الكلام عبر الإنترنت» في إعدادات Windows → الخصوصية → الكلام، قلّل الضوضاء ثم أعد المحاولة.';
+
+  @override
+  String get dictationLanguageFallbackTip =>
+      'متغير اللغة هذا غير مثبت على Windows — يُستخدم متغير قريب. ثبّت حزمة الكلام المطلوبة من الإعدادات → الوقت واللغة → الكلام.';
+
+  @override
+  String get dictationStarting => 'جارٍ بدء الإملاء…';
 }

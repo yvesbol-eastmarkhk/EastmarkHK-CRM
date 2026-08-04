@@ -15,6 +15,16 @@ ARB_DIR = "lib/l10n"
 
 # (clé, fr, en) — fr est la valeur de référence.
 KEYS = [
+    # ---- Activités / dictée (récent) ----
+    ("activityTaskCreated", "Tâche créée", "Task created"),
+    ("dictationOfflineTip",
+     "Dictée hors ligne — elle capture souvent le bruit (TV) au lieu de votre voix. Activez « Reconnaissance vocale en ligne » dans Paramètres Windows → Confidentialité → Discours, baissez le bruit, puis réessayez.",
+     "Offline dictation — it often picks up noise (TV) instead of your voice. Turn ON “Online speech recognition” in Windows Settings → Privacy → Speech, reduce background noise, then try again."),
+    ("dictationLanguageFallbackTip",
+     "Cette variante de langue n’est pas installée sur Windows — une variante proche est utilisée. Installez le pack Speech souhaité dans Paramètres → Heure et langue → Speech.",
+     "This language variant is not installed on Windows — a close match is used. Install the desired speech pack in Settings → Time & language → Speech."),
+    ("dictationStarting", "Démarrage de la dictée…", "Starting dictation…"),
+
     # ---- App shell / navigation ----
     ("shellModuleTitle", "Module", "Module"),
     ("shellFollowupTitle", "Suivi", "Follow-up"),

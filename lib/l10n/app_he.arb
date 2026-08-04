@@ -1444,5 +1444,9 @@
   "invUnlinkConfirmBody": "בהצעת המחיר או בחשבונית הבאה תתבקש שוב לבחור או ליצור את הלקוח ב-e-Invoicing.",
   "invUnlinkDone": "קישור ה-e-Invoicing הוסר.",
   "invAppStoreUrlMissing": "e-Invoicing עדיין אינה רשומה ב-App Store עבור גרסה זו. השתמש ב-eastmarkhk.com או הפעל אפליקציה שכבר מותקנת.",
-  "shellSyncNeedsPassword": "מסד נתונים משותף: הזן את סיסמת הסנכרון בהגדרות כדי לחבר מחדש מכשיר זה."
+  "shellSyncNeedsPassword": "מסד נתונים משותף: הזן את סיסמת הסנכרון בהגדרות כדי לחבר מחדש מכשיר זה.",
+  "activityTaskCreated": "המשימה נוצרה",
+  "dictationOfflineTip": "הכתבה לא מקוונת לרוב קולטת רעש (טלוויזיה) במקום את קולכם. הפעילו «זיהוי דיבור מקוון» בהגדרות Windows → פרטיות → דיבור, הפחיתו רעש ונסו שוב.",
+  "dictationLanguageFallbackTip": "וריאנט השפה הזה אינו מותקן ב-Windows — נעשה שימוש בהתאמה קרובה. התקינו את חבילת הדיבור הרצויה בהגדרות → שעה ושפה → דיבור.",
+  "dictationStarting": "מתחילים הכתבה…"
 }

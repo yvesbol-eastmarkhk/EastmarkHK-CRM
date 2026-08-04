@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import '../../l10n/gen/app_localizations.dart';
+import '../constants/sync_defaults.dart';
 import '../db/app_database.dart';
 import 'client_company_bridge.dart';
 import 'sync_editing_guard.dart';
@@ -840,19 +841,19 @@ class RemoteCrmSyncService extends ChangeNotifier {
     var account = (values['sync_account'] ?? '').trim();
     // Migration silencieuse ancien sous-domaine → emhk (sans attendre Réglages).
     if (server.contains('crm.eastmarkhk.com')) {
-      server = 'https://emhk.eastmarkhk.com/crm';
+      server = SyncDefaults.serverUrl;
       await db.setSetting('sync_server', server);
     }
     if (account == 'crm@eastmarkhk.com') {
-      account = 'emhk@eastmarkhk.com';
+      account = SyncDefaults.account;
       await db.setSetting('sync_account', account);
     }
     if (server.isEmpty) {
-      server = 'https://emhk.eastmarkhk.com/crm';
+      server = SyncDefaults.serverUrl;
       await db.setSetting('sync_server', server);
     }
     if (account.isEmpty) {
-      account = 'emhk@eastmarkhk.com';
+      account = SyncDefaults.account;
       await db.setSetting('sync_account', account);
     }
     String? password;

@@ -1,3 +1,5 @@
+import 'dart:ui' show PlatformDispatcher;
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -46,10 +48,40 @@ class CurrencySettings extends ChangeNotifier {
     return (code: m.$1, symbol: m.$2, flag: m.$3, label: m.$4);
   }
 
+  /// Devise par défaut à la première install : dérivée de la région système.
+  static String defaultFromSystemLocale() {
+    final cc = PlatformDispatcher.instance.locale.countryCode?.toUpperCase();
+    return switch (cc) {
+      'US' => 'USD',
+      'HK' => 'HKD',
+      'GB' => 'GBP',
+      'CN' || 'TW' => 'CNY',
+      'JP' => 'JPY',
+      'CH' => 'CHF',
+      'SG' => 'SGD',
+      'AU' => 'AUD',
+      'CA' => 'CAD',
+      'IN' => 'INR',
+      'AE' => 'AED',
+      'ZA' => 'ZAR',
+      'MX' => 'MXN',
+      'TH' => 'THB',
+      'VN' => 'VND',
+      'ID' => 'IDR',
+      'MY' => 'MYR',
+      'KR' => 'KRW',
+      'BR' => 'BRL',
+      'BE' || 'DE' || 'FR' || 'IT' || 'ES' || 'NL' || 'AT' || 'PT' ||
+      'IE' || 'FI' || 'LU' =>
+        'EUR',
+      _ => 'EUR',
+    };
+  }
+
   Future<void> ensureLoaded() async {
     if (_loaded) return;
     final prefs = await SharedPreferences.getInstance();
-    _code = prefs.getString(_prefKey) ?? 'EUR';
+    _code = prefs.getString(_prefKey) ?? defaultFromSystemLocale();
     _loaded = true;
   }
 

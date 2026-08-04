@@ -3031,4 +3031,18 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get tasksEditTaskTitle => 'Edit task';
+
+  @override
+  String get activityTaskCreated => 'Görev oluşturuldu';
+
+  @override
+  String get dictationOfflineTip =>
+      'Çevrimdışı dikte — genelde sesiniz yerine gürültüyü (TV) alır. Windows Ayarları → Gizlilik → Konuşma içinde «Çevrimiçi konuşma tanıma»yı açın, gürültüyü azaltın ve yeniden deneyin.';
+
+  @override
+  String get dictationLanguageFallbackTip =>
+      'Bu dil varyantı Windows’ta yüklü değil — yakın bir eşleşme kullanılıyor. İstediğiniz konuşma paketini Ayarlar → Saat ve dil → Konuşma bölümünden yükleyin.';
+
+  @override
+  String get dictationStarting => 'Dikte başlatılıyor…';
 }

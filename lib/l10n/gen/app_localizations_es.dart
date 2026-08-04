@@ -3033,4 +3033,18 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get tasksEditTaskTitle => 'Edit task';
+
+  @override
+  String get activityTaskCreated => 'Tarea creada';
+
+  @override
+  String get dictationOfflineTip =>
+      'Dictado sin conexión: a menudo captura el ruido (TV) en lugar de su voz. Active el «reconocimiento de voz en línea» en Configuración de Windows → Privacidad → Voz, reduzca el ruido y vuelva a intentarlo.';
+
+  @override
+  String get dictationLanguageFallbackTip =>
+      'Esta variante de idioma no está instalada en Windows: se usa una variante cercana. Instale el paquete de voz en Configuración → Hora e idioma → Voz.';
+
+  @override
+  String get dictationStarting => 'Iniciando el dictado…';
 }

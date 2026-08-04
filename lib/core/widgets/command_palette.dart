@@ -11,6 +11,7 @@ import '../db/app_database.dart';
 import '../models/models.dart';
 import '../screens/company_detail_screen.dart';
 import '../screens/tasks_screen.dart';
+import '../utils/activity_labels.dart';
 
 /// Palette de commandes ⌘K — naviguer, créer, rechercher (Linear-style).
 Future<void> showCommandPalette(
@@ -222,7 +223,10 @@ class _CommandPaletteState extends State<_CommandPalette> {
                         for (final a in _activities)
                           _action(
                             Icons.sticky_note_2_outlined,
-                            a.body ?? a.title,
+                            (a.body != null && a.body!.isNotEmpty)
+                                ? a.body!
+                                : localizedActivityTitle(
+                                    AppLocalizations.of(context), a.title),
                             () {
                               if (a.companyId != null) _go(CrmSection.clients, companyId: a.companyId);
                             },

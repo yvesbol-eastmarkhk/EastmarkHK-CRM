@@ -1444,5 +1444,9 @@
   "invUnlinkConfirmBody": "Beim nächsten Angebot oder der nächsten Rechnung müssen Sie den Kunden in e-Invoicing erneut auswählen oder anlegen.",
   "invUnlinkDone": "e-Invoicing-Verknüpfung entfernt.",
   "invAppStoreUrlMissing": "e-Invoicing ist für diesen Build noch nicht im App Store gelistet. Nutzen Sie eastmarkhk.com oder starten Sie eine bereits installierte App.",
-  "shellSyncNeedsPassword": "Gemeinsame Datenbank: Geben Sie das Sync-Passwort in den Einstellungen ein, um dieses Gerät wieder zu verbinden."
+  "shellSyncNeedsPassword": "Gemeinsame Datenbank: Geben Sie das Sync-Passwort in den Einstellungen ein, um dieses Gerät wieder zu verbinden.",
+  "activityTaskCreated": "Aufgabe erstellt",
+  "dictationOfflineTip": "Offline-Diktat — oft wird Hintergrundgeräusch (TV) statt Ihrer Stimme erkannt. Aktivieren Sie „Online-Spracherkennung“ unter Windows-Einstellungen → Datenschutz → Sprache, reduzieren Sie Lärm und versuchen Sie es erneut.",
+  "dictationLanguageFallbackTip": "Diese Sprachvariante ist unter Windows nicht installiert — es wird eine ähnliche Variante verwendet. Installieren Sie das gewünschte Sprachpaket unter Einstellungen → Zeit und Sprache → Sprache.",
+  "dictationStarting": "Diktat wird gestartet…"
 }

@@ -3023,4 +3023,18 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get tasksEditTaskTitle => 'Edit task';
+
+  @override
+  String get activityTaskCreated => 'สร้างงานแล้ว';
+
+  @override
+  String get dictationOfflineTip =>
+      'การบอกพิมพ์แบบออฟไลน์มักจับเสียงรบกวน (ทีวี) แทนเสียงของคุณ เปิด «การรู้จำเสียงออนไลน์» ใน การตั้งค่า Windows → ความเป็นส่วนตัว → คำพูด ลดเสียงรบกวนแล้วลองใหม่';
+
+  @override
+  String get dictationLanguageFallbackTip =>
+      'ตัวแปรภาษานี้ไม่ได้ติดตั้งบน Windows — จะใช้ตัวแปรที่ใกล้เคียง ติดตั้งแพ็กเสียงที่ต้องการใน การตั้งค่า → เวลาและภาษา → คำพูด';
+
+  @override
+  String get dictationStarting => 'กำลังเริ่มการบอกพิมพ์…';
 }

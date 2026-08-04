@@ -1444,5 +1444,9 @@
   "invUnlinkConfirmBody": "അടുത്ത ക്വോട്ടോ ഇൻവോയ്സോ e-Invoicing-ൽ ക്ലയന്റിനെ വീണ്ടും തിരഞ്ഞെടുക്കാനോ സൃഷ്ടിക്കാനോ ആവശ്യപ്പെടും.",
   "invUnlinkDone": "e-Invoicing ലിങ്ക് നീക്കം ചെയ്തു.",
   "invAppStoreUrlMissing": "ഈ ബിൽഡിനായി e-Invoicing ഇതുവരെ App Store-ൽ ലിസ്റ്റ് ചെയ്തിട്ടില്ല. eastmarkhk.com ഉപയോഗിക്കുക അല്ലെങ്കിൽ ഇതിനകം ഇൻസ്റ്റാൾ ചെയ്ത ആപ്പ് ലോഞ്ച് ചെയ്യുക.",
-  "shellSyncNeedsPassword": "പങ്കിട്ട ഡാറ്റാബേസ്: ഈ ഉപകരണം വീണ്ടും ബന്ധിപ്പിക്കാൻ ക്രമീകരണങ്ങളിൽ സിങ്ക് പാസ്‌വേഡ് നൽകുക."
+  "shellSyncNeedsPassword": "പങ്കിട്ട ഡാറ്റാബേസ്: ഈ ഉപകരണം വീണ്ടും ബന്ധിപ്പിക്കാൻ ക്രമീകരണങ്ങളിൽ സിങ്ക് പാസ്‌വേഡ് നൽകുക.",
+  "activityTaskCreated": "Task created",
+  "dictationOfflineTip": "Offline dictation — it often picks up noise (TV) instead of your voice. Turn ON “Online speech recognition” in Windows Settings → Privacy → Speech, reduce background noise, then try again.",
+  "dictationLanguageFallbackTip": "This language variant is not installed on Windows — a close match is used. Install the desired speech pack in Settings → Time & language → Speech.",
+  "dictationStarting": "Starting dictation…"
 }

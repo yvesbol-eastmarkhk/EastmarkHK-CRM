@@ -1,3 +1,5 @@
+import 'dart:ui' show PlatformDispatcher;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
@@ -28,22 +30,22 @@ class CrmApp extends StatelessWidget {
         // uniquement une fois entré dans l'app.
         locale: AppLocaleSettings.instance.locale,
         localeResolutionCallback: (locale, supported) {
-          if (locale == null) return supported.first;
+          final device = locale ?? PlatformDispatcher.instance.locale;
           // Correspondance exacte (ex. pt_BR avant pt).
           for (final s in supported) {
-            if (s.languageCode == locale.languageCode &&
-                (s.countryCode ?? '') == (locale.countryCode ?? '')) {
+            if (s.languageCode == device.languageCode &&
+                (s.countryCode ?? '') == (device.countryCode ?? '')) {
               return s;
             }
           }
           for (final s in supported) {
-            if (s.languageCode == locale.languageCode &&
+            if (s.languageCode == device.languageCode &&
                 (s.countryCode == null || s.countryCode!.isEmpty)) {
               return s;
             }
           }
           for (final s in supported) {
-            if (s.languageCode == locale.languageCode) return s;
+            if (s.languageCode == device.languageCode) return s;
           }
           return const Locale('en');
         },

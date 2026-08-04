@@ -1444,5 +1444,9 @@
   "invUnlinkConfirmBody": "Sa susunod na quote o invoice, hihilingin muli na piliin o gawin ang kliyente sa e-Invoicing.",
   "invUnlinkDone": "Naalis ang link sa e-Invoicing.",
   "invAppStoreUrlMissing": "Hindi pa nakalista ang e-Invoicing sa App Store para sa build na ito. Gamitin ang eastmarkhk.com o ilunsad ang naka-install na app.",
-  "shellSyncNeedsPassword": "Shared database: ilagay ang sync password sa Settings para ikonekta muli ang device na ito."
+  "shellSyncNeedsPassword": "Shared database: ilagay ang sync password sa Settings para ikonekta muli ang device na ito.",
+  "activityTaskCreated": "Task created",
+  "dictationOfflineTip": "Offline dictation — it often picks up noise (TV) instead of your voice. Turn ON “Online speech recognition” in Windows Settings → Privacy → Speech, reduce background noise, then try again.",
+  "dictationLanguageFallbackTip": "This language variant is not installed on Windows — a close match is used. Install the desired speech pack in Settings → Time & language → Speech.",
+  "dictationStarting": "Starting dictation…"
 }

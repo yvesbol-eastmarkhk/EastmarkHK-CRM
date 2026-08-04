@@ -3032,4 +3032,18 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get tasksEditTaskTitle => 'Edit task';
+
+  @override
+  String get activityTaskCreated => 'Tehtävä luotu';
+
+  @override
+  String get dictationOfflineTip =>
+      'Offline-sanelu poimii usein melua (TV) äänesi sijaan. Ota «Online-puheentunnistus» käyttöön Windowsin asetuksissa → Tietosuoja → Puhe, vähennä melua ja yritä uudelleen.';
+
+  @override
+  String get dictationLanguageFallbackTip =>
+      'Tätä kielivarianttia ei ole asennettu Windowsiin — käytetään läheistä vastinetta. Asenna haluttu puhepaketti: Asetukset → Aika ja kieli → Puhe.';
+
+  @override
+  String get dictationStarting => 'Aloitetaan sanelu…';
 }

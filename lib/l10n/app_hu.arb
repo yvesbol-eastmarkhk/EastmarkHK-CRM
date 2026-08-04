@@ -1444,5 +1444,9 @@
   "invUnlinkConfirmBody": "A következő árajánlat vagy számla ismét kérni fogja az ügyfél kiválasztását vagy létrehozását az e-Invoicingban.",
   "invUnlinkDone": "Az e-Invoicing kapcsolat eltávolítva.",
   "invAppStoreUrlMissing": "Az e-Invoicing még nincs feltüntetve az App Store-ban ehhez a buildhez. Használja az eastmarkhk.com oldalt, vagy indítson egy már telepített alkalmazást.",
-  "shellSyncNeedsPassword": "Megosztott adatbázis: adja meg a szinkronizálási jelszót a Beállításokban az eszköz újracsatlakoztatásához."
+  "shellSyncNeedsPassword": "Megosztott adatbázis: adja meg a szinkronizálási jelszót a Beállításokban az eszköz újracsatlakoztatásához.",
+  "activityTaskCreated": "Feladat létrehozva",
+  "dictationOfflineTip": "Offline diktálás — gyakran a zajt (TV) ismeri fel a hangja helyett. Kapcsolja be az „Online beszédfelismerést” a Windows Beállítások → Adatvédelem → Beszéd menüpontban, csökkentse a zajt, majd próbálja újra.",
+  "dictationLanguageFallbackTip": "Ez a nyelvi változat nincs telepítve a Windowsban — közeli változatot használunk. Telepítse a kívánt beszédcsomagot: Beállítások → Idő és nyelv → Beszéd.",
+  "dictationStarting": "Diktálás indítása…"
 }

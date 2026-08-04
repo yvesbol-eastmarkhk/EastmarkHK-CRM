@@ -508,7 +508,7 @@ class AppDatabase {
       'tasks',
       where: 'deleted_at IS NULL AND done_at IS NULL AND title LIKE ?',
       whereArgs: [q],
-      orderBy: 'due_date IS NULL, due_date',
+      orderBy: 'updated_at DESC',
       limit: 12,
     );
     return rows.map(CrmTask.fromMap).toList();
@@ -551,10 +551,12 @@ class AppDatabase {
       where.write(' AND assigned_to = ?');
       args.add(assignedTo);
     }
+    // Plus récentes d'abord (y compris tâches sans date — elles restaient
+    // enterrées en bas avec due_date ASC).
     final rows = await db.query('tasks',
         where: where.toString(),
         whereArgs: args,
-        orderBy: 'due_date IS NULL, due_date');
+        orderBy: 'updated_at DESC');
     return rows.map(CrmTask.fromMap).toList();
   }
 

@@ -9,6 +9,7 @@ import '../../ui/crm_page.dart';
 import '../db/app_database.dart';
 import '../models/models.dart';
 import '../services/pipeline_settings.dart';
+import '../utils/activity_labels.dart';
 import '../utils/formatters.dart';
 import '../utils/task_display.dart';
 import '../widgets/log_interaction_sheet.dart';
@@ -141,22 +142,11 @@ class _OpportunityDetailScreenState extends State<OpportunityDetailScreen> {
         ActivityType.quoteSent => Icons.request_quote_outlined,
         ActivityType.reply => Icons.reply_outlined,
         ActivityType.remark => Icons.priority_high_outlined,
+        ActivityType.task => Icons.task_alt_outlined,
       };
 
-  /// Les activités persistent leur titre au moment de la saisie. On re-traduit
-  /// les libellés connus à l'affichage pour refléter la langue courante.
-  String _activityTitle(AppLocalizations l10n, Activity a) => switch (a.title) {
-        'Note' => l10n.logKindNote,
-        'Devis envoyé' => l10n.logKindQuoteSent,
-        'E-mail' => l10n.logKindEmail,
-        'Appel' => l10n.logKindCall,
-        'Réunion' => l10n.logKindMeeting,
-        'Réponse client' => l10n.logKindReply,
-        'Remarque' => l10n.logKindRemark,
-        'Changement de stade' => l10n.oppStageChanged,
-        'Opportunité créée' => l10n.oppCreated,
-        _ => a.title,
-      };
+  String _activityTitle(AppLocalizations l10n, Activity a) =>
+      localizedActivityTitle(l10n, a.title);
 
   /// Fusionne activités + tâches en un seul flux chronologique — c'est le
   /// cœur de l'écran : "tout ce qui s'est passé", peu importe le type.

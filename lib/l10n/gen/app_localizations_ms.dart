@@ -3030,4 +3030,18 @@ class AppLocalizationsMs extends AppLocalizations {
 
   @override
   String get tasksEditTaskTitle => 'Edit task';
+
+  @override
+  String get activityTaskCreated => 'Tugas dicipta';
+
+  @override
+  String get dictationOfflineTip =>
+      'Dikte luar talian sering menangkap hingar (TV) bukan suara anda. Hidupkan «Pengecaman pertuturan dalam talian» dalam Tetapan Windows → Privasi → Pertuturan, kurangkan hingar, kemudian cuba lagi.';
+
+  @override
+  String get dictationLanguageFallbackTip =>
+      'Varian bahasa ini tidak dipasang pada Windows — padanan rapat digunakan. Pasang pek pertuturan yang dikehendaki dalam Tetapan → Masa & bahasa → Pertuturan.';
+
+  @override
+  String get dictationStarting => 'Memulakan dikte…';
 }

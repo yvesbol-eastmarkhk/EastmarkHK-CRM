@@ -3035,4 +3035,18 @@ class AppLocalizationsSw extends AppLocalizations {
 
   @override
   String get tasksEditTaskTitle => 'Edit task';
+
+  @override
+  String get activityTaskCreated => 'Task created';
+
+  @override
+  String get dictationOfflineTip =>
+      'Offline dictation — it often picks up noise (TV) instead of your voice. Turn ON “Online speech recognition” in Windows Settings → Privacy → Speech, reduce background noise, then try again.';
+
+  @override
+  String get dictationLanguageFallbackTip =>
+      'This language variant is not installed on Windows — a close match is used. Install the desired speech pack in Settings → Time & language → Speech.';
+
+  @override
+  String get dictationStarting => 'Starting dictation…';
 }

@@ -115,8 +115,9 @@ class AppLocaleSettings extends ChangeNotifier {
     }
   }
 
-  String currentLabel() {
-    if (_locale == null) return 'Langue du système';
+  /// [systemLanguageLabel] = `AppLocalizations.systemLanguage` (langue UI).
+  String currentLabel(String systemLanguageLabel) {
+    if (_locale == null) return systemLanguageLabel;
     final code = toCode(_locale!);
     for (final s in supported) {
       if (s.$1 == code) return s.$2;

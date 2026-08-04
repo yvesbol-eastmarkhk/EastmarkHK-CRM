@@ -3027,4 +3027,18 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get tasksEditTaskTitle => 'Edit task';
+
+  @override
+  String get activityTaskCreated => 'המשימה נוצרה';
+
+  @override
+  String get dictationOfflineTip =>
+      'הכתבה לא מקוונת לרוב קולטת רעש (טלוויזיה) במקום את קולכם. הפעילו «זיהוי דיבור מקוון» בהגדרות Windows → פרטיות → דיבור, הפחיתו רעש ונסו שוב.';
+
+  @override
+  String get dictationLanguageFallbackTip =>
+      'וריאנט השפה הזה אינו מותקן ב-Windows — נעשה שימוש בהתאמה קרובה. התקינו את חבילת הדיבור הרצויה בהגדרות → שעה ושפה → דיבור.';
+
+  @override
+  String get dictationStarting => 'מתחילים הכתבה…';
 }

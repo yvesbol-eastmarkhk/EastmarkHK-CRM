@@ -1444,5 +1444,9 @@
   "invUnlinkConfirmBody": "Sebut harga atau invois seterusnya akan meminta anda memilih atau mencipta semula klien dalam e-Invoicing.",
   "invUnlinkDone": "Pautan e-Invoicing dialih keluar.",
   "invAppStoreUrlMissing": "e-Invoicing belum disenaraikan di App Store untuk binaan ini. Gunakan eastmarkhk.com atau lancarkan aplikasi yang telah dipasang.",
-  "shellSyncNeedsPassword": "Pangkalan data dikongsi: masukkan kata laluan penyegerakan dalam Tetapan untuk menyambung semula peranti ini."
+  "shellSyncNeedsPassword": "Pangkalan data dikongsi: masukkan kata laluan penyegerakan dalam Tetapan untuk menyambung semula peranti ini.",
+  "activityTaskCreated": "Tugas dicipta",
+  "dictationOfflineTip": "Dikte luar talian sering menangkap hingar (TV) bukan suara anda. Hidupkan «Pengecaman pertuturan dalam talian» dalam Tetapan Windows → Privasi → Pertuturan, kurangkan hingar, kemudian cuba lagi.",
+  "dictationLanguageFallbackTip": "Varian bahasa ini tidak dipasang pada Windows — padanan rapat digunakan. Pasang pek pertuturan yang dikehendaki dalam Tetapan → Masa & bahasa → Pertuturan.",
+  "dictationStarting": "Memulakan dikte…"
 }

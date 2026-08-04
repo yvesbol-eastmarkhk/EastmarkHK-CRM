@@ -1533,5 +1533,9 @@
   "invUnlinkConfirmBody": "Bir sonraki teklif veya fatura, e-Invoicing'de müşteriyi tekrar seçmenizi veya oluşturmanızı isteyecek.",
   "invUnlinkDone": "e-Invoicing bağlantısı kaldırıldı.",
   "invAppStoreUrlMissing": "e-Invoicing bu derleme için henüz App Store'da listelenmedi. eastmarkhk.com'u kullanın veya zaten yüklü bir uygulamayı başlatın.",
-  "shellSyncNeedsPassword": "Paylaşılan veritabanı: bu cihazı yeniden bağlamak için Ayarlar'da senkronizasyon şifresini girin."
+  "shellSyncNeedsPassword": "Paylaşılan veritabanı: bu cihazı yeniden bağlamak için Ayarlar'da senkronizasyon şifresini girin.",
+  "activityTaskCreated": "Görev oluşturuldu",
+  "dictationOfflineTip": "Çevrimdışı dikte — genelde sesiniz yerine gürültüyü (TV) alır. Windows Ayarları → Gizlilik → Konuşma içinde «Çevrimiçi konuşma tanıma»yı açın, gürültüyü azaltın ve yeniden deneyin.",
+  "dictationLanguageFallbackTip": "Bu dil varyantı Windows’ta yüklü değil — yakın bir eşleşme kullanılıyor. İstediğiniz konuşma paketini Ayarlar → Saat ve dil → Konuşma bölümünden yükleyin.",
+  "dictationStarting": "Dikte başlatılıyor…"
 }

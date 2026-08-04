@@ -1444,5 +1444,9 @@
   "invUnlinkConfirmBody": "Bij de volgende offerte of factuur wordt opnieuw gevraagd de klant in e-Invoicing te kiezen of aan te maken.",
   "invUnlinkDone": "e-Invoicing-koppeling verwijderd.",
   "invAppStoreUrlMissing": "e-Invoicing staat voor deze build nog niet in de App Store. Gebruik eastmarkhk.com of start een al geïnstalleerde app.",
-  "shellSyncNeedsPassword": "Gedeelde database: voer het synchronisatiewachtwoord in bij Instellingen om dit apparaat opnieuw te verbinden."
+  "shellSyncNeedsPassword": "Gedeelde database: voer het synchronisatiewachtwoord in bij Instellingen om dit apparaat opnieuw te verbinden.",
+  "activityTaskCreated": "Taak aangemaakt",
+  "dictationOfflineTip": "Offline dictee — pikt vaak lawaai (TV) op in plaats van uw stem. Zet «Online spraakherkenning» aan in Windows-instellingen → Privacy → Spraak, verminder achtergrondgeluid en probeer opnieuw.",
+  "dictationLanguageFallbackTip": "Deze taalvariant is niet geïnstalleerd op Windows — er wordt een nauwe match gebruikt. Installeer het gewenste spraakpakket via Instellingen → Tijd en taal → Spraak.",
+  "dictationStarting": "Dictee starten…"
 }

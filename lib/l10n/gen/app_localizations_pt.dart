@@ -3033,6 +3033,20 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get tasksEditTaskTitle => 'Edit task';
+
+  @override
+  String get activityTaskCreated => 'Tarefa criada';
+
+  @override
+  String get dictationOfflineTip =>
+      'Ditado offline — capta frequentemente o ruído (TV) em vez da sua voz. Ative o «reconhecimento de voz online» em Definições do Windows → Privacidade → Voz, reduza o ruído e tente novamente.';
+
+  @override
+  String get dictationLanguageFallbackTip =>
+      'Esta variante de idioma não está instalada no Windows — é usada uma variante próxima. Instale o pacote de voz em Definições → Hora e idioma → Voz.';
+
+  @override
+  String get dictationStarting => 'A iniciar o ditado…';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
@@ -6063,4 +6077,18 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get tasksEditTaskTitle => 'Edit task';
+
+  @override
+  String get activityTaskCreated => 'Tarefa criada';
+
+  @override
+  String get dictationOfflineTip =>
+      'Ditado offline — costuma captar o ruído (TV) em vez da sua voz. Ative o «reconhecimento de fala online» em Configurações do Windows → Privacidade → Fala, reduza o ruído e tente de novo.';
+
+  @override
+  String get dictationLanguageFallbackTip =>
+      'Esta variante de idioma não está instalada no Windows — uma variante próxima é usada. Instale o pacote de fala em Configurações → Hora e idioma → Fala.';
+
+  @override
+  String get dictationStarting => 'Iniciando o ditado…';
 }

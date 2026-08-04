@@ -76,7 +76,6 @@ class _LanguagePickerDialogState extends State<_LanguagePickerDialog> {
             ),
           if (!kIsWeb &&
               (defaultTargetPlatform == TargetPlatform.macOS ||
-                  defaultTargetPlatform == TargetPlatform.windows ||
                   defaultTargetPlatform == TargetPlatform.linux))
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 12, 16, 20),

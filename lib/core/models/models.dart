@@ -264,7 +264,18 @@ class Opportunity {
 /// `remark` alimentent le panneau de saisie rapide "Contacté" (voir
 /// log_interaction_sheet.dart) — stockés en TEXT libre, donc les ajouter
 /// ne nécessite aucune migration DB.
-enum ActivityType { note, call, email, meeting, moduleEvent, quoteSent, reply, remark }
+enum ActivityType {
+  note,
+  call,
+  email,
+  meeting,
+  moduleEvent,
+  quoteSent,
+  reply,
+  remark,
+  /// Création / suivi de tâche (timeline + activité récente).
+  task,
+}
 
 class Activity {
   Activity({

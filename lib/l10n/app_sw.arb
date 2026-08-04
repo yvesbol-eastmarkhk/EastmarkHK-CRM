@@ -1444,5 +1444,9 @@
   "invUnlinkConfirmBody": "Nukuu au ankara inayofuata itaomba tena kuchagua au kuunda mteja katika e-Invoicing.",
   "invUnlinkDone": "Kiungo cha e-Invoicing kimeondolewa.",
   "invAppStoreUrlMissing": "e-Invoicing bado haijaorodheshwa kwenye App Store kwa toleo hili. Tumia eastmarkhk.com au zindua programu iliyosakinishwa tayari.",
-  "shellSyncNeedsPassword": "Hifadhidata iliyoshirikiwa: ingiza nenosiri la usawazishaji katika Mipangilio ili kuunganisha kifaa hiki tena."
+  "shellSyncNeedsPassword": "Hifadhidata iliyoshirikiwa: ingiza nenosiri la usawazishaji katika Mipangilio ili kuunganisha kifaa hiki tena.",
+  "activityTaskCreated": "Task created",
+  "dictationOfflineTip": "Offline dictation — it often picks up noise (TV) instead of your voice. Turn ON “Online speech recognition” in Windows Settings → Privacy → Speech, reduce background noise, then try again.",
+  "dictationLanguageFallbackTip": "This language variant is not installed on Windows — a close match is used. Install the desired speech pack in Settings → Time & language → Speech.",
+  "dictationStarting": "Starting dictation…"
 }

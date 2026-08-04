@@ -1,25 +1,28 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 
 import '../../l10n/gen/app_localizations.dart';
+import '../services/app_locale_settings.dart';
+import '../services/desktop_speech_service.dart';
 import '../services/dictation_settings.dart';
-import '../services/macos_speech_service.dart';
+import '../utils/activity_labels.dart';
 import 'dictation_language_picker.dart';
 
 bool get _spellCheckSupported =>
     defaultTargetPlatform == TargetPlatform.iOS ||
     defaultTargetPlatform == TargetPlatform.android;
 
-/// Micro actif sur iOS/Android (speech_to_text) et macOS (pont Swift natif).
-/// Windows reste sans dictée native.
+/// Micro actif sur iOS/Android (speech_to_text) et desktop natif (macOS/Windows).
 bool get dictationSupported =>
     defaultTargetPlatform == TargetPlatform.iOS ||
     defaultTargetPlatform == TargetPlatform.android ||
-    defaultTargetPlatform == TargetPlatform.macOS;
+    defaultTargetPlatform == TargetPlatform.macOS ||
+    defaultTargetPlatform == TargetPlatform.windows;
 
-bool get _useMacosSpeech => defaultTargetPlatform == TargetPlatform.macOS;
+bool get _useNativeSpeech => DesktopSpeechService.instance.isSupported;
 
 /// Champ texte (+ micro uniquement sur plateformes supportées).
 class DictationField extends StatefulWidget {
@@ -72,6 +75,7 @@ class DictationField extends StatefulWidget {
 
 class _DictationFieldState extends State<DictationField> {
   bool _listening = false;
+  bool _starting = false;
   bool _busy = false;
   String _baseText = '';
   // Incrémenté à chaque (re)démarrage de la dictée — un callback lié à une
@@ -82,15 +86,31 @@ class _DictationFieldState extends State<DictationField> {
   SpeechToText get _speech => DictationSettings.instance.speech;
 
   @override
+  void initState() {
+    super.initState();
+    if (_useNativeSpeech) {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        await DictationSettings.instance.ensureLoaded();
+        await AppLocaleSettings.instance.ensureLoaded();
+        await DesktopSpeechService.instance.warmup(
+          DictationSettings.instance.effectiveLocaleId(),
+        );
+      });
+    }
+  }
+
+  @override
   void dispose() {
-    if (_listening) {
-      if (_useMacosSpeech) {
-        // ignore: unawaited_futures
-        MacosSpeechService.instance.stop();
-      } else {
-        // ignore: unawaited_futures
-        _speech.stop();
-      }
+    // Invalide les callbacks tout de suite — le stop natif peut arriver
+    // pendant le pop du dialogue (Save tâche) et ne doit plus toucher l'UI.
+    _dictationGen++;
+    _listening = false;
+    if (_useNativeSpeech) {
+      // ignore: unawaited_futures
+      DesktopSpeechService.instance.stop();
+    } else {
+      // ignore: unawaited_futures
+      _speech.stop();
     }
     super.dispose();
   }
@@ -102,8 +122,8 @@ class _DictationFieldState extends State<DictationField> {
       if (_listening) {
         _dictationGen++;
         try {
-          if (_useMacosSpeech) {
-            await MacosSpeechService.instance.stop();
+          if (_useNativeSpeech) {
+            await DesktopSpeechService.instance.stop();
           } else {
             await _speech.stop();
           }
@@ -113,13 +133,28 @@ class _DictationFieldState extends State<DictationField> {
       }
 
       await DictationSettings.instance.ensureLoaded();
+      await AppLocaleSettings.instance.ensureLoaded();
 
-      if (_useMacosSpeech) {
+      if (defaultTargetPlatform == TargetPlatform.windows && !_useNativeSpeech) {
+        final mic = await Permission.microphone.request();
+        if (!mic.isGranted) {
+          _showUnavailable();
+          return;
+        }
+      }
+
+      if (_useNativeSpeech) {
         _baseText = widget.controller.text;
         final gen = ++_dictationGen;
-        final ok = await MacosSpeechService.instance.start(
+        // Orange = préparation ; bleu seulement quand le moteur écoute vraiment
+        // (sinon les premiers mots sont perdus pendant le CompileConstraints).
+        if (mounted) setState(() {
+          _starting = true;
+          _listening = false;
+        });
+        final ok = await DesktopSpeechService.instance.start(
           localeId: DictationSettings.instance.effectiveLocaleId(),
-          onResult: (words, {required isFinal}) {
+          onResult: (words, {required bool isFinal}) {
             if (!mounted || gen != _dictationGen) return;
             final sep = _baseText.isEmpty ? '' : ' ';
             final next = '$_baseText$sep$words';
@@ -128,17 +163,56 @@ class _DictationFieldState extends State<DictationField> {
               selection: TextSelection.collapsed(offset: next.length),
             );
             widget.onChanged?.call(next);
-            if (isFinal && mounted) setState(() => _listening = false);
           },
           onDone: () {
-            if (mounted && gen == _dictationGen) setState(() => _listening = false);
+            if (mounted && gen == _dictationGen) {
+              setState(() {
+                _listening = false;
+                _starting = false;
+              });
+            }
+          },
+          onError: (message) {
+            if (!mounted || gen != _dictationGen) return;
+            setState(() {
+              _listening = false;
+              _starting = false;
+            });
+            ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+              SnackBar(content: Text(message), duration: const Duration(seconds: 6)),
+            );
+          },
+          onInfo: (message) {
+            if (!mounted || gen != _dictationGen) return;
+            final l10n = AppLocalizations.of(context);
+            ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+              SnackBar(
+                content: Text(localizedDictationInfo(l10n, message)),
+                duration: const Duration(seconds: 8),
+              ),
+            );
           },
         );
-        if (!ok || !mounted) {
-          _showUnavailable();
+        if (!mounted) return;
+        if (!ok) {
+          setState(() {
+            _listening = false;
+            _starting = false;
+          });
+          final err = DesktopSpeechService.instance.lastError;
+          if (err != null && err.isNotEmpty) {
+            ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+              SnackBar(content: Text(err), duration: const Duration(seconds: 6)),
+            );
+          } else {
+            _showUnavailable();
+          }
           return;
         }
-        setState(() => _listening = true);
+        setState(() {
+          _starting = false;
+          _listening = true;
+        });
         return;
       }
 
@@ -211,8 +285,8 @@ class _DictationFieldState extends State<DictationField> {
     if (_listening) {
       _dictationGen++;
       try {
-        if (_useMacosSpeech) {
-          await MacosSpeechService.instance.stop();
+        if (_useNativeSpeech) {
+          await DesktopSpeechService.instance.stop();
         } else {
           await _speech.stop();
         }
@@ -264,13 +338,17 @@ class _DictationFieldState extends State<DictationField> {
                   ),
                   tooltip: _listening
                       ? l10n.dictationStop
-                      : l10n.dictationStart,
+                      : (_starting
+                          ? l10n.dictationStarting
+                          : l10n.dictationStart),
                   icon: Icon(
-                    _listening ? Icons.mic : Icons.mic_none,
+                    _listening || _starting ? Icons.mic : Icons.mic_none,
                     size: 22,
-                    color: _listening ? scheme.primary : null,
+                    color: _listening
+                        ? scheme.primary
+                        : (_starting ? scheme.tertiary : null),
                   ),
-                  onPressed: _toggle,
+                  onPressed: _starting ? null : _toggle,
                 ),
               ],
             ),

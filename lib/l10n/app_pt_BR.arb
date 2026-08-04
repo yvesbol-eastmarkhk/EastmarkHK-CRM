@@ -1444,5 +1444,9 @@
   "invUnlinkConfirmBody": "O próximo orçamento ou fatura pedirá novamente para escolher ou criar o cliente no e-Invoicing.",
   "invUnlinkDone": "Vínculo com e-Invoicing removido.",
   "invAppStoreUrlMissing": "O e-Invoicing ainda não está listado na App Store para esta versão. Use eastmarkhk.com ou inicie um aplicativo já instalado.",
-  "shellSyncNeedsPassword": "Banco de dados compartilhado: digite a senha de sincronização em Configurações para reconectar este dispositivo."
+  "shellSyncNeedsPassword": "Banco de dados compartilhado: digite a senha de sincronização em Configurações para reconectar este dispositivo.",
+  "activityTaskCreated": "Tarefa criada",
+  "dictationOfflineTip": "Ditado offline — costuma captar o ruído (TV) em vez da sua voz. Ative o «reconhecimento de fala online» em Configurações do Windows → Privacidade → Fala, reduza o ruído e tente de novo.",
+  "dictationLanguageFallbackTip": "Esta variante de idioma não está instalada no Windows — uma variante próxima é usada. Instale o pacote de fala em Configurações → Hora e idioma → Fala.",
+  "dictationStarting": "Iniciando o ditado…"
 }

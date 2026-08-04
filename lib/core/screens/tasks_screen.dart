@@ -8,6 +8,7 @@ import '../db/app_database.dart';
 import '../models/models.dart';
 import '../models/user_account.dart';
 import '../services/current_session.dart';
+import '../services/desktop_speech_service.dart';
 import '../utils/formatters.dart';
 import '../utils/task_display.dart';
 import '../widgets/company_avatar.dart';
@@ -424,8 +425,14 @@ Future<bool> showAddTaskDialog(
           actions: [
             if (isEdit)
               TextButton(
-                onPressed: () =>
-                    Navigator.pop(ctx, _TaskDialogAction.delete),
+                onPressed: () async {
+                  // Arrête la dictée AVANT le pop — sinon WinRT Stop()
+                  // crashe l'app Windows (c0000005) pendant le dispose.
+                  await DesktopSpeechService.instance.stop();
+                  if (ctx.mounted) {
+                    Navigator.pop(ctx, _TaskDialogAction.delete);
+                  }
+                },
                 style: TextButton.styleFrom(
                     foregroundColor: Colors.red.shade700),
                 child: Text(l10n.commonDelete),
@@ -434,14 +441,23 @@ Future<bool> showAddTaskDialog(
               mainAxisSize: MainAxisSize.min,
               children: [
                 TextButton(
-                  onPressed: () =>
-                      Navigator.pop(ctx, _TaskDialogAction.cancel),
+                  onPressed: () async {
+                    await DesktopSpeechService.instance.stop();
+                    if (ctx.mounted) {
+                      Navigator.pop(ctx, _TaskDialogAction.cancel);
+                    }
+                  },
                   child: Text(l10n.commonCancel),
                 ),
                 const SizedBox(width: 8),
                 FilledButton(
                   onPressed: canSave
-                      ? () => Navigator.pop(ctx, _TaskDialogAction.save)
+                      ? () async {
+                          await DesktopSpeechService.instance.stop();
+                          if (ctx.mounted) {
+                            Navigator.pop(ctx, _TaskDialogAction.save);
+                          }
+                        }
                       : null,
                   child: Text(isEdit ? l10n.commonSave : l10n.commonCreate),
                 ),
@@ -470,8 +486,10 @@ Future<bool> showAddTaskDialog(
   final fullMessage = message.text.trim();
   final dueUtc = buildDueUtc();
   final now = nowIso();
+  final isCreate = existing == null;
+  final taskId = existing?.id ?? AppDatabase.newId();
   await AppDatabase.instance.upsertTask(CrmTask(
-    id: existing?.id ?? AppDatabase.newId(),
+    id: taskId,
     companyId: selectedCompanyId,
     opportunityId: existing?.opportunityId,
     contactId: existing?.contactId,
@@ -483,5 +501,23 @@ Future<bool> showAddTaskDialog(
     createdAt: existing?.createdAt ?? now,
     updatedAt: now,
   ));
+
+  // Création → activité récente / timeline client (comme « Opportunité créée »).
+  if (isCreate) {
+    await AppDatabase.instance.upsertActivity(Activity(
+      id: AppDatabase.newId(),
+      companyId: selectedCompanyId,
+      opportunityId: existing?.opportunityId,
+      contactId: existing?.contactId,
+      type: ActivityType.task,
+      title: 'Tâche créée',
+      body: fullMessage,
+      refTable: 'tasks',
+      refId: taskId,
+      happenedAt: now,
+      createdAt: now,
+      updatedAt: now,
+    ));
+  }
   return true;
 }

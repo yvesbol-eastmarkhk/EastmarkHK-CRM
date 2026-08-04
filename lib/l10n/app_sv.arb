@@ -1444,5 +1444,9 @@
   "invUnlinkConfirmBody": "Nästa offert eller faktura kommer att be dig välja eller skapa klienten i e-Invoicing igen.",
   "invUnlinkDone": "e-Invoicing-länk borttagen.",
   "invAppStoreUrlMissing": "e-Invoicing är ännu inte listad på App Store för den här versionen. Använd eastmarkhk.com eller starta en redan installerad app.",
-  "shellSyncNeedsPassword": "Delad databas: ange synkroniseringslösenordet i Inställningar för att återansluta den här enheten."
+  "shellSyncNeedsPassword": "Delad databas: ange synkroniseringslösenordet i Inställningar för att återansluta den här enheten.",
+  "activityTaskCreated": "Uppgift skapad",
+  "dictationOfflineTip": "Offline-diktering fångar ofta brus (TV) i stället för din röst. Aktivera ”Online-taligenkänning” i Windows-inställningar → Sekretess → Tal, minska bakgrundsljudet och försök igen.",
+  "dictationLanguageFallbackTip": "Denna språkvariant är inte installerad i Windows — en nära matchning används. Installera önskat talpaket i Inställningar → Tid och språk → Tal.",
+  "dictationStarting": "Startar diktering…"
 }

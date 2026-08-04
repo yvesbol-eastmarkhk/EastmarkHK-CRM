@@ -26,7 +26,8 @@ class CrmWorkspaceState extends ChangeNotifier {
     section = s;
     activeModuleId = null;
     selectedOpportunityId = null;
-    if (s != CrmSection.today) {
+    // Garde la sélection tâche sur Aujourd'hui et Tâches (aperçu à droite).
+    if (s != CrmSection.today && s != CrmSection.tasks) {
       selectedTaskId = null;
       todayFullRecord = false;
     }
@@ -37,6 +38,8 @@ class CrmWorkspaceState extends ChangeNotifier {
       // restait active et le panneau affichait la fiche société à la place
       // du dashboard en y revenant — d'où la mise en page « en pagaille ».
       selectedCompanyId = null;
+      selectedTaskId = null;
+      todayFullRecord = false;
     }
     notifyListeners();
   }

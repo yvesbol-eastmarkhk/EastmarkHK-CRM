@@ -1533,5 +1533,9 @@
   "invUnlinkConfirmBody": "Báo giá hoặc hóa đơn tiếp theo sẽ yêu cầu bạn chọn hoặc tạo lại khách hàng trong e-Invoicing.",
   "invUnlinkDone": "Đã xóa liên kết e-Invoicing.",
   "invAppStoreUrlMissing": "e-Invoicing chưa được liệt kê trên App Store cho bản dựng này. Sử dụng eastmarkhk.com hoặc khởi chạy ứng dụng đã cài đặt.",
-  "shellSyncNeedsPassword": "Cơ sở dữ liệu chia sẻ: nhập mật khẩu đồng bộ trong Cài đặt để kết nối lại thiết bị này."
+  "shellSyncNeedsPassword": "Cơ sở dữ liệu chia sẻ: nhập mật khẩu đồng bộ trong Cài đặt để kết nối lại thiết bị này.",
+  "activityTaskCreated": "Đã tạo nhiệm vụ",
+  "dictationOfflineTip": "Chính tả ngoại tuyến thường nhận tiếng ồn (TV) thay vì giọng bạn. Bật «Nhận dạng giọng nói trực tuyến» trong Cài đặt Windows → Quyền riêng tư → Lời nói, giảm tiếng ồn rồi thử lại.",
+  "dictationLanguageFallbackTip": "Biến thể ngôn ngữ này chưa được cài trên Windows — đang dùng biến thể gần. Cài gói lời nói mong muốn trong Cài đặt → Thời gian & ngôn ngữ → Lời nói.",
+  "dictationStarting": "Đang bắt đầu chính tả…"
 }

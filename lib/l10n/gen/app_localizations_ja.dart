@@ -3008,4 +3008,18 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get tasksEditTaskTitle => 'Edit task';
+
+  @override
+  String get activityTaskCreated => 'タスクを作成しました';
+
+  @override
+  String get dictationOfflineTip =>
+      'オフライン音声入力は、声ではなく周囲の音（テレビなど）を拾いがちです。Windows の設定 → プライバシー → 音声で「オンライン音声認識」をオンにし、ノイズを減らしてから再試行してください。';
+
+  @override
+  String get dictationLanguageFallbackTip =>
+      'この言語バリアントは Windows にインストールされていません。近い言語を使用します。設定 → 時刻と言語 → 音声 で目的の音声パックをインストールしてください。';
+
+  @override
+  String get dictationStarting => '音声入力を開始しています…';
 }

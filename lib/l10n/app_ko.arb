@@ -1444,5 +1444,9 @@
   "invUnlinkConfirmBody": "다음 견적서나 청구서에서는 e-Invoicing에서 고객을 다시 선택하거나 생성해야 합니다.",
   "invUnlinkDone": "e-Invoicing 연결이 해제되었습니다.",
   "invAppStoreUrlMissing": "이 빌드에서는 e-Invoicing이 아직 App Store에 등록되지 않았습니다. eastmarkhk.com을 사용하거나 이미 설치된 앱을 실행하세요.",
-  "shellSyncNeedsPassword": "공유 데이터베이스: 이 기기를 다시 연결하려면 설정에서 동기화 비밀번호를 입력하세요."
+  "shellSyncNeedsPassword": "공유 데이터베이스: 이 기기를 다시 연결하려면 설정에서 동기화 비밀번호를 입력하세요.",
+  "activityTaskCreated": "작업이 생성됨",
+  "dictationOfflineTip": "오프라인 받아쓰기는 목소리 대신 소음(TV)을 인식하는 경우가 많습니다. Windows 설정 → 개인 정보 → 음성에서 “온라인 음성 인식”을 켠 뒤 소음을 줄이고 다시 시도하세요.",
+  "dictationLanguageFallbackTip": "이 언어 변형은 Windows에 설치되어 있지 않습니다. 가까운 변형을 사용합니다. 설정 → 시간 및 언어 → 음성에서 원하는 음성 팩을 설치하세요.",
+  "dictationStarting": "받아쓰기 시작 중…"
 }

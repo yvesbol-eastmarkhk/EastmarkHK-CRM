@@ -12,6 +12,7 @@ import '../db/app_database.dart';
 import '../models/models.dart';
 import '../modules/module_registry.dart';
 import '../services/pipeline_settings.dart';
+import '../utils/activity_labels.dart';
 import '../utils/formatters.dart';
 import '../utils/phone_formatter.dart';
 import '../utils/responsive_form.dart';
@@ -294,6 +295,7 @@ class _CompanyDetailScreenState extends State<CompanyDetailScreen> with SingleTi
         ActivityType.quoteSent => Icons.request_quote_outlined,
         ActivityType.reply => Icons.reply_outlined,
         ActivityType.remark => Icons.priority_high_outlined,
+        ActivityType.task => Icons.task_alt_outlined,
       };
 
   Widget _buildEmbeddedHeader(Company c) {
@@ -534,14 +536,18 @@ class _CompanyDetailScreenState extends State<CompanyDetailScreen> with SingleTi
   /// Fond alterné (façon grille) — même repère visuel que la liste d'affaires.
   Widget _activityTile(Activity a, int index) {
     final scheme = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context);
     final editable = a.type != ActivityType.moduleEvent;
     final stripe = index.isEven ? scheme.surface : scheme.surfaceContainerLow;
+    final label = (a.body != null && a.body!.isNotEmpty)
+        ? a.body!
+        : localizedActivityTitle(l10n, a.title);
     return Material(
       color: stripe,
       child: ListTile(
         dense: true,
         leading: Icon(_activityIcon(a.type), size: 18),
-        title: SelectableText(a.body ?? a.title),
+        title: SelectableText(label),
         subtitle: Text(formatDateTimeFr(a.happenedAt)),
         trailing: editable ? const Icon(Icons.chevron_right, size: 18) : null,
         onTap: editable ? () => _editActivity(a) : null,

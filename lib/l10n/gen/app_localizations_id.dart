@@ -3030,4 +3030,18 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get tasksEditTaskTitle => 'Edit task';
+
+  @override
+  String get activityTaskCreated => 'Tugas dibuat';
+
+  @override
+  String get dictationOfflineTip =>
+      'Dikte offline sering menangkap kebisingan (TV) alih-alih suara Anda. Aktifkan «Pengenalan ucapan online» di Pengaturan Windows → Privasi → Ucapan, kurangi kebisingan, lalu coba lagi.';
+
+  @override
+  String get dictationLanguageFallbackTip =>
+      'Varian bahasa ini tidak terpasang di Windows — digunakan kecocokan terdekat. Instal paket ucapan yang diinginkan di Pengaturan → Waktu & bahasa → Ucapan.';
+
+  @override
+  String get dictationStarting => 'Memulai dikte…';
 }

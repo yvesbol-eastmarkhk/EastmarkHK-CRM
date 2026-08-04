@@ -5491,6 +5491,30 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Modifier la tâche'**
   String get tasksEditTaskTitle;
+
+  /// No description provided for @activityTaskCreated.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tâche créée'**
+  String get activityTaskCreated;
+
+  /// No description provided for @dictationOfflineTip.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dictée hors ligne — elle capture souvent le bruit (TV) au lieu de votre voix. Activez « Reconnaissance vocale en ligne » dans Paramètres Windows → Confidentialité → Discours, baissez le bruit, puis réessayez.'**
+  String get dictationOfflineTip;
+
+  /// No description provided for @dictationLanguageFallbackTip.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cette variante de langue n’est pas installée sur Windows — une variante proche est utilisée. Installez le pack Speech souhaité dans Paramètres → Heure et langue → Speech.'**
+  String get dictationLanguageFallbackTip;
+
+  /// No description provided for @dictationStarting.
+  ///
+  /// In fr, this message translates to:
+  /// **'Démarrage de la dictée…'**
+  String get dictationStarting;
 }
 
 class _AppLocalizationsDelegate

@@ -6,6 +6,7 @@ import '../core/models/models.dart';
 import '../core/services/remote_crm_sync_service.dart';
 import '../core/utils/formatters.dart';
 import '../core/utils/task_display.dart';
+import '../core/screens/tasks_screen.dart';
 import '../core/widgets/company_avatar.dart';
 import '../core/widgets/company_picker_field.dart';
 import '../core/widgets/log_interaction_sheet.dart';
@@ -63,11 +64,10 @@ class _TodayActionPanelState extends State<TodayActionPanel> {
   Future<void> _load() async {
     setState(() => _loading = true);
     final db = AppDatabase.instance;
-    final tasks = await db.tasks();
-    final matches = tasks.where((t) => t.id == widget.taskId);
-    final task = matches.isEmpty ? null : matches.first;
+    // taskById : inclut aussi les tâches sans date / hors file « ouvertes ».
+    final task = await db.taskById(widget.taskId);
     if (!mounted) return;
-    if (task == null) {
+    if (task == null || task.deletedAt != null) {
       setState(() {
         _task = null;
         _loading = false;
@@ -162,6 +162,20 @@ class _TodayActionPanelState extends State<TodayActionPanel> {
     }
   }
 
+  Future<void> _editTask() async {
+    final t = _task;
+    if (t == null) return;
+    final saved = await showAddTaskDialog(
+      context,
+      existing: t,
+      allowNoClient: true,
+    );
+    if (saved) {
+      await _load();
+      widget.onRefresh();
+    }
+  }
+
   Future<void> _linkClient() async {
     final t = _task;
     if (t == null) return;
@@ -225,6 +239,7 @@ class _TodayActionPanelState extends State<TodayActionPanel> {
             company: _company,
             onFullRecord: widget.workspace.openFullCompanyRecord,
             onDelete: _deleteTask,
+            onEdit: _editTask,
             onLinkClient: _linkClient,
           ),
           const Divider(height: 1),
@@ -239,6 +254,14 @@ class _TodayActionPanelState extends State<TodayActionPanel> {
                 _SectionLabel(l10n.taskDueSubtitle),
                 const SizedBox(height: 8),
                 _RelanceCard(task: t, opportunity: _opportunity),
+                const SizedBox(height: 12),
+                Text(
+                  l10n.pipelineCreatedOn(formatDateTimeFr(t.createdAt)),
+                  style: TextStyle(
+                    fontSize: CrmTokens.captionSize,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                ),
                 const SizedBox(height: 20),
                 _SectionLabel(l10n.actionContact),
                 const SizedBox(height: 8),
@@ -305,12 +328,14 @@ class _Header extends StatelessWidget {
     required this.company,
     required this.onFullRecord,
     required this.onDelete,
+    required this.onEdit,
     required this.onLinkClient,
   });
 
   final Company? company;
   final VoidCallback onFullRecord;
   final VoidCallback onDelete;
+  final VoidCallback onEdit;
   final VoidCallback onLinkClient;
 
   @override
@@ -363,6 +388,11 @@ class _Header extends StatelessWidget {
                   ),
               ],
             ),
+          ),
+          IconButton(
+            tooltip: l10n.commonEdit,
+            onPressed: onEdit,
+            icon: const Icon(Icons.edit_outlined),
           ),
           IconButton(
             tooltip: l10n.commonDelete,
@@ -425,7 +455,10 @@ class _RelanceCard extends StatelessWidget {
               Icon(Icons.event_outlined, size: 14, color: dueColor),
               const SizedBox(width: 6),
               Text(
-                formatDueLabel(task.dueDate),
+                formatDueLabel(
+                  task.dueDate,
+                  noDueLabel: AppLocalizations.of(context).tasksNoDue,
+                ),
                 style: TextStyle(
                   fontSize: CrmTokens.captionSize,
                   fontWeight: FontWeight.w600,

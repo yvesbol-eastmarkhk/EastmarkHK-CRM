@@ -49,8 +49,8 @@ class _CurrencyPickerDialogState extends State<_CurrencyPickerDialog> {
           for (final c in filtered)
             ListTile(
               leading: CountryFlagIcon(countryCode: c.$3),
-              title: Text(c.$4),
-              subtitle: Text('${c.$1} · ${c.$2}'),
+              title: Text('${c.$1} · ${c.$2}'),
+              subtitle: Text(c.$4),
               trailing: current == c.$1 ? const Icon(Icons.check) : null,
               onTap: () => _pick(c.$1),
             ),

@@ -3028,4 +3028,18 @@ class AppLocalizationsDa extends AppLocalizations {
 
   @override
   String get tasksEditTaskTitle => 'Edit task';
+
+  @override
+  String get activityTaskCreated => 'Opgave oprettet';
+
+  @override
+  String get dictationOfflineTip =>
+      'Offline-diktering opfanger ofte støj (TV) i stedet for din stemme. Slå »Online talegenkendelse« til i Windows-indstillinger → Fortrolighed → Tale, dæmp støjen og prøv igen.';
+
+  @override
+  String get dictationLanguageFallbackTip =>
+      'Denne sprogvariant er ikke installeret i Windows — en tæt match bruges. Installer den ønskede talepakke i Indstillinger → Tid og sprog → Tale.';
+
+  @override
+  String get dictationStarting => 'Starter diktering…';
 }

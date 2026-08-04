@@ -3034,4 +3034,18 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get tasksEditTaskTitle => 'Edit task';
+
+  @override
+  String get activityTaskCreated => 'Feladat létrehozva';
+
+  @override
+  String get dictationOfflineTip =>
+      'Offline diktálás — gyakran a zajt (TV) ismeri fel a hangja helyett. Kapcsolja be az „Online beszédfelismerést” a Windows Beállítások → Adatvédelem → Beszéd menüpontban, csökkentse a zajt, majd próbálja újra.';
+
+  @override
+  String get dictationLanguageFallbackTip =>
+      'Ez a nyelvi változat nincs telepítve a Windowsban — közeli változatot használunk. Telepítse a kívánt beszédcsomagot: Beállítások → Idő és nyelv → Beszéd.';
+
+  @override
+  String get dictationStarting => 'Diktálás indítása…';
 }

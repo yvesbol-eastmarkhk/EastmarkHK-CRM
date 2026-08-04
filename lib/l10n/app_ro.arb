@@ -1444,5 +1444,9 @@
   "invUnlinkConfirmBody": "Următoarea ofertă sau factură va cere din nou să alegeți sau să creați clientul în e-Invoicing.",
   "invUnlinkDone": "Legătura cu e-Invoicing a fost eliminată.",
   "invAppStoreUrlMissing": "e-Invoicing nu este încă listată pe App Store pentru această versiune. Folosiți eastmarkhk.com sau lansați o aplicație deja instalată.",
-  "shellSyncNeedsPassword": "Bază de date partajată: introduceți parola de sincronizare din Setări pentru a reconecta acest dispozitiv."
+  "shellSyncNeedsPassword": "Bază de date partajată: introduceți parola de sincronizare din Setări pentru a reconecta acest dispozitiv.",
+  "activityTaskCreated": "Sarcină creată",
+  "dictationOfflineTip": "Dictare offline — deseori capturează zgomotul (TV) în locul vocii. Activați «Recunoașterea vorbirii online» în Setări Windows → Confidențialitate → Vorbire, reduceți zgomotul și reîncercați.",
+  "dictationLanguageFallbackTip": "Această variantă de limbă nu este instalată pe Windows — se folosește una apropiată. Instalați pachetul de vorbire dorit în Setări → Oră și limbă → Vorbire.",
+  "dictationStarting": "Se pornește dictarea…"
 }

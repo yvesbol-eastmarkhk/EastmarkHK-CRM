@@ -3036,4 +3036,18 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get tasksEditTaskTitle => 'Edit task';
+
+  @override
+  String get activityTaskCreated => 'Utworzono zadanie';
+
+  @override
+  String get dictationOfflineTip =>
+      'Dyktowanie offline — często przechwytuje hałas (TV) zamiast głosu. Włącz «Rozpoznawanie mowy online» w Ustawieniach Windows → Prywatność → Mowa, zmniejsz hałas i spróbuj ponownie.';
+
+  @override
+  String get dictationLanguageFallbackTip =>
+      'Ta odmiana języka nie jest zainstalowana w Windows — używana jest zbliżona. Zainstaluj żądany pakiet mowy w Ustawienia → Czas i język → Mowa.';
+
+  @override
+  String get dictationStarting => 'Uruchamianie dyktowania…';
 }

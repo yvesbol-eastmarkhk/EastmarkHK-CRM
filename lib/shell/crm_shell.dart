@@ -30,6 +30,16 @@ import '../workspace/today_action_panel.dart';
 import '../workspace/today_queue_panel.dart';
 import '../widgets/emhk_app_footer.dart';
 
+/// Aperçu tâche à droite pour Aujourd'hui et la section Tâches.
+bool showTaskOverviewPanel(
+  CrmSection section,
+  String? selectedTaskId,
+  bool todayFullRecord,
+) {
+  if (selectedTaskId == null || todayFullRecord) return false;
+  return section == CrmSection.today || section == CrmSection.tasks;
+}
+
 /// Workspace 3 panneaux — Attio × Linear :
 /// [Rail] | [Liste contextuelle] | [Fiche client]
 /// Pas de navigation empilée sur desktop / iPad : tout reste visible.
@@ -214,10 +224,10 @@ class _CrmShellState extends State<CrmShell> with WidgetsBindingObserver {
             onAddTask: _addTaskFromHeader,
             onRefresh: _refreshAll,
             onSettings: _openSettings,
-            child: section == CrmSection.today && selectedTaskId != null && !todayFullRecord
+            child: showTaskOverviewPanel(section, selectedTaskId, todayFullRecord)
                 ? TodayActionPanel(
                     key: ValueKey(selectedTaskId),
-                    taskId: selectedTaskId,
+                    taskId: selectedTaskId!,
                     workspace: _workspace,
                     onRefresh: _refreshAll,
                   )
@@ -246,9 +256,12 @@ class _CrmShellState extends State<CrmShell> with WidgetsBindingObserver {
         final showList = _workspace.activeModuleId == null &&
             section != CrmSection.pipeline &&
             section != CrmSection.dashboard;
-        final showTodayAction = section == CrmSection.today &&
-            selectedTaskId != null &&
-            !todayFullRecord;
+        // Aperçu tâche : Aujourd'hui ET liste Tâches (sinon clic = rien si pas de client).
+        final showTodayAction = showTaskOverviewPanel(
+          section,
+          selectedTaskId,
+          todayFullRecord,
+        );
         final showSplitRecord = selectedId != null && !showTodayAction;
 
         return CallbackShortcuts(
@@ -835,13 +848,14 @@ class _MobileShell extends StatelessWidget {
       builder: (context, _) {
         final l10n = AppLocalizations.of(context);
         final sync = RemoteCrmSyncService.instance;
+        final hasTaskPanel = showTaskOverviewPanel(
+          workspace.section,
+          workspace.selectedTaskId,
+          workspace.todayFullRecord,
+        );
         final hasDetail = workspace.selectedCompanyId != null &&
-            (workspace.section != CrmSection.today ||
-                workspace.todayFullRecord ||
-                workspace.selectedTaskId == null);
-        final hasTodayPanel = workspace.section == CrmSection.today &&
-            workspace.selectedTaskId != null &&
-            !workspace.todayFullRecord;
+            !hasTaskPanel;
+        final hasTodayPanel = hasTaskPanel;
         final scheme = Theme.of(context).colorScheme;
         return Scaffold(
           body: SafeArea(
