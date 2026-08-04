@@ -1327,5 +1327,122 @@
   "richColorPickerTitle": "Text color",
   "eiHitEmailPlain": " — email",
   "eiHitPhonePlain": " — phone",
-  "tasksEditTaskTitle": "Edit task"
+  "tasksEditTaskTitle": "Edit task",
+  "modulesDontUseInCrm": "Niet gebruiken in het CRM",
+  "modulesBuyOnAppStore": "Kopen in de App Store",
+  "modulesStoreUnavailable": "De App Store is niet beschikbaar in deze build. Gebruik een App Store-build, of activeer een eastmarkhk.com-abonnement.",
+  "modulesCheckingPurchases": "Aankopen bij App Store en eastmarkhk.com worden gecontroleerd…",
+  "modulesCheckingAppStore": "App Store-aankopen worden gecontroleerd…",
+  "invPickClientTitle": "Kies een klant",
+  "invPickClientSearch": "Zoeken op naam, btw-nummer, land…",
+  "invPickClientEmpty": "Geen overeenkomende klant.",
+  "invPickClientButton": "Klant kiezen",
+  "invClientRequired": "Kies een klant voordat u opslaat.",
+  "invSave": "Opslaan",
+  "invSaving": "Bezig met opslaan…",
+  "invEditQuote": "Offerte {number} bewerken",
+  "@invEditQuote": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invEditInvoice": "Factuur {number} bewerken",
+  "@invEditInvoice": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invDocumentSaved": "{number} opgeslagen.",
+  "@invDocumentSaved": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invDocumentSaveFailed": "Opslaan mislukt: {error}",
+  "@invDocumentSaveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "invEditDocument": "Bewerken",
+  "invHomeSubtitle": "Offertes en facturen — gegevens uit EastmarkHK e-Invoicing (ontvangsten en herinneringen: aparte app)",
+  "invOpenStandalone": "e-Invoicing openen",
+  "invLaunchStandalone": "e-Invoicing starten",
+  "invRemoteConnectionTooltip": "Externe verbinding",
+  "invTabQuotes": "Offertes ({count})",
+  "@invTabQuotes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "invTabInvoices": "Facturen ({count})",
+  "@invTabInvoices": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "invEmptyQuotes": "Geen offertes — maak er een vanuit een gewonnen kans of de knop hierboven.",
+  "invEmptyInvoices": "Geen facturen.",
+  "invEmptyCompanyDocs": "Geen offertes of facturen.",
+  "invQuotesSection": "OFFERTES",
+  "invInvoicesSection": "FACTUREN",
+  "invCompanyFooter": "Documenten worden beheerd door EastmarkHK e-Invoicing — verzenden, PDF, ontvangsten en herinneringen in de aparte app.",
+  "invRemoteNotConfigured": "e-Invoicing staat in externe modus — verbinding niet geconfigureerd.",
+  "invConfigure": "Configureren",
+  "invAppNotDetected": "e-Invoicing-app niet gedetecteerd — installeer/start EastmarkHK e-Invoicing om offertes en facturen vanuit dit record te maken.",
+  "invRemoteSetupBody": "EastmarkHK e-Invoicing is geconfigureerd voor externe opslag. Voer hier dezelfde inloggegevens in om het CRM met dezelfde API te verbinden — dezelfde waarden als in e-Invoicing → Instellingen → Externe opslag.",
+  "invLaunchOnceBody": "Start EastmarkHK e-Invoicing eenmaal om de gedeelde database te initialiseren en kom dan hierheen terug.",
+  "invAcquireAppStoreBody": "Deze module gebruikt EastmarkHK e-Invoicing. Download en neem een abonnement via de App Store, start de app eenmaal en kom dan hierheen terug.",
+  "invAcquireWebBody": "Deze module gebruikt EastmarkHK e-Invoicing. Download en neem een abonnement op eastmarkhk.com, start de app eenmaal en kom dan hierheen terug.",
+  "invConfigureRemote": "Externe verbinding configureren",
+  "invViewOnAppStore": "Bekijken in de App Store",
+  "invViewOnWebsite": "Bekijken op eastmarkhk.com",
+  "invRetry": "Opnieuw proberen",
+  "invDocInvoice": "Factuur",
+  "invDocQuote": "Offerte",
+  "invDocClient": "Klant",
+  "invDocStatus": "Status",
+  "invDocDate": "Datum",
+  "invOpenInStandalone": "Openen in e-Invoicing",
+  "invOpenStandaloneFailed": "e-Invoicing kon niet worden geopend — controleer of de app is geïnstalleerd.",
+  "invCreateInvoiceFromQuote": "Factuur maken",
+  "invCreatingInvoice": "Factuur wordt gemaakt…",
+  "invInvoiceCreatedFromQuote": "Factuur {number} gemaakt vanuit de offerte.",
+  "@invInvoiceCreatedFromQuote": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invQuoteAlreadyInvoiced": "Voor deze offerte is al een factuur gemaakt.",
+  "invCreateInvoiceFailed": "Factuur kon niet worden gemaakt: {error}",
+  "@invCreateInvoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "invLinkMenu": "e-Invoicing-koppeling",
+  "invLinkStatusLinked": "e-Invoicing-klant gekoppeld",
+  "invLinkStatusNone": "Geen opgeslagen e-Invoicing-koppeling",
+  "invUnlinkCustomer": "Koppeling met e-Invoicing-klant opheffen",
+  "invUnlinkConfirmTitle": "Koppeling met klant opheffen?",
+  "invUnlinkConfirmBody": "Bij de volgende offerte of factuur wordt opnieuw gevraagd de klant in e-Invoicing te kiezen of aan te maken.",
+  "invUnlinkDone": "e-Invoicing-koppeling verwijderd.",
+  "invAppStoreUrlMissing": "e-Invoicing staat voor deze build nog niet in de App Store. Gebruik eastmarkhk.com of start een al geïnstalleerde app.",
+  "shellSyncNeedsPassword": "Gedeelde database: voer het synchronisatiewachtwoord in bij Instellingen om dit apparaat opnieuw te verbinden."
 }

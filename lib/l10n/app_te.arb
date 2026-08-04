@@ -1416,5 +1416,122 @@
   "richColorPickerTitle": "Text color",
   "eiHitEmailPlain": " — email",
   "eiHitPhonePlain": " — phone",
-  "tasksEditTaskTitle": "Edit task"
+  "tasksEditTaskTitle": "Edit task",
+  "modulesDontUseInCrm": "CRMలో ఉపయోగించవద్దు",
+  "modulesBuyOnAppStore": "App Storeలో కొనండి",
+  "modulesStoreUnavailable": "ఈ బిల్డ్‌లో App Store అందుబాటులో లేదు. App Store బిల్డ్‌ను ఉపయోగించండి, లేదా eastmarkhk.com సభ్యత్వాన్ని సక్రియం చేయండి.",
+  "modulesCheckingPurchases": "App Store మరియు eastmarkhk.com కొనుగోళ్లు తనిఖీ చేయబడుతున్నాయి…",
+  "modulesCheckingAppStore": "App Store కొనుగోళ్లు తనిఖీ చేయబడుతున్నాయి…",
+  "invPickClientTitle": "క్లయింట్‌ను ఎంచుకోండి",
+  "invPickClientSearch": "పేరు, పన్ను ID, దేశం ద్వారా శోధించండి…",
+  "invPickClientEmpty": "సరిపోలే క్లయింట్ లేదు.",
+  "invPickClientButton": "క్లయింట్‌ను ఎంచుకోండి",
+  "invClientRequired": "సేవ్ చేయడానికి ముందు క్లయింట్‌ను ఎంచుకోండి.",
+  "invSave": "సేవ్ చేయండి",
+  "invSaving": "సేవ్ చేస్తోంది…",
+  "invEditQuote": "కోటేషన్ {number} సవరించండి",
+  "@invEditQuote": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invEditInvoice": "ఇన్‌వాయిస్ {number} సవరించండి",
+  "@invEditInvoice": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invDocumentSaved": "{number} సేవ్ చేయబడింది.",
+  "@invDocumentSaved": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invDocumentSaveFailed": "సేవ్ చేయడం సాధ్యం కాలేదు: {error}",
+  "@invDocumentSaveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "invEditDocument": "సవరించండి",
+  "invHomeSubtitle": "కోటేషన్‌లు మరియు ఇన్‌వాయిస్‌లు — EastmarkHK e-Invoicing డేటా (రసీదులు మరియు రిమైండర్‌లు: స్వతంత్ర యాప్)",
+  "invOpenStandalone": "e-Invoicing తెరవండి",
+  "invLaunchStandalone": "e-Invoicing ప్రారంభించండి",
+  "invRemoteConnectionTooltip": "రిమోట్ కనెక్షన్",
+  "invTabQuotes": "కోటేషన్‌లు ({count})",
+  "@invTabQuotes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "invTabInvoices": "ఇన్‌వాయిస్‌లు ({count})",
+  "@invTabInvoices": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "invEmptyQuotes": "కోటేషన్‌లు లేవు — గెలిచిన అవకాశం నుండి లేదా పైన ఉన్న బటన్ నుండి ఒకటి సృష్టించండి.",
+  "invEmptyInvoices": "ఇన్‌వాయిస్‌లు లేవు.",
+  "invEmptyCompanyDocs": "కోటేషన్‌లు లేదా ఇన్‌వాయిస్‌లు లేవు.",
+  "invQuotesSection": "కోటేషన్‌లు",
+  "invInvoicesSection": "ఇన్‌వాయిస్‌లు",
+  "invCompanyFooter": "పత్రాలు EastmarkHK e-Invoicing ద్వారా నిర్వహించబడతాయి — పంపడం, PDF, రసీదులు మరియు రిమైండర్‌లు స్వతంత్ర యాప్‌లో.",
+  "invRemoteNotConfigured": "e-Invoicing రిమోట్ మోడ్‌లో ఉంది — కనెక్షన్ కాన్ఫిగర్ చేయబడలేదు.",
+  "invConfigure": "కాన్ఫిగర్ చేయండి",
+  "invAppNotDetected": "e-Invoicing యాప్ కనుగొనబడలేదు — ఈ రికార్డు నుండి కోటేషన్‌లు మరియు ఇన్‌వాయిస్‌లను సృష్టించడానికి EastmarkHK e-Invoicingను ఇన్‌స్టాల్/ప్రారంభించండి.",
+  "invRemoteSetupBody": "EastmarkHK e-Invoicing రిమోట్ నిల్వ కోసం కాన్ఫిగర్ చేయబడింది. CRMను అదే APIకి కనెక్ట్ చేయడానికి ఇక్కడ అదే ఆధారాలను నమోదు చేయండి — e-Invoicing → సెట్టింగ్‌లు → రిమోట్ నిల్వ వలె అదే విలువలు.",
+  "invLaunchOnceBody": "భాగస్వామ్య డేటాబేస్‌ను ప్రారంభించడానికి ఒకసారి EastmarkHK e-Invoicingను ప్రారంభించండి, ఆపై ఇక్కడకు తిరిగి రండి.",
+  "invAcquireAppStoreBody": "ఈ మాడ్యూల్ EastmarkHK e-Invoicingను ఉపయోగిస్తుంది. App Store నుండి డౌన్‌లోడ్ చేసి సభ్యత్వం పొందండి, ఒకసారి ప్రారంభించండి, ఆపై ఇక్కడకు తిరిగి రండి.",
+  "invAcquireWebBody": "ఈ మాడ్యూల్ EastmarkHK e-Invoicingను ఉపయోగిస్తుంది. eastmarkhk.comలో డౌన్‌లోడ్ చేసి సభ్యత్వం పొందండి, ఒకసారి ప్రారంభించండి, ఆపై ఇక్కడకు తిరిగి రండి.",
+  "invConfigureRemote": "రిమోట్ కనెక్షన్‌ను కాన్ఫిగర్ చేయండి",
+  "invViewOnAppStore": "App Storeలో చూడండి",
+  "invViewOnWebsite": "eastmarkhk.comలో చూడండి",
+  "invRetry": "మళ్లీ ప్రయత్నించండి",
+  "invDocInvoice": "ఇన్‌వాయిస్",
+  "invDocQuote": "కోటేషన్",
+  "invDocClient": "క్లయింట్",
+  "invDocStatus": "స్థితి",
+  "invDocDate": "తేదీ",
+  "invOpenInStandalone": "e-Invoicingలో తెరవండి",
+  "invOpenStandaloneFailed": "e-Invoicingను తెరవడం సాధ్యం కాలేదు — అది ఇన్‌స్టాల్ చేయబడిందో లేదో తనిఖీ చేయండి.",
+  "invCreateInvoiceFromQuote": "ఇన్‌వాయిస్‌ను సృష్టించండి",
+  "invCreatingInvoice": "ఇన్‌వాయిస్ సృష్టించబడుతోంది…",
+  "invInvoiceCreatedFromQuote": "కోటేషన్ నుండి ఇన్‌వాయిస్ {number} సృష్టించబడింది.",
+  "@invInvoiceCreatedFromQuote": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invQuoteAlreadyInvoiced": "ఈ కోటేషన్‌కు ఇప్పటికే ఇన్‌వాయిస్ చేయబడింది.",
+  "invCreateInvoiceFailed": "ఇన్‌వాయిస్‌ను సృష్టించడం సాధ్యం కాలేదు: {error}",
+  "@invCreateInvoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "invLinkMenu": "e-Invoicing లింక్",
+  "invLinkStatusLinked": "e-Invoicing క్లయింట్ లింక్ చేయబడింది",
+  "invLinkStatusNone": "సేవ్ చేయబడిన e-Invoicing లింక్ లేదు",
+  "invUnlinkCustomer": "e-Invoicing క్లయింట్‌ను అన్‌లింక్ చేయండి",
+  "invUnlinkConfirmTitle": "క్లయింట్‌ను అన్‌లింక్ చేయాలా?",
+  "invUnlinkConfirmBody": "తదుపరి కోటేషన్ లేదా ఇన్‌వాయిస్ మళ్లీ e-Invoicingలో క్లయింట్‌ను ఎంచుకోవడానికి లేదా సృష్టించడానికి అడుగుతుంది.",
+  "invUnlinkDone": "e-Invoicing లింక్ తీసివేయబడింది.",
+  "invAppStoreUrlMissing": "ఈ బిల్డ్ కోసం e-Invoicing ఇంకా App Storeలో జాబితా చేయబడలేదు. eastmarkhk.comను ఉపయోగించండి లేదా ఇప్పటికే ఇన్‌స్టాల్ చేసిన యాప్‌ను ప్రారంభించండి.",
+  "shellSyncNeedsPassword": "భాగస్వామ్య డేటాబేస్: ఈ పరికరాన్ని మళ్లీ కనెక్ట్ చేయడానికి సెట్టింగ్‌లలో సింక్ పాస్‌వర్డ్‌ను నమోదు చేయండి."
 }

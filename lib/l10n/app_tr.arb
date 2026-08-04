@@ -1416,5 +1416,122 @@
   "richColorPickerTitle": "Text color",
   "eiHitEmailPlain": " — email",
   "eiHitPhonePlain": " — phone",
-  "tasksEditTaskTitle": "Edit task"
+  "tasksEditTaskTitle": "Edit task",
+  "modulesDontUseInCrm": "CRM'de kullanma",
+  "modulesBuyOnAppStore": "App Store'dan satın al",
+  "modulesStoreUnavailable": "Bu derlemede App Store kullanılamıyor. Bir App Store derlemesi kullanın veya eastmarkhk.com aboneliğini etkinleştirin.",
+  "modulesCheckingPurchases": "App Store ve eastmarkhk.com satın alımları kontrol ediliyor…",
+  "modulesCheckingAppStore": "App Store satın alımları kontrol ediliyor…",
+  "invPickClientTitle": "Müşteri seç",
+  "invPickClientSearch": "Ad, vergi numarası, ülkeye göre ara…",
+  "invPickClientEmpty": "Eşleşen müşteri yok.",
+  "invPickClientButton": "Müşteri seç",
+  "invClientRequired": "Kaydetmeden önce bir müşteri seçin.",
+  "invSave": "Kaydet",
+  "invSaving": "Kaydediliyor…",
+  "invEditQuote": "{number} teklifini düzenle",
+  "@invEditQuote": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invEditInvoice": "{number} faturasını düzenle",
+  "@invEditInvoice": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invDocumentSaved": "{number} kaydedildi.",
+  "@invDocumentSaved": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invDocumentSaveFailed": "Kaydedilemedi: {error}",
+  "@invDocumentSaveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "invEditDocument": "Düzenle",
+  "invHomeSubtitle": "Teklifler ve faturalar — EastmarkHK e-Invoicing verileri (makbuzlar ve hatırlatmalar: bağımsız uygulama)",
+  "invOpenStandalone": "e-Invoicing'i aç",
+  "invLaunchStandalone": "e-Invoicing'i başlat",
+  "invRemoteConnectionTooltip": "Uzaktan bağlantı",
+  "invTabQuotes": "Teklifler ({count})",
+  "@invTabQuotes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "invTabInvoices": "Faturalar ({count})",
+  "@invTabInvoices": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "invEmptyQuotes": "Teklif yok — kazanılan bir fırsattan veya yukarıdaki düğmeden bir tane oluşturun.",
+  "invEmptyInvoices": "Fatura yok.",
+  "invEmptyCompanyDocs": "Teklif veya fatura yok.",
+  "invQuotesSection": "TEKLİFLER",
+  "invInvoicesSection": "FATURALAR",
+  "invCompanyFooter": "Belgeler EastmarkHK e-Invoicing tarafından yönetilir — gönderim, PDF, makbuzlar ve hatırlatmalar bağımsız uygulamada.",
+  "invRemoteNotConfigured": "e-Invoicing uzaktan modda — bağlantı yapılandırılmadı.",
+  "invConfigure": "Yapılandır",
+  "invAppNotDetected": "e-Invoicing uygulaması algılanmadı — bu kayıttan teklif ve fatura oluşturmak için EastmarkHK e-Invoicing'i yükleyin/başlatın.",
+  "invRemoteSetupBody": "EastmarkHK e-Invoicing uzak depolama için yapılandırılmış. CRM'yi aynı API'ye bağlamak için buraya aynı kimlik bilgilerini girin — e-Invoicing → Ayarlar → Uzak depolama ile aynı değerler.",
+  "invLaunchOnceBody": "Paylaşılan veritabanını başlatmak için EastmarkHK e-Invoicing'i bir kez başlatın, ardından buraya geri dönün.",
+  "invAcquireAppStoreBody": "Bu modül EastmarkHK e-Invoicing kullanır. App Store'dan indirip abone olun, bir kez başlatın, ardından buraya geri dönün.",
+  "invAcquireWebBody": "Bu modül EastmarkHK e-Invoicing kullanır. eastmarkhk.com üzerinden indirip abone olun, bir kez başlatın, ardından buraya geri dönün.",
+  "invConfigureRemote": "Uzaktan bağlantıyı yapılandır",
+  "invViewOnAppStore": "App Store'da görüntüle",
+  "invViewOnWebsite": "eastmarkhk.com'da görüntüle",
+  "invRetry": "Yeniden dene",
+  "invDocInvoice": "Fatura",
+  "invDocQuote": "Teklif",
+  "invDocClient": "Müşteri",
+  "invDocStatus": "Durum",
+  "invDocDate": "Tarih",
+  "invOpenInStandalone": "e-Invoicing'de aç",
+  "invOpenStandaloneFailed": "e-Invoicing açılamadı — yüklü olduğunu kontrol edin.",
+  "invCreateInvoiceFromQuote": "Fatura oluştur",
+  "invCreatingInvoice": "Fatura oluşturuluyor…",
+  "invInvoiceCreatedFromQuote": "{number} faturası tekliften oluşturuldu.",
+  "@invInvoiceCreatedFromQuote": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invQuoteAlreadyInvoiced": "Bu teklif zaten faturalandırıldı.",
+  "invCreateInvoiceFailed": "Fatura oluşturulamadı: {error}",
+  "@invCreateInvoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "invLinkMenu": "e-Invoicing bağlantısı",
+  "invLinkStatusLinked": "e-Invoicing müşterisi bağlandı",
+  "invLinkStatusNone": "Kayıtlı e-Invoicing bağlantısı yok",
+  "invUnlinkCustomer": "e-Invoicing müşteri bağlantısını kaldır",
+  "invUnlinkConfirmTitle": "Müşteri bağlantısı kaldırılsın mı?",
+  "invUnlinkConfirmBody": "Bir sonraki teklif veya fatura, e-Invoicing'de müşteriyi tekrar seçmenizi veya oluşturmanızı isteyecek.",
+  "invUnlinkDone": "e-Invoicing bağlantısı kaldırıldı.",
+  "invAppStoreUrlMissing": "e-Invoicing bu derleme için henüz App Store'da listelenmedi. eastmarkhk.com'u kullanın veya zaten yüklü bir uygulamayı başlatın.",
+  "shellSyncNeedsPassword": "Paylaşılan veritabanı: bu cihazı yeniden bağlamak için Ayarlar'da senkronizasyon şifresini girin."
 }

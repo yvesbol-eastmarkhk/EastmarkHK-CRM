@@ -201,7 +201,7 @@ class _PipelineBoardState extends State<PipelineBoard> {
     final border = Theme.of(context).crmBorder;
     // Peu d'étapes (≤3) : une seule ligne suffit déjà à tout montrer.
     // Au-delà, 2 lignes plutôt qu'une seule très large ou un scroll caché.
-    final columns = stages.length <= 3 ? stages.length : (stages.length / 2).ceil();
+    final columns = CrmLayout.stageTabColumns(stages.length);
     final rows = <List<int>>[];
     for (var i = 0; i < stages.length; i += columns) {
       rows.add(List.generate(

@@ -705,21 +705,20 @@ class AppLocalizationsKo extends AppLocalizations {
   String get modulesUseInCrm => 'CRM에서 사용';
 
   @override
-  String get modulesDontUseInCrm => 'Ne pas utiliser dans le CRM';
+  String get modulesDontUseInCrm => 'CRM에서 사용 안 함';
 
   @override
-  String get modulesBuyOnAppStore => 'Acheter sur l\'App Store';
+  String get modulesBuyOnAppStore => 'App Store에서 구매';
 
   @override
   String get modulesStoreUnavailable =>
-      'L\'App Store n\'est pas disponible sur cette installation. Utilisez une build App Store, ou activez un abonnement eastmarkhk.com.';
+      '이 빌드에서는 App Store를 사용할 수 없습니다. App Store 빌드를 사용하거나 eastmarkhk.com 구독을 활성화하세요.';
 
   @override
-  String get modulesCheckingPurchases =>
-      'Vérification des achats App Store et eastmarkhk.com…';
+  String get modulesCheckingPurchases => 'App Store 및 eastmarkhk.com 구매 확인 중…';
 
   @override
-  String get modulesCheckingAppStore => 'Vérification des achats App Store…';
+  String get modulesCheckingAppStore => 'App Store 구매 확인 중…';
 
   @override
   String get modulesPerMonth => '/ 월';
@@ -783,19 +782,19 @@ class AppLocalizationsKo extends AppLocalizations {
   String get invFieldClient => 'Client';
 
   @override
-  String get invPickClientTitle => 'Choisir un client';
+  String get invPickClientTitle => '고객 선택';
 
   @override
-  String get invPickClientSearch => 'Rechercher par nom, n° fiscal, pays…';
+  String get invPickClientSearch => '이름, 사업자번호, 국가로 검색…';
 
   @override
-  String get invPickClientEmpty => 'Aucun client correspondant.';
+  String get invPickClientEmpty => '일치하는 고객이 없습니다.';
 
   @override
-  String get invPickClientButton => 'Choisir le client';
+  String get invPickClientButton => '고객 선택';
 
   @override
-  String get invClientRequired => 'Choisissez un client avant d’enregistrer.';
+  String get invClientRequired => '저장하기 전에 고객을 선택하세요.';
 
   @override
   String get invFieldDate => 'Date';
@@ -852,33 +851,33 @@ class AppLocalizationsKo extends AppLocalizations {
   String get invCreating => 'Creating…';
 
   @override
-  String get invSave => 'Enregistrer';
+  String get invSave => '저장';
 
   @override
-  String get invSaving => 'Enregistrement…';
+  String get invSaving => '저장 중…';
 
   @override
   String invEditQuote(String number) {
-    return 'Modifier le devis $number';
+    return '견적서 $number 편집';
   }
 
   @override
   String invEditInvoice(String number) {
-    return 'Modifier la facture $number';
+    return '청구서 $number 편집';
   }
 
   @override
   String invDocumentSaved(String number) {
-    return '$number enregistré.';
+    return '$number 저장됨.';
   }
 
   @override
   String invDocumentSaveFailed(String error) {
-    return 'Enregistrement impossible : $error';
+    return '저장할 수 없습니다: $error';
   }
 
   @override
-  String get invEditDocument => 'Modifier';
+  String get invEditDocument => '편집';
 
   @override
   String get invAddFromCatalog => 'Add from catalog';
@@ -942,152 +941,151 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get invHomeSubtitle =>
-      'Devis et factures — données EastmarkHK e-Invoicing (reçues et relances : app standalone)';
+      '견적서 및 청구서 — EastmarkHK e-Invoicing 데이터(영수증 및 알림: 독립 실행형 앱)';
 
   @override
-  String get invOpenStandalone => 'Ouvrir e-Invoicing';
+  String get invOpenStandalone => 'e-Invoicing 열기';
 
   @override
-  String get invLaunchStandalone => 'Lancer e-Invoicing';
+  String get invLaunchStandalone => 'e-Invoicing 실행';
 
   @override
-  String get invRemoteConnectionTooltip => 'Connexion distante';
+  String get invRemoteConnectionTooltip => '원격 연결';
 
   @override
   String invTabQuotes(int count) {
-    return 'Devis ($count)';
+    return '견적서 ($count)';
   }
 
   @override
   String invTabInvoices(int count) {
-    return 'Factures ($count)';
+    return '청구서 ($count)';
   }
 
   @override
-  String get invEmptyQuotes =>
-      'Aucun devis — créez-en un depuis une opportunité gagnée ou le bouton ci-dessus.';
+  String get invEmptyQuotes => '견적서가 없습니다 — 성사된 기회 또는 위 버튼에서 만드세요.';
 
   @override
-  String get invEmptyInvoices => 'Aucune facture.';
+  String get invEmptyInvoices => '청구서가 없습니다.';
 
   @override
-  String get invEmptyCompanyDocs => 'Aucun devis ni facture.';
+  String get invEmptyCompanyDocs => '견적서나 청구서가 없습니다.';
 
   @override
-  String get invQuotesSection => 'DEVIS';
+  String get invQuotesSection => '견적서';
 
   @override
-  String get invInvoicesSection => 'FACTURES';
+  String get invInvoicesSection => '청구서';
 
   @override
   String get invCompanyFooter =>
-      'Documents gérés par EastmarkHK e-Invoicing — envoi, PDF, reçues et relances dans l\'app standalone.';
+      '문서는 EastmarkHK e-Invoicing에서 관리됩니다 — 발송, PDF, 영수증 및 알림은 독립 실행형 앱에서 처리됩니다.';
 
   @override
   String get invRemoteNotConfigured =>
-      'e-Invoicing est en mode distant — connexion non configurée.';
+      'e-Invoicing이 원격 모드입니다 — 연결이 구성되지 않았습니다.';
 
   @override
-  String get invConfigure => 'Configurer';
+  String get invConfigure => '구성';
 
   @override
   String get invAppNotDetected =>
-      'App e-Invoicing non détectée — installez/lancez EastmarkHK e-Invoicing pour créer des devis et factures depuis cette fiche.';
+      'e-Invoicing 앱이 감지되지 않았습니다 — 이 레코드에서 견적서와 청구서를 만들려면 EastmarkHK e-Invoicing을 설치/실행하세요.';
 
   @override
   String get invRemoteSetupBody =>
-      'EastmarkHK e-Invoicing est configurée en mode « stockage distant ». Renseigne les mêmes identifiants ici pour connecter le CRM à la même API — mêmes valeurs que dans e-Invoicing → Réglages → Stockage distant.';
+      'EastmarkHK e-Invoicing이 원격 저장소로 구성되어 있습니다. CRM을 동일한 API에 연결하려면 여기에 동일한 자격 증명을 입력하세요 — e-Invoicing → 설정 → 원격 저장소와 동일한 값입니다.';
 
   @override
   String get invLaunchOnceBody =>
-      'Lancez l\'app EastmarkHK e-Invoicing une première fois pour initialiser la base partagée, puis revenez ici.';
+      '공유 데이터베이스를 초기화하려면 EastmarkHK e-Invoicing을 한 번 실행한 후 여기로 돌아오세요.';
 
   @override
   String get invAcquireAppStoreBody =>
-      'Le module utilise l\'app EastmarkHK e-Invoicing. Téléchargez-la et abonnez-vous depuis l\'App Store, lancez-la une fois, puis revenez ici.';
+      '이 모듈은 EastmarkHK e-Invoicing을 사용합니다. App Store에서 다운로드하고 구독한 후 한 번 실행한 다음 여기로 돌아오세요.';
 
   @override
   String get invAcquireWebBody =>
-      'Le module utilise l\'app EastmarkHK e-Invoicing. Téléchargez-la et souscrivez sur eastmarkhk.com, lancez-la une fois, puis revenez ici.';
+      '이 모듈은 EastmarkHK e-Invoicing을 사용합니다. eastmarkhk.com에서 다운로드하고 구독한 후 한 번 실행한 다음 여기로 돌아오세요.';
 
   @override
-  String get invConfigureRemote => 'Configurer la connexion distante';
+  String get invConfigureRemote => '원격 연결 구성';
 
   @override
-  String get invViewOnAppStore => 'Voir sur l\'App Store';
+  String get invViewOnAppStore => 'App Store에서 보기';
 
   @override
-  String get invViewOnWebsite => 'Voir sur eastmarkhk.com';
+  String get invViewOnWebsite => 'eastmarkhk.com에서 보기';
 
   @override
-  String get invRetry => 'Réessayer';
+  String get invRetry => '다시 시도';
 
   @override
-  String get invDocInvoice => 'Facture';
+  String get invDocInvoice => '청구서';
 
   @override
-  String get invDocQuote => 'Devis';
+  String get invDocQuote => '견적서';
 
   @override
-  String get invDocClient => 'Client';
+  String get invDocClient => '고객';
 
   @override
-  String get invDocStatus => 'Statut';
+  String get invDocStatus => '상태';
 
   @override
-  String get invDocDate => 'Date';
+  String get invDocDate => '날짜';
 
   @override
-  String get invOpenInStandalone => 'Ouvrir dans e-Invoicing';
+  String get invOpenInStandalone => 'e-Invoicing에서 열기';
 
   @override
   String get invOpenStandaloneFailed =>
-      'Impossible d\'ouvrir e-Invoicing — vérifie qu\'elle est bien installée.';
+      'e-Invoicing을 열 수 없습니다 — 설치되어 있는지 확인하세요.';
 
   @override
-  String get invCreateInvoiceFromQuote => 'Créer la facture';
+  String get invCreateInvoiceFromQuote => '청구서 만들기';
 
   @override
-  String get invCreatingInvoice => 'Création de la facture…';
+  String get invCreatingInvoice => '청구서 생성 중…';
 
   @override
   String invInvoiceCreatedFromQuote(String number) {
-    return 'Facture $number créée à partir du devis.';
+    return '견적서로부터 청구서 $number가 생성되었습니다.';
   }
 
   @override
-  String get invQuoteAlreadyInvoiced => 'Ce devis est déjà facturé.';
+  String get invQuoteAlreadyInvoiced => '이 견적서는 이미 청구서로 발행되었습니다.';
 
   @override
   String invCreateInvoiceFailed(String error) {
-    return 'Impossible de créer la facture : $error';
+    return '청구서를 만들 수 없습니다: $error';
   }
 
   @override
-  String get invLinkMenu => 'Lien e-Invoicing';
+  String get invLinkMenu => 'e-Invoicing 연결';
 
   @override
-  String get invLinkStatusLinked => 'Client e-Invoicing lié';
+  String get invLinkStatusLinked => 'e-Invoicing 고객이 연결됨';
 
   @override
-  String get invLinkStatusNone => 'Aucun lien e-Invoicing mémorisé';
+  String get invLinkStatusNone => '저장된 e-Invoicing 연결 없음';
 
   @override
-  String get invUnlinkCustomer => 'Dissocier le client e-Invoicing';
+  String get invUnlinkCustomer => 'e-Invoicing 고객 연결 해제';
 
   @override
-  String get invUnlinkConfirmTitle => 'Dissocier le client ?';
+  String get invUnlinkConfirmTitle => '고객 연결을 해제할까요?';
 
   @override
   String get invUnlinkConfirmBody =>
-      'Le prochain devis ou facture redemandera de choisir ou créer le client dans e-Invoicing.';
+      '다음 견적서나 청구서에서는 e-Invoicing에서 고객을 다시 선택하거나 생성해야 합니다.';
 
   @override
-  String get invUnlinkDone => 'Lien e-Invoicing dissocié.';
+  String get invUnlinkDone => 'e-Invoicing 연결이 해제되었습니다.';
 
   @override
   String get invAppStoreUrlMissing =>
-      'L\'app e-Invoicing n\'est pas encore listée sur l\'App Store pour ce build. Utilisez eastmarkhk.com ou lancez l\'app déjà installée.';
+      '이 빌드에서는 e-Invoicing이 아직 App Store에 등록되지 않았습니다. eastmarkhk.com을 사용하거나 이미 설치된 앱을 실행하세요.';
 
   @override
   String get shellModuleTitle => 'Module';
@@ -2497,7 +2495,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get shellSyncNeedsPassword =>
-      'Base partagée : saisissez le mot de passe sync dans Réglages pour reconnecter cet appareil.';
+      '공유 데이터베이스: 이 기기를 다시 연결하려면 설정에서 동기화 비밀번호를 입력하세요.';
 
   @override
   String get shellSearch => 'Search';

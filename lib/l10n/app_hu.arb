@@ -1327,5 +1327,122 @@
   "richColorPickerTitle": "Text color",
   "eiHitEmailPlain": " — email",
   "eiHitPhonePlain": " — phone",
-  "tasksEditTaskTitle": "Edit task"
+  "tasksEditTaskTitle": "Edit task",
+  "modulesDontUseInCrm": "Ne használja a CRM-ben",
+  "modulesBuyOnAppStore": "Vásárlás az App Store-ban",
+  "modulesStoreUnavailable": "Az App Store nem elérhető ebben a buildben. Használjon App Store buildet, vagy aktiváljon eastmarkhk.com előfizetést.",
+  "modulesCheckingPurchases": "App Store és eastmarkhk.com vásárlások ellenőrzése…",
+  "modulesCheckingAppStore": "App Store vásárlások ellenőrzése…",
+  "invPickClientTitle": "Ügyfél kiválasztása",
+  "invPickClientSearch": "Keresés név, adószám, ország alapján…",
+  "invPickClientEmpty": "Nincs megfelelő ügyfél.",
+  "invPickClientButton": "Ügyfél kiválasztása",
+  "invClientRequired": "Mentés előtt válasszon ügyfelet.",
+  "invSave": "Mentés",
+  "invSaving": "Mentés…",
+  "invEditQuote": "{number} árajánlat szerkesztése",
+  "@invEditQuote": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invEditInvoice": "{number} számla szerkesztése",
+  "@invEditInvoice": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invDocumentSaved": "{number} mentve.",
+  "@invDocumentSaved": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invDocumentSaveFailed": "A mentés nem sikerült: {error}",
+  "@invDocumentSaveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "invEditDocument": "Szerkesztés",
+  "invHomeSubtitle": "Árajánlatok és számlák — EastmarkHK e-Invoicing adatok (nyugták és emlékeztetők: önálló alkalmazás)",
+  "invOpenStandalone": "e-Invoicing megnyitása",
+  "invLaunchStandalone": "e-Invoicing indítása",
+  "invRemoteConnectionTooltip": "Távoli kapcsolat",
+  "invTabQuotes": "Árajánlatok ({count})",
+  "@invTabQuotes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "invTabInvoices": "Számlák ({count})",
+  "@invTabInvoices": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "invEmptyQuotes": "Nincs árajánlat — hozzon létre egyet egy megnyert lehetőségből vagy a fenti gombbal.",
+  "invEmptyInvoices": "Nincs számla.",
+  "invEmptyCompanyDocs": "Nincs árajánlat vagy számla.",
+  "invQuotesSection": "ÁRAJÁNLATOK",
+  "invInvoicesSection": "SZÁMLÁK",
+  "invCompanyFooter": "A dokumentumokat az EastmarkHK e-Invoicing kezeli — küldés, PDF, nyugták és emlékeztetők az önálló alkalmazásban.",
+  "invRemoteNotConfigured": "Az e-Invoicing távoli módban van — a kapcsolat nincs beállítva.",
+  "invConfigure": "Beállítás",
+  "invAppNotDetected": "Az e-Invoicing alkalmazás nem található — telepítse/indítsa el az EastmarkHK e-Invoicing alkalmazást, hogy árajánlatokat és számlákat hozhasson létre ebből a rekordból.",
+  "invRemoteSetupBody": "Az EastmarkHK e-Invoicing távoli tárolásra van beállítva. Adja meg itt ugyanazokat a hitelesítő adatokat, hogy a CRM-et ugyanahhoz az API-hoz kapcsolja — ugyanazok az értékek, mint az e-Invoicing → Beállítások → Távoli tárolás menüben.",
+  "invLaunchOnceBody": "Indítsa el egyszer az EastmarkHK e-Invoicing alkalmazást a megosztott adatbázis inicializálásához, majd térjen vissza ide.",
+  "invAcquireAppStoreBody": "Ez a modul az EastmarkHK e-Invoicing alkalmazást használja. Töltse le és fizessen elő rá az App Store-ban, indítsa el egyszer, majd térjen vissza ide.",
+  "invAcquireWebBody": "Ez a modul az EastmarkHK e-Invoicing alkalmazást használja. Töltse le és fizessen elő rá az eastmarkhk.com oldalon, indítsa el egyszer, majd térjen vissza ide.",
+  "invConfigureRemote": "Távoli kapcsolat beállítása",
+  "invViewOnAppStore": "Megtekintés az App Store-ban",
+  "invViewOnWebsite": "Megtekintés az eastmarkhk.com oldalon",
+  "invRetry": "Újrapróbálkozás",
+  "invDocInvoice": "Számla",
+  "invDocQuote": "Árajánlat",
+  "invDocClient": "Ügyfél",
+  "invDocStatus": "Állapot",
+  "invDocDate": "Dátum",
+  "invOpenInStandalone": "Megnyitás az e-Invoicingban",
+  "invOpenStandaloneFailed": "Az e-Invoicing nem nyitható meg — ellenőrizze, hogy telepítve van-e.",
+  "invCreateInvoiceFromQuote": "Számla létrehozása",
+  "invCreatingInvoice": "Számla létrehozása…",
+  "invInvoiceCreatedFromQuote": "{number} számla létrehozva az árajánlatból.",
+  "@invInvoiceCreatedFromQuote": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invQuoteAlreadyInvoiced": "Ehhez az árajánlathoz már készült számla.",
+  "invCreateInvoiceFailed": "A számla nem hozható létre: {error}",
+  "@invCreateInvoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "invLinkMenu": "e-Invoicing kapcsolat",
+  "invLinkStatusLinked": "e-Invoicing ügyfél összekapcsolva",
+  "invLinkStatusNone": "Nincs mentett e-Invoicing kapcsolat",
+  "invUnlinkCustomer": "e-Invoicing ügyfél leválasztása",
+  "invUnlinkConfirmTitle": "Leválasztja az ügyfelet?",
+  "invUnlinkConfirmBody": "A következő árajánlat vagy számla ismét kérni fogja az ügyfél kiválasztását vagy létrehozását az e-Invoicingban.",
+  "invUnlinkDone": "Az e-Invoicing kapcsolat eltávolítva.",
+  "invAppStoreUrlMissing": "Az e-Invoicing még nincs feltüntetve az App Store-ban ehhez a buildhez. Használja az eastmarkhk.com oldalt, vagy indítson egy már telepített alkalmazást.",
+  "shellSyncNeedsPassword": "Megosztott adatbázis: adja meg a szinkronizálási jelszót a Beállításokban az eszköz újracsatlakoztatásához."
 }

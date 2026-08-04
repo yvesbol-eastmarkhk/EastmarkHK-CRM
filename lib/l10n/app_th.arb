@@ -1416,5 +1416,122 @@
   "richColorPickerTitle": "Text color",
   "eiHitEmailPlain": " — email",
   "eiHitPhonePlain": " — phone",
-  "tasksEditTaskTitle": "Edit task"
+  "tasksEditTaskTitle": "Edit task",
+  "modulesDontUseInCrm": "ไม่ใช้งานใน CRM",
+  "modulesBuyOnAppStore": "ซื้อบน App Store",
+  "modulesStoreUnavailable": "App Store ไม่พร้อมใช้งานในบิลด์นี้ ใช้บิลด์ App Store หรือเปิดใช้งานการสมัครสมาชิก eastmarkhk.com",
+  "modulesCheckingPurchases": "กำลังตรวจสอบการซื้อจาก App Store และ eastmarkhk.com…",
+  "modulesCheckingAppStore": "กำลังตรวจสอบการซื้อจาก App Store…",
+  "invPickClientTitle": "เลือกลูกค้า",
+  "invPickClientSearch": "ค้นหาด้วยชื่อ เลขประจำตัวผู้เสียภาษี ประเทศ…",
+  "invPickClientEmpty": "ไม่มีลูกค้าที่ตรงกัน",
+  "invPickClientButton": "เลือกลูกค้า",
+  "invClientRequired": "เลือกลูกค้าก่อนบันทึก",
+  "invSave": "บันทึก",
+  "invSaving": "กำลังบันทึก…",
+  "invEditQuote": "แก้ไขใบเสนอราคา {number}",
+  "@invEditQuote": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invEditInvoice": "แก้ไขใบแจ้งหนี้ {number}",
+  "@invEditInvoice": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invDocumentSaved": "บันทึก {number} แล้ว",
+  "@invDocumentSaved": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invDocumentSaveFailed": "ไม่สามารถบันทึกได้: {error}",
+  "@invDocumentSaveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "invEditDocument": "แก้ไข",
+  "invHomeSubtitle": "ใบเสนอราคาและใบแจ้งหนี้ — ข้อมูลจาก EastmarkHK e-Invoicing (ใบเสร็จและการแจ้งเตือน: แอปแบบสแตนด์อโลน)",
+  "invOpenStandalone": "เปิด e-Invoicing",
+  "invLaunchStandalone": "เปิดใช้งาน e-Invoicing",
+  "invRemoteConnectionTooltip": "การเชื่อมต่อระยะไกล",
+  "invTabQuotes": "ใบเสนอราคา ({count})",
+  "@invTabQuotes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "invTabInvoices": "ใบแจ้งหนี้ ({count})",
+  "@invTabInvoices": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "invEmptyQuotes": "ไม่มีใบเสนอราคา — สร้างจากโอกาสที่ปิดการขายสำเร็จ หรือปุ่มด้านบน",
+  "invEmptyInvoices": "ไม่มีใบแจ้งหนี้",
+  "invEmptyCompanyDocs": "ไม่มีใบเสนอราคาหรือใบแจ้งหนี้",
+  "invQuotesSection": "ใบเสนอราคา",
+  "invInvoicesSection": "ใบแจ้งหนี้",
+  "invCompanyFooter": "เอกสารจัดการโดย EastmarkHK e-Invoicing — การส่ง, PDF, ใบเสร็จ และการแจ้งเตือนในแอปแบบสแตนด์อโลน",
+  "invRemoteNotConfigured": "e-Invoicing อยู่ในโหมดระยะไกล — ยังไม่ได้กำหนดค่าการเชื่อมต่อ",
+  "invConfigure": "กำหนดค่า",
+  "invAppNotDetected": "ไม่พบแอป e-Invoicing — ติดตั้ง/เปิดใช้งาน EastmarkHK e-Invoicing เพื่อสร้างใบเสนอราคาและใบแจ้งหนี้จากบันทึกนี้",
+  "invRemoteSetupBody": "EastmarkHK e-Invoicing ถูกกำหนดค่าให้ใช้พื้นที่จัดเก็บระยะไกล ป้อนข้อมูลรับรองเดียวกันที่นี่เพื่อเชื่อมต่อ CRM กับ API เดียวกัน — ค่าเดียวกับใน e-Invoicing → การตั้งค่า → พื้นที่จัดเก็บระยะไกล",
+  "invLaunchOnceBody": "เปิดใช้งาน EastmarkHK e-Invoicing หนึ่งครั้งเพื่อเริ่มต้นฐานข้อมูลที่แชร์ จากนั้นกลับมาที่นี่",
+  "invAcquireAppStoreBody": "โมดูลนี้ใช้ EastmarkHK e-Invoicing ดาวน์โหลดและสมัครสมาชิกผ่าน App Store เปิดใช้งานหนึ่งครั้ง แล้วกลับมาที่นี่",
+  "invAcquireWebBody": "โมดูลนี้ใช้ EastmarkHK e-Invoicing ดาวน์โหลดและสมัครสมาชิกที่ eastmarkhk.com เปิดใช้งานหนึ่งครั้ง แล้วกลับมาที่นี่",
+  "invConfigureRemote": "กำหนดค่าการเชื่อมต่อระยะไกล",
+  "invViewOnAppStore": "ดูบน App Store",
+  "invViewOnWebsite": "ดูที่ eastmarkhk.com",
+  "invRetry": "ลองอีกครั้ง",
+  "invDocInvoice": "ใบแจ้งหนี้",
+  "invDocQuote": "ใบเสนอราคา",
+  "invDocClient": "ลูกค้า",
+  "invDocStatus": "สถานะ",
+  "invDocDate": "วันที่",
+  "invOpenInStandalone": "เปิดใน e-Invoicing",
+  "invOpenStandaloneFailed": "ไม่สามารถเปิด e-Invoicing ได้ — ตรวจสอบว่าได้ติดตั้งแล้ว",
+  "invCreateInvoiceFromQuote": "สร้างใบแจ้งหนี้",
+  "invCreatingInvoice": "กำลังสร้างใบแจ้งหนี้…",
+  "invInvoiceCreatedFromQuote": "สร้างใบแจ้งหนี้ {number} จากใบเสนอราคาแล้ว",
+  "@invInvoiceCreatedFromQuote": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invQuoteAlreadyInvoiced": "ใบเสนอราคานี้ถูกออกใบแจ้งหนี้แล้ว",
+  "invCreateInvoiceFailed": "ไม่สามารถสร้างใบแจ้งหนี้ได้: {error}",
+  "@invCreateInvoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "invLinkMenu": "การเชื่อมโยง e-Invoicing",
+  "invLinkStatusLinked": "เชื่อมโยงลูกค้า e-Invoicing แล้ว",
+  "invLinkStatusNone": "ไม่มีการเชื่อมโยง e-Invoicing ที่บันทึกไว้",
+  "invUnlinkCustomer": "ยกเลิกการเชื่อมโยงลูกค้า e-Invoicing",
+  "invUnlinkConfirmTitle": "ยกเลิกการเชื่อมโยงลูกค้าหรือไม่",
+  "invUnlinkConfirmBody": "ใบเสนอราคาหรือใบแจ้งหนี้ครั้งถัดไปจะขอให้คุณเลือกหรือสร้างลูกค้าใน e-Invoicing อีกครั้ง",
+  "invUnlinkDone": "ยกเลิกการเชื่อมโยง e-Invoicing แล้ว",
+  "invAppStoreUrlMissing": "e-Invoicing ยังไม่ปรากฏใน App Store สำหรับบิลด์นี้ ใช้ eastmarkhk.com หรือเปิดใช้งานแอปที่ติดตั้งไว้แล้ว",
+  "shellSyncNeedsPassword": "ฐานข้อมูลที่แชร์: ป้อนรหัสผ่านการซิงค์ในการตั้งค่าเพื่อเชื่อมต่ออุปกรณ์นี้ใหม่"
 }

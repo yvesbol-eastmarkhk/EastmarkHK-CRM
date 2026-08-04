@@ -1327,5 +1327,122 @@
   "richColorPickerTitle": "Text color",
   "eiHitEmailPlain": " — email",
   "eiHitPhonePlain": " — phone",
-  "tasksEditTaskTitle": "Edit task"
+  "tasksEditTaskTitle": "Edit task",
+  "modulesDontUseInCrm": "Jangan gunakan di CRM",
+  "modulesBuyOnAppStore": "Beli di App Store",
+  "modulesStoreUnavailable": "App Store tidak tersedia di build ini. Gunakan build App Store, atau aktifkan langganan eastmarkhk.com.",
+  "modulesCheckingPurchases": "Memeriksa pembelian App Store dan eastmarkhk.com…",
+  "modulesCheckingAppStore": "Memeriksa pembelian App Store…",
+  "invPickClientTitle": "Pilih klien",
+  "invPickClientSearch": "Cari berdasarkan nama, NPWP, negara…",
+  "invPickClientEmpty": "Tidak ada klien yang cocok.",
+  "invPickClientButton": "Pilih klien",
+  "invClientRequired": "Pilih klien sebelum menyimpan.",
+  "invSave": "Simpan",
+  "invSaving": "Menyimpan…",
+  "invEditQuote": "Edit penawaran {number}",
+  "@invEditQuote": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invEditInvoice": "Edit faktur {number}",
+  "@invEditInvoice": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invDocumentSaved": "{number} disimpan.",
+  "@invDocumentSaved": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invDocumentSaveFailed": "Tidak dapat menyimpan: {error}",
+  "@invDocumentSaveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "invEditDocument": "Edit",
+  "invHomeSubtitle": "Penawaran dan faktur — data EastmarkHK e-Invoicing (tanda terima dan pengingat: aplikasi mandiri)",
+  "invOpenStandalone": "Buka e-Invoicing",
+  "invLaunchStandalone": "Jalankan e-Invoicing",
+  "invRemoteConnectionTooltip": "Koneksi jarak jauh",
+  "invTabQuotes": "Penawaran ({count})",
+  "@invTabQuotes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "invTabInvoices": "Faktur ({count})",
+  "@invTabInvoices": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "invEmptyQuotes": "Belum ada penawaran — buat dari peluang yang dimenangkan atau tombol di atas.",
+  "invEmptyInvoices": "Belum ada faktur.",
+  "invEmptyCompanyDocs": "Belum ada penawaran atau faktur.",
+  "invQuotesSection": "PENAWARAN",
+  "invInvoicesSection": "FAKTUR",
+  "invCompanyFooter": "Dokumen dikelola oleh EastmarkHK e-Invoicing — pengiriman, PDF, tanda terima, dan pengingat di aplikasi mandiri.",
+  "invRemoteNotConfigured": "e-Invoicing dalam mode jarak jauh — koneksi belum dikonfigurasi.",
+  "invConfigure": "Konfigurasi",
+  "invAppNotDetected": "Aplikasi e-Invoicing tidak terdeteksi — instal/jalankan EastmarkHK e-Invoicing untuk membuat penawaran dan faktur dari catatan ini.",
+  "invRemoteSetupBody": "EastmarkHK e-Invoicing dikonfigurasi untuk penyimpanan jarak jauh. Masukkan kredensial yang sama di sini untuk menghubungkan CRM ke API yang sama — nilai yang sama seperti di e-Invoicing → Pengaturan → Penyimpanan jarak jauh.",
+  "invLaunchOnceBody": "Jalankan EastmarkHK e-Invoicing sekali untuk menginisialisasi basis data bersama, lalu kembali ke sini.",
+  "invAcquireAppStoreBody": "Modul ini menggunakan EastmarkHK e-Invoicing. Unduh dan berlangganan melalui App Store, jalankan sekali, lalu kembali ke sini.",
+  "invAcquireWebBody": "Modul ini menggunakan EastmarkHK e-Invoicing. Unduh dan berlangganan di eastmarkhk.com, jalankan sekali, lalu kembali ke sini.",
+  "invConfigureRemote": "Konfigurasi koneksi jarak jauh",
+  "invViewOnAppStore": "Lihat di App Store",
+  "invViewOnWebsite": "Lihat di eastmarkhk.com",
+  "invRetry": "Coba lagi",
+  "invDocInvoice": "Faktur",
+  "invDocQuote": "Penawaran",
+  "invDocClient": "Klien",
+  "invDocStatus": "Status",
+  "invDocDate": "Tanggal",
+  "invOpenInStandalone": "Buka di e-Invoicing",
+  "invOpenStandaloneFailed": "e-Invoicing tidak dapat dibuka — periksa apakah sudah terinstal.",
+  "invCreateInvoiceFromQuote": "Buat faktur",
+  "invCreatingInvoice": "Membuat faktur…",
+  "invInvoiceCreatedFromQuote": "Faktur {number} dibuat dari penawaran.",
+  "@invInvoiceCreatedFromQuote": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invQuoteAlreadyInvoiced": "Penawaran ini sudah difakturkan.",
+  "invCreateInvoiceFailed": "Faktur tidak dapat dibuat: {error}",
+  "@invCreateInvoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "invLinkMenu": "Tautan e-Invoicing",
+  "invLinkStatusLinked": "Klien e-Invoicing tertaut",
+  "invLinkStatusNone": "Tidak ada tautan e-Invoicing tersimpan",
+  "invUnlinkCustomer": "Putuskan tautan klien e-Invoicing",
+  "invUnlinkConfirmTitle": "Putuskan tautan klien?",
+  "invUnlinkConfirmBody": "Penawaran atau faktur berikutnya akan meminta Anda memilih atau membuat kembali klien di e-Invoicing.",
+  "invUnlinkDone": "Tautan e-Invoicing dihapus.",
+  "invAppStoreUrlMissing": "e-Invoicing belum terdaftar di App Store untuk build ini. Gunakan eastmarkhk.com atau jalankan aplikasi yang sudah terinstal.",
+  "shellSyncNeedsPassword": "Basis data bersama: masukkan kata sandi sinkronisasi di Pengaturan untuk menyambungkan kembali perangkat ini."
 }

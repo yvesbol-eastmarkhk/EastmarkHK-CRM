@@ -1327,5 +1327,122 @@
   "richColorPickerTitle": "Text color",
   "eiHitEmailPlain": " — email",
   "eiHitPhonePlain": " — phone",
-  "tasksEditTaskTitle": "Edit task"
+  "tasksEditTaskTitle": "Edit task",
+  "modulesDontUseInCrm": "Jangan guna dalam CRM",
+  "modulesBuyOnAppStore": "Beli di App Store",
+  "modulesStoreUnavailable": "App Store tidak tersedia dalam binaan ini. Gunakan binaan App Store, atau aktifkan langganan eastmarkhk.com.",
+  "modulesCheckingPurchases": "Menyemak pembelian App Store dan eastmarkhk.com…",
+  "modulesCheckingAppStore": "Menyemak pembelian App Store…",
+  "invPickClientTitle": "Pilih klien",
+  "invPickClientSearch": "Cari mengikut nama, ID cukai, negara…",
+  "invPickClientEmpty": "Tiada klien yang sepadan.",
+  "invPickClientButton": "Pilih klien",
+  "invClientRequired": "Pilih klien sebelum menyimpan.",
+  "invSave": "Simpan",
+  "invSaving": "Menyimpan…",
+  "invEditQuote": "Edit sebut harga {number}",
+  "@invEditQuote": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invEditInvoice": "Edit invois {number}",
+  "@invEditInvoice": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invDocumentSaved": "{number} disimpan.",
+  "@invDocumentSaved": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invDocumentSaveFailed": "Tidak dapat menyimpan: {error}",
+  "@invDocumentSaveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "invEditDocument": "Edit",
+  "invHomeSubtitle": "Sebut harga dan invois — data EastmarkHK e-Invoicing (resit dan peringatan: aplikasi berdiri sendiri)",
+  "invOpenStandalone": "Buka e-Invoicing",
+  "invLaunchStandalone": "Lancarkan e-Invoicing",
+  "invRemoteConnectionTooltip": "Sambungan jauh",
+  "invTabQuotes": "Sebut Harga ({count})",
+  "@invTabQuotes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "invTabInvoices": "Invois ({count})",
+  "@invTabInvoices": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "invEmptyQuotes": "Tiada sebut harga — buat satu daripada peluang yang menang atau butang di atas.",
+  "invEmptyInvoices": "Tiada invois.",
+  "invEmptyCompanyDocs": "Tiada sebut harga atau invois.",
+  "invQuotesSection": "SEBUT HARGA",
+  "invInvoicesSection": "INVOIS",
+  "invCompanyFooter": "Dokumen diuruskan oleh EastmarkHK e-Invoicing — penghantaran, PDF, resit dan peringatan dalam aplikasi berdiri sendiri.",
+  "invRemoteNotConfigured": "e-Invoicing dalam mod jauh — sambungan belum dikonfigurasikan.",
+  "invConfigure": "Konfigurasikan",
+  "invAppNotDetected": "Aplikasi e-Invoicing tidak dikesan — pasang/lancarkan EastmarkHK e-Invoicing untuk membuat sebut harga dan invois daripada rekod ini.",
+  "invRemoteSetupBody": "EastmarkHK e-Invoicing dikonfigurasikan untuk storan jauh. Masukkan kelayakan yang sama di sini untuk menyambungkan CRM ke API yang sama — nilai yang sama seperti dalam e-Invoicing → Tetapan → Storan Jauh.",
+  "invLaunchOnceBody": "Lancarkan EastmarkHK e-Invoicing sekali untuk memulakan pangkalan data yang dikongsi, kemudian kembali ke sini.",
+  "invAcquireAppStoreBody": "Modul ini menggunakan EastmarkHK e-Invoicing. Muat turun dan langgan melalui App Store, lancarkan sekali, kemudian kembali ke sini.",
+  "invAcquireWebBody": "Modul ini menggunakan EastmarkHK e-Invoicing. Muat turun dan langgan di eastmarkhk.com, lancarkan sekali, kemudian kembali ke sini.",
+  "invConfigureRemote": "Konfigurasikan sambungan jauh",
+  "invViewOnAppStore": "Lihat di App Store",
+  "invViewOnWebsite": "Lihat di eastmarkhk.com",
+  "invRetry": "Cuba lagi",
+  "invDocInvoice": "Invois",
+  "invDocQuote": "Sebut Harga",
+  "invDocClient": "Klien",
+  "invDocStatus": "Status",
+  "invDocDate": "Tarikh",
+  "invOpenInStandalone": "Buka dalam e-Invoicing",
+  "invOpenStandaloneFailed": "e-Invoicing tidak dapat dibuka — semak sama ada ia dipasang.",
+  "invCreateInvoiceFromQuote": "Buat invois",
+  "invCreatingInvoice": "Membuat invois…",
+  "invInvoiceCreatedFromQuote": "Invois {number} dibuat daripada sebut harga.",
+  "@invInvoiceCreatedFromQuote": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invQuoteAlreadyInvoiced": "Sebut harga ini sudah diinvoiskan.",
+  "invCreateInvoiceFailed": "Invois tidak dapat dibuat: {error}",
+  "@invCreateInvoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "invLinkMenu": "Pautan e-Invoicing",
+  "invLinkStatusLinked": "Klien e-Invoicing dipautkan",
+  "invLinkStatusNone": "Tiada pautan e-Invoicing disimpan",
+  "invUnlinkCustomer": "Nyahpaut klien e-Invoicing",
+  "invUnlinkConfirmTitle": "Nyahpautkan klien?",
+  "invUnlinkConfirmBody": "Sebut harga atau invois seterusnya akan meminta anda memilih atau mencipta semula klien dalam e-Invoicing.",
+  "invUnlinkDone": "Pautan e-Invoicing dialih keluar.",
+  "invAppStoreUrlMissing": "e-Invoicing belum disenaraikan di App Store untuk binaan ini. Gunakan eastmarkhk.com atau lancarkan aplikasi yang telah dipasang.",
+  "shellSyncNeedsPassword": "Pangkalan data dikongsi: masukkan kata laluan penyegerakan dalam Tetapan untuk menyambung semula peranti ini."
 }

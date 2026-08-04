@@ -1327,5 +1327,122 @@
   "richColorPickerTitle": "Text color",
   "eiHitEmailPlain": " — email",
   "eiHitPhonePlain": " — phone",
-  "tasksEditTaskTitle": "Edit task"
+  "tasksEditTaskTitle": "Edit task",
+  "modulesDontUseInCrm": "CRM ਵਿੱਚ ਵਰਤੋਂ ਨਾ ਕਰੋ",
+  "modulesBuyOnAppStore": "App Store ਤੋਂ ਖਰੀਦੋ",
+  "modulesStoreUnavailable": "ਇਸ ਬਿਲਡ ਵਿੱਚ App Store ਉਪਲਬਧ ਨਹੀਂ ਹੈ। App Store ਬਿਲਡ ਵਰਤੋ, ਜਾਂ eastmarkhk.com ਗਾਹਕੀ ਸਰਗਰਮ ਕਰੋ।",
+  "modulesCheckingPurchases": "App Store ਅਤੇ eastmarkhk.com ਖਰੀਦਾਂ ਦੀ ਜਾਂਚ ਹੋ ਰਹੀ ਹੈ…",
+  "modulesCheckingAppStore": "App Store ਖਰੀਦਾਂ ਦੀ ਜਾਂਚ ਹੋ ਰਹੀ ਹੈ…",
+  "invPickClientTitle": "ਕਲਾਇੰਟ ਚੁਣੋ",
+  "invPickClientSearch": "ਨਾਮ, ਟੈਕਸ ID, ਦੇਸ਼ ਦੁਆਰਾ ਖੋਜੋ…",
+  "invPickClientEmpty": "ਕੋਈ ਮੇਲ ਖਾਂਦਾ ਕਲਾਇੰਟ ਨਹੀਂ।",
+  "invPickClientButton": "ਕਲਾਇੰਟ ਚੁਣੋ",
+  "invClientRequired": "ਸੰਭਾਲਣ ਤੋਂ ਪਹਿਲਾਂ ਇੱਕ ਕਲਾਇੰਟ ਚੁਣੋ।",
+  "invSave": "ਸੰਭਾਲੋ",
+  "invSaving": "ਸੰਭਾਲਿਆ ਜਾ ਰਿਹਾ ਹੈ…",
+  "invEditQuote": "ਕੋਟੇਸ਼ਨ {number} ਸੰਪਾਦਿਤ ਕਰੋ",
+  "@invEditQuote": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invEditInvoice": "ਇਨਵੌਇਸ {number} ਸੰਪਾਦਿਤ ਕਰੋ",
+  "@invEditInvoice": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invDocumentSaved": "{number} ਸੰਭਾਲਿਆ ਗਿਆ।",
+  "@invDocumentSaved": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invDocumentSaveFailed": "ਸੰਭਾਲਿਆ ਨਹੀਂ ਜਾ ਸਕਿਆ: {error}",
+  "@invDocumentSaveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "invEditDocument": "ਸੰਪਾਦਿਤ ਕਰੋ",
+  "invHomeSubtitle": "ਕੋਟੇਸ਼ਨ ਅਤੇ ਇਨਵੌਇਸ — EastmarkHK e-Invoicing ਡਾਟਾ (ਰਸੀਦਾਂ ਅਤੇ ਰੀਮਾਈਂਡਰ: ਸਟੈਂਡਅਲੋਨ ਐਪ)",
+  "invOpenStandalone": "e-Invoicing ਖੋਲ੍ਹੋ",
+  "invLaunchStandalone": "e-Invoicing ਲਾਂਚ ਕਰੋ",
+  "invRemoteConnectionTooltip": "ਰਿਮੋਟ ਕਨੈਕਸ਼ਨ",
+  "invTabQuotes": "ਕੋਟੇਸ਼ਨ ({count})",
+  "@invTabQuotes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "invTabInvoices": "ਇਨਵੌਇਸ ({count})",
+  "@invTabInvoices": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "invEmptyQuotes": "ਕੋਈ ਕੋਟੇਸ਼ਨ ਨਹੀਂ — ਜਿੱਤੇ ਮੌਕੇ ਜਾਂ ਉੱਪਰ ਦਿੱਤੇ ਬਟਨ ਤੋਂ ਇੱਕ ਬਣਾਓ।",
+  "invEmptyInvoices": "ਕੋਈ ਇਨਵੌਇਸ ਨਹੀਂ।",
+  "invEmptyCompanyDocs": "ਕੋਈ ਕੋਟੇਸ਼ਨ ਜਾਂ ਇਨਵੌਇਸ ਨਹੀਂ।",
+  "invQuotesSection": "ਕੋਟੇਸ਼ਨ",
+  "invInvoicesSection": "ਇਨਵੌਇਸ",
+  "invCompanyFooter": "ਦਸਤਾਵੇਜ਼ EastmarkHK e-Invoicing ਦੁਆਰਾ ਪ੍ਰਬੰਧਿਤ — ਭੇਜਣਾ, PDF, ਰਸੀਦਾਂ ਅਤੇ ਰੀਮਾਈਂਡਰ ਸਟੈਂਡਅਲੋਨ ਐਪ ਵਿੱਚ।",
+  "invRemoteNotConfigured": "e-Invoicing ਰਿਮੋਟ ਮੋਡ ਵਿੱਚ ਹੈ — ਕਨੈਕਸ਼ਨ ਕੌਂਫਿਗਰ ਨਹੀਂ ਹੈ।",
+  "invConfigure": "ਕੌਂਫਿਗਰ ਕਰੋ",
+  "invAppNotDetected": "e-Invoicing ਐਪ ਨਹੀਂ ਮਿਲੀ — ਇਸ ਰਿਕਾਰਡ ਤੋਂ ਕੋਟੇਸ਼ਨ ਅਤੇ ਇਨਵੌਇਸ ਬਣਾਉਣ ਲਈ EastmarkHK e-Invoicing ਸਥਾਪਿਤ/ਲਾਂਚ ਕਰੋ।",
+  "invRemoteSetupBody": "EastmarkHK e-Invoicing ਰਿਮੋਟ ਸਟੋਰੇਜ ਲਈ ਕੌਂਫਿਗਰ ਹੈ। CRM ਨੂੰ ਉਸੇ API ਨਾਲ ਜੋੜਨ ਲਈ ਇੱਥੇ ਉਹੀ ਪ੍ਰਮਾਣ ਪੱਤਰ ਦਰਜ ਕਰੋ — e-Invoicing → ਸੈਟਿੰਗਾਂ → ਰਿਮੋਟ ਸਟੋਰੇਜ ਵਾਂਗ ਹੀ ਮੁੱਲ।",
+  "invLaunchOnceBody": "ਸਾਂਝੇ ਡੇਟਾਬੇਸ ਨੂੰ ਸ਼ੁਰੂ ਕਰਨ ਲਈ ਇੱਕ ਵਾਰ EastmarkHK e-Invoicing ਲਾਂਚ ਕਰੋ, ਫਿਰ ਇੱਥੇ ਵਾਪਸ ਆਓ।",
+  "invAcquireAppStoreBody": "ਇਹ ਮੋਡਿਊਲ EastmarkHK e-Invoicing ਵਰਤਦਾ ਹੈ। App Store ਤੋਂ ਡਾਊਨਲੋਡ ਕਰੋ ਅਤੇ ਗਾਹਕੀ ਲਓ, ਇੱਕ ਵਾਰ ਲਾਂਚ ਕਰੋ, ਫਿਰ ਇੱਥੇ ਵਾਪਸ ਆਓ।",
+  "invAcquireWebBody": "ਇਹ ਮੋਡਿਊਲ EastmarkHK e-Invoicing ਵਰਤਦਾ ਹੈ। eastmarkhk.com 'ਤੇ ਡਾਊਨਲੋਡ ਕਰੋ ਅਤੇ ਗਾਹਕੀ ਲਓ, ਇੱਕ ਵਾਰ ਲਾਂਚ ਕਰੋ, ਫਿਰ ਇੱਥੇ ਵਾਪਸ ਆਓ।",
+  "invConfigureRemote": "ਰਿਮੋਟ ਕਨੈਕਸ਼ਨ ਕੌਂਫਿਗਰ ਕਰੋ",
+  "invViewOnAppStore": "App Store 'ਤੇ ਵੇਖੋ",
+  "invViewOnWebsite": "eastmarkhk.com 'ਤੇ ਵੇਖੋ",
+  "invRetry": "ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ",
+  "invDocInvoice": "ਇਨਵੌਇਸ",
+  "invDocQuote": "ਕੋਟੇਸ਼ਨ",
+  "invDocClient": "ਕਲਾਇੰਟ",
+  "invDocStatus": "ਸਥਿਤੀ",
+  "invDocDate": "ਮਿਤੀ",
+  "invOpenInStandalone": "e-Invoicing ਵਿੱਚ ਖੋਲ੍ਹੋ",
+  "invOpenStandaloneFailed": "e-Invoicing ਖੋਲ੍ਹਿਆ ਨਹੀਂ ਜਾ ਸਕਿਆ — ਜਾਂਚੋ ਕਿ ਇਹ ਸਥਾਪਿਤ ਹੈ।",
+  "invCreateInvoiceFromQuote": "ਇਨਵੌਇਸ ਬਣਾਓ",
+  "invCreatingInvoice": "ਇਨਵੌਇਸ ਬਣਾਇਆ ਜਾ ਰਿਹਾ ਹੈ…",
+  "invInvoiceCreatedFromQuote": "ਕੋਟੇਸ਼ਨ ਤੋਂ ਇਨਵੌਇਸ {number} ਬਣਾਇਆ ਗਿਆ।",
+  "@invInvoiceCreatedFromQuote": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invQuoteAlreadyInvoiced": "ਇਸ ਕੋਟੇਸ਼ਨ ਦਾ ਪਹਿਲਾਂ ਹੀ ਇਨਵੌਇਸ ਬਣ ਚੁੱਕਿਆ ਹੈ।",
+  "invCreateInvoiceFailed": "ਇਨਵੌਇਸ ਨਹੀਂ ਬਣਾਇਆ ਜਾ ਸਕਿਆ: {error}",
+  "@invCreateInvoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "invLinkMenu": "e-Invoicing ਲਿੰਕ",
+  "invLinkStatusLinked": "e-Invoicing ਕਲਾਇੰਟ ਲਿੰਕ ਹੈ",
+  "invLinkStatusNone": "ਕੋਈ ਸੰਭਾਲਿਆ e-Invoicing ਲਿੰਕ ਨਹੀਂ",
+  "invUnlinkCustomer": "e-Invoicing ਕਲਾਇੰਟ ਅਨਲਿੰਕ ਕਰੋ",
+  "invUnlinkConfirmTitle": "ਕਲਾਇੰਟ ਅਨਲਿੰਕ ਕਰਨਾ ਹੈ?",
+  "invUnlinkConfirmBody": "ਅਗਲਾ ਕੋਟੇਸ਼ਨ ਜਾਂ ਇਨਵੌਇਸ e-Invoicing ਵਿੱਚ ਕਲਾਇੰਟ ਨੂੰ ਦੁਬਾਰਾ ਚੁਣਨ ਜਾਂ ਬਣਾਉਣ ਲਈ ਕਹੇਗਾ।",
+  "invUnlinkDone": "e-Invoicing ਲਿੰਕ ਹਟਾ ਦਿੱਤਾ ਗਿਆ।",
+  "invAppStoreUrlMissing": "ਇਸ ਬਿਲਡ ਲਈ e-Invoicing ਅਜੇ App Store 'ਤੇ ਸੂਚੀਬੱਧ ਨਹੀਂ ਹੈ। eastmarkhk.com ਵਰਤੋ ਜਾਂ ਪਹਿਲਾਂ ਤੋਂ ਸਥਾਪਿਤ ਐਪ ਲਾਂਚ ਕਰੋ।",
+  "shellSyncNeedsPassword": "ਸਾਂਝਾ ਡੇਟਾਬੇਸ: ਇਸ ਡਿਵਾਈਸ ਨੂੰ ਦੁਬਾਰਾ ਜੋੜਨ ਲਈ ਸੈਟਿੰਗਾਂ ਵਿੱਚ ਸਿੰਕ ਪਾਸਵਰਡ ਦਰਜ ਕਰੋ।"
 }

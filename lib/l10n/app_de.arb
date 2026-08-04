@@ -1327,5 +1327,122 @@
   "richColorPickerTitle": "Text color",
   "eiHitEmailPlain": " — email",
   "eiHitPhonePlain": " — phone",
-  "tasksEditTaskTitle": "Edit task"
+  "tasksEditTaskTitle": "Edit task",
+  "modulesDontUseInCrm": "Nicht im CRM verwenden",
+  "modulesBuyOnAppStore": "Im App Store kaufen",
+  "modulesStoreUnavailable": "Der App Store ist in diesem Build nicht verfügbar. Verwenden Sie einen App-Store-Build oder aktivieren Sie ein eastmarkhk.com-Abonnement.",
+  "modulesCheckingPurchases": "Käufe im App Store und auf eastmarkhk.com werden geprüft…",
+  "modulesCheckingAppStore": "App-Store-Käufe werden geprüft…",
+  "invPickClientTitle": "Kunde auswählen",
+  "invPickClientSearch": "Nach Name, Steuernummer, Land suchen…",
+  "invPickClientEmpty": "Kein passender Kunde.",
+  "invPickClientButton": "Kunde auswählen",
+  "invClientRequired": "Wählen Sie vor dem Speichern einen Kunden aus.",
+  "invSave": "Speichern",
+  "invSaving": "Wird gespeichert…",
+  "invEditQuote": "Angebot {number} bearbeiten",
+  "@invEditQuote": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invEditInvoice": "Rechnung {number} bearbeiten",
+  "@invEditInvoice": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invDocumentSaved": "{number} gespeichert.",
+  "@invDocumentSaved": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invDocumentSaveFailed": "Speichern nicht möglich: {error}",
+  "@invDocumentSaveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "invEditDocument": "Bearbeiten",
+  "invHomeSubtitle": "Angebote und Rechnungen — Daten aus EastmarkHK e-Invoicing (Eingänge und Erinnerungen: eigenständige App)",
+  "invOpenStandalone": "e-Invoicing öffnen",
+  "invLaunchStandalone": "e-Invoicing starten",
+  "invRemoteConnectionTooltip": "Remote-Verbindung",
+  "invTabQuotes": "Angebote ({count})",
+  "@invTabQuotes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "invTabInvoices": "Rechnungen ({count})",
+  "@invTabInvoices": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "invEmptyQuotes": "Keine Angebote — erstellen Sie eines aus einer gewonnenen Verkaufschance oder über die Schaltfläche oben.",
+  "invEmptyInvoices": "Keine Rechnungen.",
+  "invEmptyCompanyDocs": "Keine Angebote oder Rechnungen.",
+  "invQuotesSection": "ANGEBOTE",
+  "invInvoicesSection": "RECHNUNGEN",
+  "invCompanyFooter": "Dokumente werden von EastmarkHK e-Invoicing verwaltet — Versand, PDF, Eingänge und Erinnerungen in der eigenständigen App.",
+  "invRemoteNotConfigured": "e-Invoicing befindet sich im Remote-Modus — die Verbindung ist nicht konfiguriert.",
+  "invConfigure": "Konfigurieren",
+  "invAppNotDetected": "e-Invoicing-App nicht erkannt — installieren/starten Sie EastmarkHK e-Invoicing, um Angebote und Rechnungen aus diesem Datensatz zu erstellen.",
+  "invRemoteSetupBody": "EastmarkHK e-Invoicing ist für Remote-Speicherung konfiguriert. Geben Sie hier dieselben Zugangsdaten ein, um das CRM mit derselben API zu verbinden — dieselben Werte wie in e-Invoicing → Einstellungen → Remote-Speicherung.",
+  "invLaunchOnceBody": "Starten Sie EastmarkHK e-Invoicing einmal, um die gemeinsame Datenbank zu initialisieren, und kehren Sie dann hierher zurück.",
+  "invAcquireAppStoreBody": "Dieses Modul verwendet EastmarkHK e-Invoicing. Laden Sie es herunter und abonnieren Sie es über den App Store, starten Sie es einmal und kehren Sie dann hierher zurück.",
+  "invAcquireWebBody": "Dieses Modul verwendet EastmarkHK e-Invoicing. Laden Sie es herunter und abonnieren Sie es auf eastmarkhk.com, starten Sie es einmal und kehren Sie dann hierher zurück.",
+  "invConfigureRemote": "Remote-Verbindung konfigurieren",
+  "invViewOnAppStore": "Im App Store ansehen",
+  "invViewOnWebsite": "Auf eastmarkhk.com ansehen",
+  "invRetry": "Erneut versuchen",
+  "invDocInvoice": "Rechnung",
+  "invDocQuote": "Angebot",
+  "invDocClient": "Kunde",
+  "invDocStatus": "Status",
+  "invDocDate": "Datum",
+  "invOpenInStandalone": "In e-Invoicing öffnen",
+  "invOpenStandaloneFailed": "e-Invoicing konnte nicht geöffnet werden — prüfen Sie, ob die App installiert ist.",
+  "invCreateInvoiceFromQuote": "Rechnung erstellen",
+  "invCreatingInvoice": "Rechnung wird erstellt…",
+  "invInvoiceCreatedFromQuote": "Rechnung {number} aus dem Angebot erstellt.",
+  "@invInvoiceCreatedFromQuote": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invQuoteAlreadyInvoiced": "Für dieses Angebot wurde bereits eine Rechnung erstellt.",
+  "invCreateInvoiceFailed": "Rechnung konnte nicht erstellt werden: {error}",
+  "@invCreateInvoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "invLinkMenu": "e-Invoicing-Verknüpfung",
+  "invLinkStatusLinked": "e-Invoicing-Kunde verknüpft",
+  "invLinkStatusNone": "Keine gespeicherte e-Invoicing-Verknüpfung",
+  "invUnlinkCustomer": "e-Invoicing-Kunde trennen",
+  "invUnlinkConfirmTitle": "Kundenverknüpfung aufheben?",
+  "invUnlinkConfirmBody": "Beim nächsten Angebot oder der nächsten Rechnung müssen Sie den Kunden in e-Invoicing erneut auswählen oder anlegen.",
+  "invUnlinkDone": "e-Invoicing-Verknüpfung entfernt.",
+  "invAppStoreUrlMissing": "e-Invoicing ist für diesen Build noch nicht im App Store gelistet. Nutzen Sie eastmarkhk.com oder starten Sie eine bereits installierte App.",
+  "shellSyncNeedsPassword": "Gemeinsame Datenbank: Geben Sie das Sync-Passwort in den Einstellungen ein, um dieses Gerät wieder zu verbinden."
 }

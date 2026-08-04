@@ -1327,5 +1327,122 @@
   "richColorPickerTitle": "Text color",
   "eiHitEmailPlain": " — email",
   "eiHitPhonePlain": " — phone",
-  "tasksEditTaskTitle": "Edit task"
+  "tasksEditTaskTitle": "Edit task",
+  "modulesDontUseInCrm": "CRM에서 사용 안 함",
+  "modulesBuyOnAppStore": "App Store에서 구매",
+  "modulesStoreUnavailable": "이 빌드에서는 App Store를 사용할 수 없습니다. App Store 빌드를 사용하거나 eastmarkhk.com 구독을 활성화하세요.",
+  "modulesCheckingPurchases": "App Store 및 eastmarkhk.com 구매 확인 중…",
+  "modulesCheckingAppStore": "App Store 구매 확인 중…",
+  "invPickClientTitle": "고객 선택",
+  "invPickClientSearch": "이름, 사업자번호, 국가로 검색…",
+  "invPickClientEmpty": "일치하는 고객이 없습니다.",
+  "invPickClientButton": "고객 선택",
+  "invClientRequired": "저장하기 전에 고객을 선택하세요.",
+  "invSave": "저장",
+  "invSaving": "저장 중…",
+  "invEditQuote": "견적서 {number} 편집",
+  "@invEditQuote": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invEditInvoice": "청구서 {number} 편집",
+  "@invEditInvoice": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invDocumentSaved": "{number} 저장됨.",
+  "@invDocumentSaved": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invDocumentSaveFailed": "저장할 수 없습니다: {error}",
+  "@invDocumentSaveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "invEditDocument": "편집",
+  "invHomeSubtitle": "견적서 및 청구서 — EastmarkHK e-Invoicing 데이터(영수증 및 알림: 독립 실행형 앱)",
+  "invOpenStandalone": "e-Invoicing 열기",
+  "invLaunchStandalone": "e-Invoicing 실행",
+  "invRemoteConnectionTooltip": "원격 연결",
+  "invTabQuotes": "견적서 ({count})",
+  "@invTabQuotes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "invTabInvoices": "청구서 ({count})",
+  "@invTabInvoices": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "invEmptyQuotes": "견적서가 없습니다 — 성사된 기회 또는 위 버튼에서 만드세요.",
+  "invEmptyInvoices": "청구서가 없습니다.",
+  "invEmptyCompanyDocs": "견적서나 청구서가 없습니다.",
+  "invQuotesSection": "견적서",
+  "invInvoicesSection": "청구서",
+  "invCompanyFooter": "문서는 EastmarkHK e-Invoicing에서 관리됩니다 — 발송, PDF, 영수증 및 알림은 독립 실행형 앱에서 처리됩니다.",
+  "invRemoteNotConfigured": "e-Invoicing이 원격 모드입니다 — 연결이 구성되지 않았습니다.",
+  "invConfigure": "구성",
+  "invAppNotDetected": "e-Invoicing 앱이 감지되지 않았습니다 — 이 레코드에서 견적서와 청구서를 만들려면 EastmarkHK e-Invoicing을 설치/실행하세요.",
+  "invRemoteSetupBody": "EastmarkHK e-Invoicing이 원격 저장소로 구성되어 있습니다. CRM을 동일한 API에 연결하려면 여기에 동일한 자격 증명을 입력하세요 — e-Invoicing → 설정 → 원격 저장소와 동일한 값입니다.",
+  "invLaunchOnceBody": "공유 데이터베이스를 초기화하려면 EastmarkHK e-Invoicing을 한 번 실행한 후 여기로 돌아오세요.",
+  "invAcquireAppStoreBody": "이 모듈은 EastmarkHK e-Invoicing을 사용합니다. App Store에서 다운로드하고 구독한 후 한 번 실행한 다음 여기로 돌아오세요.",
+  "invAcquireWebBody": "이 모듈은 EastmarkHK e-Invoicing을 사용합니다. eastmarkhk.com에서 다운로드하고 구독한 후 한 번 실행한 다음 여기로 돌아오세요.",
+  "invConfigureRemote": "원격 연결 구성",
+  "invViewOnAppStore": "App Store에서 보기",
+  "invViewOnWebsite": "eastmarkhk.com에서 보기",
+  "invRetry": "다시 시도",
+  "invDocInvoice": "청구서",
+  "invDocQuote": "견적서",
+  "invDocClient": "고객",
+  "invDocStatus": "상태",
+  "invDocDate": "날짜",
+  "invOpenInStandalone": "e-Invoicing에서 열기",
+  "invOpenStandaloneFailed": "e-Invoicing을 열 수 없습니다 — 설치되어 있는지 확인하세요.",
+  "invCreateInvoiceFromQuote": "청구서 만들기",
+  "invCreatingInvoice": "청구서 생성 중…",
+  "invInvoiceCreatedFromQuote": "견적서로부터 청구서 {number}가 생성되었습니다.",
+  "@invInvoiceCreatedFromQuote": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invQuoteAlreadyInvoiced": "이 견적서는 이미 청구서로 발행되었습니다.",
+  "invCreateInvoiceFailed": "청구서를 만들 수 없습니다: {error}",
+  "@invCreateInvoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "invLinkMenu": "e-Invoicing 연결",
+  "invLinkStatusLinked": "e-Invoicing 고객이 연결됨",
+  "invLinkStatusNone": "저장된 e-Invoicing 연결 없음",
+  "invUnlinkCustomer": "e-Invoicing 고객 연결 해제",
+  "invUnlinkConfirmTitle": "고객 연결을 해제할까요?",
+  "invUnlinkConfirmBody": "다음 견적서나 청구서에서는 e-Invoicing에서 고객을 다시 선택하거나 생성해야 합니다.",
+  "invUnlinkDone": "e-Invoicing 연결이 해제되었습니다.",
+  "invAppStoreUrlMissing": "이 빌드에서는 e-Invoicing이 아직 App Store에 등록되지 않았습니다. eastmarkhk.com을 사용하거나 이미 설치된 앱을 실행하세요.",
+  "shellSyncNeedsPassword": "공유 데이터베이스: 이 기기를 다시 연결하려면 설정에서 동기화 비밀번호를 입력하세요."
 }

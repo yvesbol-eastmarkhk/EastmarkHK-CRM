@@ -1327,5 +1327,122 @@
   "richColorPickerTitle": "Text color",
   "eiHitEmailPlain": " — email",
   "eiHitPhonePlain": " — phone",
-  "tasksEditTaskTitle": "Edit task"
+  "tasksEditTaskTitle": "Edit task",
+  "modulesDontUseInCrm": "No usar en el CRM",
+  "modulesBuyOnAppStore": "Comprar en el App Store",
+  "modulesStoreUnavailable": "El App Store no está disponible en esta versión. Use una versión de App Store, o active una suscripción en eastmarkhk.com.",
+  "modulesCheckingPurchases": "Comprobando compras de App Store y eastmarkhk.com…",
+  "modulesCheckingAppStore": "Comprobando compras de App Store…",
+  "invPickClientTitle": "Elegir un cliente",
+  "invPickClientSearch": "Buscar por nombre, NIF, país…",
+  "invPickClientEmpty": "Ningún cliente coincide.",
+  "invPickClientButton": "Elegir cliente",
+  "invClientRequired": "Elija un cliente antes de guardar.",
+  "invSave": "Guardar",
+  "invSaving": "Guardando…",
+  "invEditQuote": "Editar presupuesto {number}",
+  "@invEditQuote": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invEditInvoice": "Editar factura {number}",
+  "@invEditInvoice": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invDocumentSaved": "{number} guardado.",
+  "@invDocumentSaved": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invDocumentSaveFailed": "No se pudo guardar: {error}",
+  "@invDocumentSaveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "invEditDocument": "Editar",
+  "invHomeSubtitle": "Presupuestos y facturas — datos de EastmarkHK e-Invoicing (recibos y recordatorios: app independiente)",
+  "invOpenStandalone": "Abrir e-Invoicing",
+  "invLaunchStandalone": "Iniciar e-Invoicing",
+  "invRemoteConnectionTooltip": "Conexión remota",
+  "invTabQuotes": "Presupuestos ({count})",
+  "@invTabQuotes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "invTabInvoices": "Facturas ({count})",
+  "@invTabInvoices": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "invEmptyQuotes": "Sin presupuestos — cree uno desde una oportunidad ganada o el botón de arriba.",
+  "invEmptyInvoices": "Sin facturas.",
+  "invEmptyCompanyDocs": "Sin presupuestos ni facturas.",
+  "invQuotesSection": "PRESUPUESTOS",
+  "invInvoicesSection": "FACTURAS",
+  "invCompanyFooter": "Los documentos son gestionados por EastmarkHK e-Invoicing — envío, PDF, recibos y recordatorios en la app independiente.",
+  "invRemoteNotConfigured": "e-Invoicing está en modo remoto — conexión no configurada.",
+  "invConfigure": "Configurar",
+  "invAppNotDetected": "No se detectó la app e-Invoicing — instale/inicie EastmarkHK e-Invoicing para crear presupuestos y facturas desde esta ficha.",
+  "invRemoteSetupBody": "EastmarkHK e-Invoicing está configurada para almacenamiento remoto. Introduzca aquí las mismas credenciales para conectar el CRM a la misma API — los mismos valores que en e-Invoicing → Ajustes → Almacenamiento remoto.",
+  "invLaunchOnceBody": "Inicie EastmarkHK e-Invoicing una vez para inicializar la base de datos compartida y luego vuelva aquí.",
+  "invAcquireAppStoreBody": "Este módulo usa EastmarkHK e-Invoicing. Descárguela y suscríbase desde el App Store, inícela una vez y vuelva aquí.",
+  "invAcquireWebBody": "Este módulo usa EastmarkHK e-Invoicing. Descárguela y suscríbase en eastmarkhk.com, inícela una vez y vuelva aquí.",
+  "invConfigureRemote": "Configurar conexión remota",
+  "invViewOnAppStore": "Ver en el App Store",
+  "invViewOnWebsite": "Ver en eastmarkhk.com",
+  "invRetry": "Reintentar",
+  "invDocInvoice": "Factura",
+  "invDocQuote": "Presupuesto",
+  "invDocClient": "Cliente",
+  "invDocStatus": "Estado",
+  "invDocDate": "Fecha",
+  "invOpenInStandalone": "Abrir en e-Invoicing",
+  "invOpenStandaloneFailed": "No se pudo abrir e-Invoicing — compruebe que está instalada.",
+  "invCreateInvoiceFromQuote": "Crear factura",
+  "invCreatingInvoice": "Creando factura…",
+  "invInvoiceCreatedFromQuote": "Factura {number} creada a partir del presupuesto.",
+  "@invInvoiceCreatedFromQuote": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invQuoteAlreadyInvoiced": "Este presupuesto ya está facturado.",
+  "invCreateInvoiceFailed": "No se pudo crear la factura: {error}",
+  "@invCreateInvoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "invLinkMenu": "Vínculo con e-Invoicing",
+  "invLinkStatusLinked": "Cliente de e-Invoicing vinculado",
+  "invLinkStatusNone": "No hay ningún vínculo con e-Invoicing guardado",
+  "invUnlinkCustomer": "Desvincular cliente de e-Invoicing",
+  "invUnlinkConfirmTitle": "¿Desvincular el cliente?",
+  "invUnlinkConfirmBody": "El próximo presupuesto o factura le pedirá elegir o crear de nuevo el cliente en e-Invoicing.",
+  "invUnlinkDone": "Vínculo con e-Invoicing eliminado.",
+  "invAppStoreUrlMissing": "e-Invoicing aún no figura en el App Store para esta versión. Use eastmarkhk.com o inicie una app ya instalada.",
+  "shellSyncNeedsPassword": "Base de datos compartida: introduzca la contraseña de sincronización en Ajustes para reconectar este dispositivo."
 }

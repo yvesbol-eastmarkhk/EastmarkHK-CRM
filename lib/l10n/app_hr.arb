@@ -1327,5 +1327,122 @@
   "richColorPickerTitle": "Text color",
   "eiHitEmailPlain": " — email",
   "eiHitPhonePlain": " — phone",
-  "tasksEditTaskTitle": "Edit task"
+  "tasksEditTaskTitle": "Edit task",
+  "modulesDontUseInCrm": "Ne koristiti u CRM-u",
+  "modulesBuyOnAppStore": "Kupi na App Storeu",
+  "modulesStoreUnavailable": "App Store nije dostupan u ovoj verziji. Koristite verziju za App Store ili aktivirajte pretplatu na eastmarkhk.com.",
+  "modulesCheckingPurchases": "Provjera kupnji na App Storeu i eastmarkhk.com…",
+  "modulesCheckingAppStore": "Provjera kupnji na App Storeu…",
+  "invPickClientTitle": "Odaberi klijenta",
+  "invPickClientSearch": "Pretraži po imenu, OIB-u, državi…",
+  "invPickClientEmpty": "Nema odgovarajućeg klijenta.",
+  "invPickClientButton": "Odaberi klijenta",
+  "invClientRequired": "Odaberite klijenta prije spremanja.",
+  "invSave": "Spremi",
+  "invSaving": "Spremanje…",
+  "invEditQuote": "Uredi ponudu {number}",
+  "@invEditQuote": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invEditInvoice": "Uredi račun {number}",
+  "@invEditInvoice": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invDocumentSaved": "{number} spremljen.",
+  "@invDocumentSaved": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invDocumentSaveFailed": "Spremanje nije uspjelo: {error}",
+  "@invDocumentSaveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "invEditDocument": "Uredi",
+  "invHomeSubtitle": "Ponude i računi — podaci iz EastmarkHK e-Invoicing (primici i podsjetnici: samostalna aplikacija)",
+  "invOpenStandalone": "Otvori e-Invoicing",
+  "invLaunchStandalone": "Pokreni e-Invoicing",
+  "invRemoteConnectionTooltip": "Udaljena veza",
+  "invTabQuotes": "Ponude ({count})",
+  "@invTabQuotes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "invTabInvoices": "Računi ({count})",
+  "@invTabInvoices": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "invEmptyQuotes": "Nema ponuda — izradite jednu iz dobivene prilike ili gumbom iznad.",
+  "invEmptyInvoices": "Nema računa.",
+  "invEmptyCompanyDocs": "Nema ponuda ni računa.",
+  "invQuotesSection": "PONUDE",
+  "invInvoicesSection": "RAČUNI",
+  "invCompanyFooter": "Dokumentima upravlja EastmarkHK e-Invoicing — slanje, PDF, primici i podsjetnici u samostalnoj aplikaciji.",
+  "invRemoteNotConfigured": "e-Invoicing je u udaljenom načinu rada — veza nije konfigurirana.",
+  "invConfigure": "Konfiguriraj",
+  "invAppNotDetected": "Aplikacija e-Invoicing nije pronađena — instalirajte/pokrenite EastmarkHK e-Invoicing za izradu ponuda i računa iz ovog zapisa.",
+  "invRemoteSetupBody": "EastmarkHK e-Invoicing konfigurirana je za udaljenu pohranu. Unesite ovdje iste podatke za povezivanje CRM-a s istim API-jem — iste vrijednosti kao u e-Invoicing → Postavke → Udaljena pohrana.",
+  "invLaunchOnceBody": "Pokrenite EastmarkHK e-Invoicing jednom kako biste inicijalizirali zajedničku bazu podataka, a zatim se vratite ovamo.",
+  "invAcquireAppStoreBody": "Ovaj modul koristi EastmarkHK e-Invoicing. Preuzmite i pretplatite se putem App Storea, pokrenite je jednom, a zatim se vratite ovamo.",
+  "invAcquireWebBody": "Ovaj modul koristi EastmarkHK e-Invoicing. Preuzmite i pretplatite se na eastmarkhk.com, pokrenite je jednom, a zatim se vratite ovamo.",
+  "invConfigureRemote": "Konfiguriraj udaljenu vezu",
+  "invViewOnAppStore": "Pogledaj na App Storeu",
+  "invViewOnWebsite": "Pogledaj na eastmarkhk.com",
+  "invRetry": "Pokušaj ponovno",
+  "invDocInvoice": "Račun",
+  "invDocQuote": "Ponuda",
+  "invDocClient": "Klijent",
+  "invDocStatus": "Status",
+  "invDocDate": "Datum",
+  "invOpenInStandalone": "Otvori u e-Invoicing",
+  "invOpenStandaloneFailed": "e-Invoicing se nije mogao otvoriti — provjerite je li instaliran.",
+  "invCreateInvoiceFromQuote": "Izradi račun",
+  "invCreatingInvoice": "Izrada računa…",
+  "invInvoiceCreatedFromQuote": "Račun {number} izrađen iz ponude.",
+  "@invInvoiceCreatedFromQuote": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invQuoteAlreadyInvoiced": "Ova ponuda već je fakturirana.",
+  "invCreateInvoiceFailed": "Račun nije moguće izraditi: {error}",
+  "@invCreateInvoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "invLinkMenu": "Veza s e-Invoicing",
+  "invLinkStatusLinked": "Klijent e-Invoicing povezan",
+  "invLinkStatusNone": "Nema spremljene veze s e-Invoicing",
+  "invUnlinkCustomer": "Prekini vezu s klijentom e-Invoicing",
+  "invUnlinkConfirmTitle": "Prekinuti vezu s klijentom?",
+  "invUnlinkConfirmBody": "Sljedeća ponuda ili račun ponovno će tražiti odabir ili izradu klijenta u e-Invoicing.",
+  "invUnlinkDone": "Veza s e-Invoicing uklonjena.",
+  "invAppStoreUrlMissing": "e-Invoicing još nije naveden na App Storeu za ovu verziju. Koristite eastmarkhk.com ili pokrenite već instaliranu aplikaciju.",
+  "shellSyncNeedsPassword": "Zajednička baza podataka: unesite lozinku za sinkronizaciju u Postavkama za ponovno povezivanje ovog uređaja."
 }

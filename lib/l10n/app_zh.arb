@@ -1327,5 +1327,122 @@
   "richColorPickerTitle": "Text color",
   "eiHitEmailPlain": " — email",
   "eiHitPhonePlain": " — phone",
-  "tasksEditTaskTitle": "Edit task"
+  "tasksEditTaskTitle": "Edit task",
+  "modulesDontUseInCrm": "不在CRM中使用",
+  "modulesBuyOnAppStore": "在App Store购买",
+  "modulesStoreUnavailable": "此版本不支持App Store。请使用App Store版本，或激活eastmarkhk.com订阅。",
+  "modulesCheckingPurchases": "正在检查App Store和eastmarkhk.com的购买情况…",
+  "modulesCheckingAppStore": "正在检查App Store购买情况…",
+  "invPickClientTitle": "选择客户",
+  "invPickClientSearch": "按名称、税号、国家搜索…",
+  "invPickClientEmpty": "没有匹配的客户。",
+  "invPickClientButton": "选择客户",
+  "invClientRequired": "保存前请选择客户。",
+  "invSave": "保存",
+  "invSaving": "正在保存…",
+  "invEditQuote": "编辑报价单 {number}",
+  "@invEditQuote": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invEditInvoice": "编辑发票 {number}",
+  "@invEditInvoice": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invDocumentSaved": "{number} 已保存。",
+  "@invDocumentSaved": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invDocumentSaveFailed": "无法保存：{error}",
+  "@invDocumentSaveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "invEditDocument": "编辑",
+  "invHomeSubtitle": "报价单和发票 — 来自EastmarkHK e-Invoicing的数据（收据和提醒：独立应用程序）",
+  "invOpenStandalone": "打开e-Invoicing",
+  "invLaunchStandalone": "启动e-Invoicing",
+  "invRemoteConnectionTooltip": "远程连接",
+  "invTabQuotes": "报价单（{count}）",
+  "@invTabQuotes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "invTabInvoices": "发票（{count}）",
+  "@invTabInvoices": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "invEmptyQuotes": "暂无报价单 — 从已赢得的商机或上方按钮创建一个。",
+  "invEmptyInvoices": "暂无发票。",
+  "invEmptyCompanyDocs": "暂无报价单或发票。",
+  "invQuotesSection": "报价单",
+  "invInvoicesSection": "发票",
+  "invCompanyFooter": "文档由EastmarkHK e-Invoicing管理 — 发送、PDF、收据和提醒均在独立应用程序中完成。",
+  "invRemoteNotConfigured": "e-Invoicing处于远程模式 — 连接尚未配置。",
+  "invConfigure": "配置",
+  "invAppNotDetected": "未检测到e-Invoicing应用 — 请安装/启动EastmarkHK e-Invoicing以从此记录创建报价单和发票。",
+  "invRemoteSetupBody": "EastmarkHK e-Invoicing已配置为远程存储。在此输入相同的凭据以将CRM连接到同一API — 与e-Invoicing→设置→远程存储中的值相同。",
+  "invLaunchOnceBody": "先启动一次EastmarkHK e-Invoicing以初始化共享数据库，然后返回此处。",
+  "invAcquireAppStoreBody": "此模块使用EastmarkHK e-Invoicing。请通过App Store下载并订阅，启动一次后返回此处。",
+  "invAcquireWebBody": "此模块使用EastmarkHK e-Invoicing。请在eastmarkhk.com下载并订阅，启动一次后返回此处。",
+  "invConfigureRemote": "配置远程连接",
+  "invViewOnAppStore": "在App Store查看",
+  "invViewOnWebsite": "在eastmarkhk.com查看",
+  "invRetry": "重试",
+  "invDocInvoice": "发票",
+  "invDocQuote": "报价单",
+  "invDocClient": "客户",
+  "invDocStatus": "状态",
+  "invDocDate": "日期",
+  "invOpenInStandalone": "在e-Invoicing中打开",
+  "invOpenStandaloneFailed": "无法打开e-Invoicing — 请检查是否已安装。",
+  "invCreateInvoiceFromQuote": "创建发票",
+  "invCreatingInvoice": "正在创建发票…",
+  "invInvoiceCreatedFromQuote": "已根据报价单创建发票 {number}。",
+  "@invInvoiceCreatedFromQuote": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invQuoteAlreadyInvoiced": "此报价单已开具发票。",
+  "invCreateInvoiceFailed": "无法创建发票：{error}",
+  "@invCreateInvoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "invLinkMenu": "e-Invoicing关联",
+  "invLinkStatusLinked": "e-Invoicing客户已关联",
+  "invLinkStatusNone": "没有已保存的e-Invoicing关联",
+  "invUnlinkCustomer": "取消关联e-Invoicing客户",
+  "invUnlinkConfirmTitle": "取消关联客户？",
+  "invUnlinkConfirmBody": "下一次创建报价单或发票时，系统将再次要求您在e-Invoicing中选择或创建客户。",
+  "invUnlinkDone": "已移除e-Invoicing关联。",
+  "invAppStoreUrlMissing": "此版本的e-Invoicing尚未在App Store上架。请使用eastmarkhk.com或启动已安装的应用程序。",
+  "shellSyncNeedsPassword": "共享数据库：请在设置中输入同步密码以重新连接此设备。"
 }

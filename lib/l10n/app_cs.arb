@@ -1327,5 +1327,122 @@
   "richColorPickerTitle": "Text color",
   "eiHitEmailPlain": " — email",
   "eiHitPhonePlain": " — phone",
-  "tasksEditTaskTitle": "Edit task"
+  "tasksEditTaskTitle": "Edit task",
+  "modulesDontUseInCrm": "Nepoužívat v CRM",
+  "modulesBuyOnAppStore": "Koupit v App Store",
+  "modulesStoreUnavailable": "App Store není v této verzi k dispozici. Použijte verzi z App Store, nebo aktivujte předplatné eastmarkhk.com.",
+  "modulesCheckingPurchases": "Kontrola nákupů App Store a eastmarkhk.com…",
+  "modulesCheckingAppStore": "Kontrola nákupů App Store…",
+  "invPickClientTitle": "Vybrat klienta",
+  "invPickClientSearch": "Hledat podle jména, DIČ, země…",
+  "invPickClientEmpty": "Žádný odpovídající klient.",
+  "invPickClientButton": "Vybrat klienta",
+  "invClientRequired": "Před uložením vyberte klienta.",
+  "invSave": "Uložit",
+  "invSaving": "Ukládání…",
+  "invEditQuote": "Upravit nabídku {number}",
+  "@invEditQuote": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invEditInvoice": "Upravit fakturu {number}",
+  "@invEditInvoice": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invDocumentSaved": "{number} uloženo.",
+  "@invDocumentSaved": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invDocumentSaveFailed": "Uložení se nezdařilo: {error}",
+  "@invDocumentSaveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "invEditDocument": "Upravit",
+  "invHomeSubtitle": "Nabídky a faktury — data z EastmarkHK e-Invoicing (příjmy a upomínky: samostatná aplikace)",
+  "invOpenStandalone": "Otevřít e-Invoicing",
+  "invLaunchStandalone": "Spustit e-Invoicing",
+  "invRemoteConnectionTooltip": "Vzdálené připojení",
+  "invTabQuotes": "Nabídky ({count})",
+  "@invTabQuotes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "invTabInvoices": "Faktury ({count})",
+  "@invTabInvoices": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "invEmptyQuotes": "Žádné nabídky — vytvořte ji z vyhrané příležitosti nebo tlačítkem výše.",
+  "invEmptyInvoices": "Žádné faktury.",
+  "invEmptyCompanyDocs": "Žádné nabídky ani faktury.",
+  "invQuotesSection": "NABÍDKY",
+  "invInvoicesSection": "FAKTURY",
+  "invCompanyFooter": "Dokumenty spravuje EastmarkHK e-Invoicing — odesílání, PDF, příjmy a upomínky v samostatné aplikaci.",
+  "invRemoteNotConfigured": "e-Invoicing je ve vzdáleném režimu — připojení není nakonfigurováno.",
+  "invConfigure": "Nastavit",
+  "invAppNotDetected": "Aplikace e-Invoicing nebyla nalezena — nainstalujte/spusťte EastmarkHK e-Invoicing pro vytváření nabídek a faktur z tohoto záznamu.",
+  "invRemoteSetupBody": "EastmarkHK e-Invoicing je nastavena na vzdálené úložiště. Zadejte zde stejné přihlašovací údaje pro připojení CRM ke stejnému API — stejné hodnoty jako v e-Invoicing → Nastavení → Vzdálené úložiště.",
+  "invLaunchOnceBody": "Jednou spusťte aplikaci EastmarkHK e-Invoicing pro inicializaci sdílené databáze a poté se sem vraťte.",
+  "invAcquireAppStoreBody": "Tento modul používá aplikaci EastmarkHK e-Invoicing. Stáhněte si ji a předplaťte přes App Store, jednou ji spusťte a vraťte se sem.",
+  "invAcquireWebBody": "Tento modul používá aplikaci EastmarkHK e-Invoicing. Stáhněte si ji a předplaťte na eastmarkhk.com, jednou ji spusťte a vraťte se sem.",
+  "invConfigureRemote": "Nastavit vzdálené připojení",
+  "invViewOnAppStore": "Zobrazit v App Store",
+  "invViewOnWebsite": "Zobrazit na eastmarkhk.com",
+  "invRetry": "Zkusit znovu",
+  "invDocInvoice": "Faktura",
+  "invDocQuote": "Nabídka",
+  "invDocClient": "Klient",
+  "invDocStatus": "Stav",
+  "invDocDate": "Datum",
+  "invOpenInStandalone": "Otevřít v e-Invoicing",
+  "invOpenStandaloneFailed": "e-Invoicing se nepodařilo otevřít — zkontrolujte, zda je nainstalována.",
+  "invCreateInvoiceFromQuote": "Vytvořit fakturu",
+  "invCreatingInvoice": "Vytváření faktury…",
+  "invInvoiceCreatedFromQuote": "Faktura {number} vytvořena z nabídky.",
+  "@invInvoiceCreatedFromQuote": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invQuoteAlreadyInvoiced": "Tato nabídka již byla fakturována.",
+  "invCreateInvoiceFailed": "Fakturu se nepodařilo vytvořit: {error}",
+  "@invCreateInvoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "invLinkMenu": "Propojení s e-Invoicing",
+  "invLinkStatusLinked": "Klient e-Invoicing propojen",
+  "invLinkStatusNone": "Žádné uložené propojení s e-Invoicing",
+  "invUnlinkCustomer": "Zrušit propojení klienta e-Invoicing",
+  "invUnlinkConfirmTitle": "Zrušit propojení klienta?",
+  "invUnlinkConfirmBody": "Příští nabídka nebo faktura si znovu vyžádá výběr nebo vytvoření klienta v e-Invoicing.",
+  "invUnlinkDone": "Propojení s e-Invoicing zrušeno.",
+  "invAppStoreUrlMissing": "e-Invoicing zatím není pro tuto verzi uvedena v App Store. Použijte eastmarkhk.com nebo spusťte již nainstalovanou aplikaci.",
+  "shellSyncNeedsPassword": "Sdílená databáze: zadejte synchronizační heslo v Nastavení pro opětovné připojení tohoto zařízení."
 }

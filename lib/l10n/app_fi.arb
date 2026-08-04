@@ -1327,5 +1327,122 @@
   "richColorPickerTitle": "Text color",
   "eiHitEmailPlain": " — email",
   "eiHitPhonePlain": " — phone",
-  "tasksEditTaskTitle": "Edit task"
+  "tasksEditTaskTitle": "Edit task",
+  "modulesDontUseInCrm": "Älä käytä CRM:ssä",
+  "modulesBuyOnAppStore": "Osta App Storesta",
+  "modulesStoreUnavailable": "App Store ei ole käytettävissä tässä versiossa. Käytä App Store -versiota tai aktivoi eastmarkhk.com-tilaus.",
+  "modulesCheckingPurchases": "Tarkistetaan App Storen ja eastmarkhk.comin ostoksia…",
+  "modulesCheckingAppStore": "Tarkistetaan App Store -ostoksia…",
+  "invPickClientTitle": "Valitse asiakas",
+  "invPickClientSearch": "Hae nimellä, Y-tunnuksella, maalla…",
+  "invPickClientEmpty": "Ei vastaavaa asiakasta.",
+  "invPickClientButton": "Valitse asiakas",
+  "invClientRequired": "Valitse asiakas ennen tallentamista.",
+  "invSave": "Tallenna",
+  "invSaving": "Tallennetaan…",
+  "invEditQuote": "Muokkaa tarjousta {number}",
+  "@invEditQuote": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invEditInvoice": "Muokkaa laskua {number}",
+  "@invEditInvoice": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invDocumentSaved": "{number} tallennettu.",
+  "@invDocumentSaved": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invDocumentSaveFailed": "Tallennus epäonnistui: {error}",
+  "@invDocumentSaveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "invEditDocument": "Muokkaa",
+  "invHomeSubtitle": "Tarjoukset ja laskut — EastmarkHK e-Invoicing -tiedot (kuitit ja muistutukset: erillinen sovellus)",
+  "invOpenStandalone": "Avaa e-Invoicing",
+  "invLaunchStandalone": "Käynnistä e-Invoicing",
+  "invRemoteConnectionTooltip": "Etäyhteys",
+  "invTabQuotes": "Tarjoukset ({count})",
+  "@invTabQuotes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "invTabInvoices": "Laskut ({count})",
+  "@invTabInvoices": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "invEmptyQuotes": "Ei tarjouksia — luo yksi voitetusta mahdollisuudesta tai yllä olevasta painikkeesta.",
+  "invEmptyInvoices": "Ei laskuja.",
+  "invEmptyCompanyDocs": "Ei tarjouksia eikä laskuja.",
+  "invQuotesSection": "TARJOUKSET",
+  "invInvoicesSection": "LASKUT",
+  "invCompanyFooter": "Asiakirjoja hallitaan EastmarkHK e-Invoicing -sovelluksessa — lähetys, PDF, kuitit ja muistutukset erillisessä sovelluksessa.",
+  "invRemoteNotConfigured": "e-Invoicing on etätilassa — yhteyttä ei ole määritetty.",
+  "invConfigure": "Määritä",
+  "invAppNotDetected": "e-Invoicing-sovellusta ei havaittu — asenna/käynnistä EastmarkHK e-Invoicing luodaksesi tarjouksia ja laskuja tästä tietueesta.",
+  "invRemoteSetupBody": "EastmarkHK e-Invoicing on määritetty etätallennukseen. Syötä samat tunnukset tähän yhdistääksesi CRM:n samaan rajapintaan — samat arvot kuin e-Invoicing → Asetukset → Etätallennus.",
+  "invLaunchOnceBody": "Käynnistä EastmarkHK e-Invoicing kerran alustaaksesi jaetun tietokannan ja palaa sitten tänne.",
+  "invAcquireAppStoreBody": "Tämä moduuli käyttää EastmarkHK e-Invoicing -sovellusta. Lataa ja tilaa App Storesta, käynnistä se kerran ja palaa tänne.",
+  "invAcquireWebBody": "Tämä moduuli käyttää EastmarkHK e-Invoicing -sovellusta. Lataa ja tilaa osoitteessa eastmarkhk.com, käynnistä se kerran ja palaa tänne.",
+  "invConfigureRemote": "Määritä etäyhteys",
+  "invViewOnAppStore": "Katso App Storessa",
+  "invViewOnWebsite": "Katso osoitteessa eastmarkhk.com",
+  "invRetry": "Yritä uudelleen",
+  "invDocInvoice": "Lasku",
+  "invDocQuote": "Tarjous",
+  "invDocClient": "Asiakas",
+  "invDocStatus": "Tila",
+  "invDocDate": "Päivämäärä",
+  "invOpenInStandalone": "Avaa e-Invoicingissa",
+  "invOpenStandaloneFailed": "e-Invoicingia ei voitu avata — tarkista, että se on asennettu.",
+  "invCreateInvoiceFromQuote": "Luo lasku",
+  "invCreatingInvoice": "Luodaan laskua…",
+  "invInvoiceCreatedFromQuote": "Lasku {number} luotu tarjouksesta.",
+  "@invInvoiceCreatedFromQuote": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invQuoteAlreadyInvoiced": "Tästä tarjouksesta on jo luotu lasku.",
+  "invCreateInvoiceFailed": "Laskua ei voitu luoda: {error}",
+  "@invCreateInvoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "invLinkMenu": "e-Invoicing-linkitys",
+  "invLinkStatusLinked": "e-Invoicing-asiakas linkitetty",
+  "invLinkStatusNone": "Ei tallennettua e-Invoicing-linkitystä",
+  "invUnlinkCustomer": "Poista e-Invoicing-asiakkaan linkitys",
+  "invUnlinkConfirmTitle": "Poistetaanko asiakkaan linkitys?",
+  "invUnlinkConfirmBody": "Seuraava tarjous tai lasku pyytää valitsemaan tai luomaan asiakkaan e-Invoicingissa uudelleen.",
+  "invUnlinkDone": "e-Invoicing-linkitys poistettu.",
+  "invAppStoreUrlMissing": "e-Invoicingia ei ole vielä listattu App Storessa tälle versiolle. Käytä eastmarkhk.comia tai käynnistä jo asennettu sovellus.",
+  "shellSyncNeedsPassword": "Jaettu tietokanta: syötä synkronointisalasana Asetuksissa yhdistääksesi tämän laitteen uudelleen."
 }

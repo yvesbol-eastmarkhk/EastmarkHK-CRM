@@ -1327,5 +1327,122 @@
   "richColorPickerTitle": "Text color",
   "eiHitEmailPlain": " — email",
   "eiHitPhonePlain": " — phone",
-  "tasksEditTaskTitle": "Edit task"
+  "tasksEditTaskTitle": "Edit task",
+  "modulesDontUseInCrm": "Usitumie katika CRM",
+  "modulesBuyOnAppStore": "Nunua kwenye App Store",
+  "modulesStoreUnavailable": "App Store haipatikani katika toleo hili. Tumia toleo la App Store, au washa usajili wa eastmarkhk.com.",
+  "modulesCheckingPurchases": "Inakagua manunuzi ya App Store na eastmarkhk.com…",
+  "modulesCheckingAppStore": "Inakagua manunuzi ya App Store…",
+  "invPickClientTitle": "Chagua mteja",
+  "invPickClientSearch": "Tafuta kwa jina, namba ya kodi, nchi…",
+  "invPickClientEmpty": "Hakuna mteja anayelingana.",
+  "invPickClientButton": "Chagua mteja",
+  "invClientRequired": "Chagua mteja kabla ya kuhifadhi.",
+  "invSave": "Hifadhi",
+  "invSaving": "Inahifadhi…",
+  "invEditQuote": "Hariri nukuu {number}",
+  "@invEditQuote": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invEditInvoice": "Hariri ankara {number}",
+  "@invEditInvoice": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invDocumentSaved": "{number} imehifadhiwa.",
+  "@invDocumentSaved": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invDocumentSaveFailed": "Imeshindwa kuhifadhi: {error}",
+  "@invDocumentSaveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "invEditDocument": "Hariri",
+  "invHomeSubtitle": "Nukuu na ankara — data ya EastmarkHK e-Invoicing (risiti na vikumbusho: programu huru)",
+  "invOpenStandalone": "Fungua e-Invoicing",
+  "invLaunchStandalone": "Zindua e-Invoicing",
+  "invRemoteConnectionTooltip": "Muunganisho wa mbali",
+  "invTabQuotes": "Nukuu ({count})",
+  "@invTabQuotes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "invTabInvoices": "Ankara ({count})",
+  "@invTabInvoices": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "invEmptyQuotes": "Hakuna nukuu — tengeneza moja kutoka kwa fursa iliyoshinda au kitufe kilicho hapo juu.",
+  "invEmptyInvoices": "Hakuna ankara.",
+  "invEmptyCompanyDocs": "Hakuna nukuu wala ankara.",
+  "invQuotesSection": "NUKUU",
+  "invInvoicesSection": "ANKARA",
+  "invCompanyFooter": "Nyaraka zinasimamiwa na EastmarkHK e-Invoicing — kutuma, PDF, risiti na vikumbusho kwenye programu huru.",
+  "invRemoteNotConfigured": "e-Invoicing iko katika hali ya mbali — muunganisho haujawekwa.",
+  "invConfigure": "Sanidi",
+  "invAppNotDetected": "Programu ya e-Invoicing haikutambuliwa — sakinisha/zindua EastmarkHK e-Invoicing ili kuunda nukuu na ankara kutoka kwa rekodi hii.",
+  "invRemoteSetupBody": "EastmarkHK e-Invoicing imesanidiwa kwa hifadhi ya mbali. Ingiza hapa taarifa sawa za kuingia ili kuunganisha CRM kwenye API sawa — thamani sawa kama katika e-Invoicing → Mipangilio → Hifadhi ya mbali.",
+  "invLaunchOnceBody": "Zindua EastmarkHK e-Invoicing mara moja ili kuanzisha hifadhidata iliyoshirikiwa, kisha rudi hapa.",
+  "invAcquireAppStoreBody": "Moduli hii hutumia EastmarkHK e-Invoicing. Pakua na jisajili kupitia App Store, iizindue mara moja, kisha urudi hapa.",
+  "invAcquireWebBody": "Moduli hii hutumia EastmarkHK e-Invoicing. Pakua na jisajili kwenye eastmarkhk.com, iizindue mara moja, kisha urudi hapa.",
+  "invConfigureRemote": "Sanidi muunganisho wa mbali",
+  "invViewOnAppStore": "Tazama kwenye App Store",
+  "invViewOnWebsite": "Tazama kwenye eastmarkhk.com",
+  "invRetry": "Jaribu tena",
+  "invDocInvoice": "Ankara",
+  "invDocQuote": "Nukuu",
+  "invDocClient": "Mteja",
+  "invDocStatus": "Hali",
+  "invDocDate": "Tarehe",
+  "invOpenInStandalone": "Fungua katika e-Invoicing",
+  "invOpenStandaloneFailed": "e-Invoicing haikuweza kufunguliwa — hakiki kama imesakinishwa.",
+  "invCreateInvoiceFromQuote": "Unda ankara",
+  "invCreatingInvoice": "Inaunda ankara…",
+  "invInvoiceCreatedFromQuote": "Ankara {number} imeundwa kutoka kwa nukuu.",
+  "@invInvoiceCreatedFromQuote": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invQuoteAlreadyInvoiced": "Nukuu hii tayari imetengenezewa ankara.",
+  "invCreateInvoiceFailed": "Imeshindwa kuunda ankara: {error}",
+  "@invCreateInvoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "invLinkMenu": "Kiungo cha e-Invoicing",
+  "invLinkStatusLinked": "Mteja wa e-Invoicing ameunganishwa",
+  "invLinkStatusNone": "Hakuna kiungo cha e-Invoicing kilichohifadhiwa",
+  "invUnlinkCustomer": "Ondoa uunganisho wa mteja wa e-Invoicing",
+  "invUnlinkConfirmTitle": "Ondoa uunganisho wa mteja?",
+  "invUnlinkConfirmBody": "Nukuu au ankara inayofuata itaomba tena kuchagua au kuunda mteja katika e-Invoicing.",
+  "invUnlinkDone": "Kiungo cha e-Invoicing kimeondolewa.",
+  "invAppStoreUrlMissing": "e-Invoicing bado haijaorodheshwa kwenye App Store kwa toleo hili. Tumia eastmarkhk.com au zindua programu iliyosakinishwa tayari.",
+  "shellSyncNeedsPassword": "Hifadhidata iliyoshirikiwa: ingiza nenosiri la usawazishaji katika Mipangilio ili kuunganisha kifaa hiki tena."
 }

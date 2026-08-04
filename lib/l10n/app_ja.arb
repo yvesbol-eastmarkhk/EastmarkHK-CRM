@@ -1327,5 +1327,122 @@
   "richColorPickerTitle": "Text color",
   "eiHitEmailPlain": " — email",
   "eiHitPhonePlain": " — phone",
-  "tasksEditTaskTitle": "Edit task"
+  "tasksEditTaskTitle": "Edit task",
+  "modulesDontUseInCrm": "CRMで使用しない",
+  "modulesBuyOnAppStore": "App Storeで購入",
+  "modulesStoreUnavailable": "このビルドではApp Storeを利用できません。App Store版を使用するか、eastmarkhk.comのサブスクリプションを有効にしてください。",
+  "modulesCheckingPurchases": "App Storeとeastmarkhk.comの購入を確認しています…",
+  "modulesCheckingAppStore": "App Storeの購入を確認しています…",
+  "invPickClientTitle": "顧客を選択",
+  "invPickClientSearch": "名前、税番号、国で検索…",
+  "invPickClientEmpty": "該当する顧客がいません。",
+  "invPickClientButton": "顧客を選択",
+  "invClientRequired": "保存する前に顧客を選択してください。",
+  "invSave": "保存",
+  "invSaving": "保存中…",
+  "invEditQuote": "見積書 {number} を編集",
+  "@invEditQuote": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invEditInvoice": "請求書 {number} を編集",
+  "@invEditInvoice": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invDocumentSaved": "{number} を保存しました。",
+  "@invDocumentSaved": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invDocumentSaveFailed": "保存できませんでした：{error}",
+  "@invDocumentSaveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "invEditDocument": "編集",
+  "invHomeSubtitle": "見積書と請求書 — EastmarkHK e-Invoicingのデータ（受領と催促はスタンドアロンアプリで）",
+  "invOpenStandalone": "e-Invoicingを開く",
+  "invLaunchStandalone": "e-Invoicingを起動",
+  "invRemoteConnectionTooltip": "リモート接続",
+  "invTabQuotes": "見積書（{count}）",
+  "@invTabQuotes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "invTabInvoices": "請求書（{count}）",
+  "@invTabInvoices": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "invEmptyQuotes": "見積書がありません — 受注した案件、または上のボタンから作成してください。",
+  "invEmptyInvoices": "請求書がありません。",
+  "invEmptyCompanyDocs": "見積書も請求書もありません。",
+  "invQuotesSection": "見積書",
+  "invInvoicesSection": "請求書",
+  "invCompanyFooter": "書類はEastmarkHK e-Invoicingで管理されます — 送信、PDF、受領、催促はスタンドアロンアプリで行います。",
+  "invRemoteNotConfigured": "e-Invoicingはリモートモードです — 接続が設定されていません。",
+  "invConfigure": "設定",
+  "invAppNotDetected": "e-Invoicingアプリが検出されません — このレコードから見積書や請求書を作成するには、EastmarkHK e-Invoicingをインストール・起動してください。",
+  "invRemoteSetupBody": "EastmarkHK e-Invoicingはリモートストレージに設定されています。CRMを同じAPIに接続するには、ここに同じ認証情報を入力してください — e-Invoicing→設定→リモートストレージと同じ値です。",
+  "invLaunchOnceBody": "共有データベースを初期化するため、一度EastmarkHK e-Invoicingを起動してから、ここに戻ってください。",
+  "invAcquireAppStoreBody": "このモジュールはEastmarkHK e-Invoicingを使用します。App Storeからダウンロードして購読し、一度起動してからここに戻ってください。",
+  "invAcquireWebBody": "このモジュールはEastmarkHK e-Invoicingを使用します。eastmarkhk.comでダウンロードして購読し、一度起動してからここに戻ってください。",
+  "invConfigureRemote": "リモート接続を設定",
+  "invViewOnAppStore": "App Storeで見る",
+  "invViewOnWebsite": "eastmarkhk.comで見る",
+  "invRetry": "再試行",
+  "invDocInvoice": "請求書",
+  "invDocQuote": "見積書",
+  "invDocClient": "顧客",
+  "invDocStatus": "ステータス",
+  "invDocDate": "日付",
+  "invOpenInStandalone": "e-Invoicingで開く",
+  "invOpenStandaloneFailed": "e-Invoicingを開けませんでした — インストールされているか確認してください。",
+  "invCreateInvoiceFromQuote": "請求書を作成",
+  "invCreatingInvoice": "請求書を作成中…",
+  "invInvoiceCreatedFromQuote": "見積書から請求書 {number} を作成しました。",
+  "@invInvoiceCreatedFromQuote": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invQuoteAlreadyInvoiced": "この見積書はすでに請求済みです。",
+  "invCreateInvoiceFailed": "請求書を作成できませんでした：{error}",
+  "@invCreateInvoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "invLinkMenu": "e-Invoicingリンク",
+  "invLinkStatusLinked": "e-Invoicingの顧客がリンクされています",
+  "invLinkStatusNone": "保存されたe-Invoicingリンクはありません",
+  "invUnlinkCustomer": "e-Invoicingの顧客リンクを解除",
+  "invUnlinkConfirmTitle": "顧客のリンクを解除しますか？",
+  "invUnlinkConfirmBody": "次回の見積書または請求書作成時に、e-Invoicingで顧客を再度選択または作成するよう求められます。",
+  "invUnlinkDone": "e-Invoicingリンクを解除しました。",
+  "invAppStoreUrlMissing": "このビルドではe-InvoicingはまだApp Storeに掲載されていません。eastmarkhk.comを使用するか、既にインストール済みのアプリを起動してください。",
+  "shellSyncNeedsPassword": "共有データベース：このデバイスを再接続するには、設定で同期パスワードを入力してください。"
 }

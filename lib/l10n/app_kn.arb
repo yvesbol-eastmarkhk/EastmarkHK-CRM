@@ -1327,5 +1327,122 @@
   "richColorPickerTitle": "Text color",
   "eiHitEmailPlain": " — email",
   "eiHitPhonePlain": " — phone",
-  "tasksEditTaskTitle": "Edit task"
+  "tasksEditTaskTitle": "Edit task",
+  "modulesDontUseInCrm": "CRMನಲ್ಲಿ ಬಳಸಬೇಡಿ",
+  "modulesBuyOnAppStore": "App Storeನಲ್ಲಿ ಖರೀದಿಸಿ",
+  "modulesStoreUnavailable": "ಈ ಬಿಲ್ಡ್‌ನಲ್ಲಿ App Store ಲಭ್ಯವಿಲ್ಲ. App Store ಬಿಲ್ಡ್ ಬಳಸಿ, ಅಥವಾ eastmarkhk.com ಚಂದಾದಾರಿಕೆಯನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಿ.",
+  "modulesCheckingPurchases": "App Store ಮತ್ತು eastmarkhk.com ಖರೀದಿಗಳನ್ನು ಪರಿಶೀಲಿಸಲಾಗುತ್ತಿದೆ…",
+  "modulesCheckingAppStore": "App Store ಖರೀದಿಗಳನ್ನು ಪರಿಶೀಲಿಸಲಾಗುತ್ತಿದೆ…",
+  "invPickClientTitle": "ಕ್ಲೈಂಟ್ ಆಯ್ಕೆಮಾಡಿ",
+  "invPickClientSearch": "ಹೆಸರು, ತೆರಿಗೆ ಸಂಖ್ಯೆ, ದೇಶದಿಂದ ಹುಡುಕಿ…",
+  "invPickClientEmpty": "ಹೊಂದಾಣಿಕೆಯಾಗುವ ಕ್ಲೈಂಟ್ ಇಲ್ಲ.",
+  "invPickClientButton": "ಕ್ಲೈಂಟ್ ಆಯ್ಕೆಮಾಡಿ",
+  "invClientRequired": "ಉಳಿಸುವ ಮೊದಲು ಒಂದು ಕ್ಲೈಂಟ್ ಆಯ್ಕೆಮಾಡಿ.",
+  "invSave": "ಉಳಿಸಿ",
+  "invSaving": "ಉಳಿಸಲಾಗುತ್ತಿದೆ…",
+  "invEditQuote": "ಉಲ್ಲೇಖ {number} ಸಂಪಾದಿಸಿ",
+  "@invEditQuote": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invEditInvoice": "ಇನ್‌ವಾಯ್ಸ್ {number} ಸಂಪಾದಿಸಿ",
+  "@invEditInvoice": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invDocumentSaved": "{number} ಉಳಿಸಲಾಗಿದೆ.",
+  "@invDocumentSaved": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invDocumentSaveFailed": "ಉಳಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ: {error}",
+  "@invDocumentSaveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "invEditDocument": "ಸಂಪಾದಿಸಿ",
+  "invHomeSubtitle": "ಉಲ್ಲೇಖಗಳು ಮತ್ತು ಇನ್‌ವಾಯ್ಸ್‌ಗಳು — EastmarkHK e-Invoicing ಡೇಟಾ (ರಶೀದಿಗಳು ಮತ್ತು ಜ್ಞಾಪನೆಗಳು: ಸ್ವತಂತ್ರ ಅಪ್ಲಿಕೇಶನ್)",
+  "invOpenStandalone": "e-Invoicing ತೆರೆಯಿರಿ",
+  "invLaunchStandalone": "e-Invoicing ಪ್ರಾರಂಭಿಸಿ",
+  "invRemoteConnectionTooltip": "ದೂರಸ್ಥ ಸಂಪರ್ಕ",
+  "invTabQuotes": "ಉಲ್ಲೇಖಗಳು ({count})",
+  "@invTabQuotes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "invTabInvoices": "ಇನ್‌ವಾಯ್ಸ್‌ಗಳು ({count})",
+  "@invTabInvoices": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "invEmptyQuotes": "ಯಾವುದೇ ಉಲ್ಲೇಖಗಳಿಲ್ಲ — ಗೆದ್ದ ಅವಕಾಶದಿಂದ ಅಥವಾ ಮೇಲಿನ ಬಟನ್‌ನಿಂದ ಒಂದನ್ನು ರಚಿಸಿ.",
+  "invEmptyInvoices": "ಯಾವುದೇ ಇನ್‌ವಾಯ್ಸ್‌ಗಳಿಲ್ಲ.",
+  "invEmptyCompanyDocs": "ಯಾವುದೇ ಉಲ್ಲೇಖ ಅಥವಾ ಇನ್‌ವಾಯ್ಸ್ ಇಲ್ಲ.",
+  "invQuotesSection": "ಉಲ್ಲೇಖಗಳು",
+  "invInvoicesSection": "ಇನ್‌ವಾಯ್ಸ್‌ಗಳು",
+  "invCompanyFooter": "ದಾಖಲೆಗಳನ್ನು EastmarkHK e-Invoicing ನಿರ್ವಹಿಸುತ್ತದೆ — ಕಳುಹಿಸುವಿಕೆ, PDF, ರಶೀದಿಗಳು ಮತ್ತು ಜ್ಞಾಪನೆಗಳು ಸ್ವತಂತ್ರ ಅಪ್ಲಿಕೇಶನ್‌ನಲ್ಲಿ.",
+  "invRemoteNotConfigured": "e-Invoicing ದೂರಸ್ಥ ಮೋಡ್‌ನಲ್ಲಿದೆ — ಸಂಪರ್ಕ ಕಾನ್ಫಿಗರ್ ಆಗಿಲ್ಲ.",
+  "invConfigure": "ಕಾನ್ಫಿಗರ್ ಮಾಡಿ",
+  "invAppNotDetected": "e-Invoicing ಅಪ್ಲಿಕೇಶನ್ ಪತ್ತೆಯಾಗಿಲ್ಲ — ಈ ದಾಖಲೆಯಿಂದ ಉಲ್ಲೇಖಗಳು ಮತ್ತು ಇನ್‌ವಾಯ್ಸ್‌ಗಳನ್ನು ರಚಿಸಲು EastmarkHK e-Invoicing ಅನ್ನು ಸ್ಥಾಪಿಸಿ/ಪ್ರಾರಂಭಿಸಿ.",
+  "invRemoteSetupBody": "EastmarkHK e-Invoicing ದೂರಸ್ಥ ಸಂಗ್ರಹಣೆಗಾಗಿ ಕಾನ್ಫಿಗರ್ ಆಗಿದೆ. CRM ಅನ್ನು ಅದೇ API ಗೆ ಸಂಪರ್ಕಿಸಲು ಇಲ್ಲಿ ಅದೇ ರುಜುವಾತುಗಳನ್ನು ನಮೂದಿಸಿ — e-Invoicing → ಸೆಟ್ಟಿಂಗ್‌ಗಳು → ದೂರಸ್ಥ ಸಂಗ್ರಹಣೆಯಲ್ಲಿರುವಂತೆಯೇ ಮೌಲ್ಯಗಳು.",
+  "invLaunchOnceBody": "ಹಂಚಿಕೆಯ ಡೇಟಾಬೇಸ್ ಅನ್ನು ಪ್ರಾರಂಭಿಸಲು EastmarkHK e-Invoicing ಅನ್ನು ಒಮ್ಮೆ ಪ್ರಾರಂಭಿಸಿ, ನಂತರ ಇಲ್ಲಿಗೆ ಹಿಂತಿರುಗಿ.",
+  "invAcquireAppStoreBody": "ಈ ಮಾಡ್ಯೂಲ್ EastmarkHK e-Invoicing ಬಳಸುತ್ತದೆ. App Storeನಿಂದ ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ ಚಂದಾದಾರರಾಗಿ, ಒಮ್ಮೆ ಪ್ರಾರಂಭಿಸಿ, ನಂತರ ಇಲ್ಲಿಗೆ ಹಿಂತಿರುಗಿ.",
+  "invAcquireWebBody": "ಈ ಮಾಡ್ಯೂಲ್ EastmarkHK e-Invoicing ಬಳಸುತ್ತದೆ. eastmarkhk.comನಲ್ಲಿ ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ ಚಂದಾದಾರರಾಗಿ, ಒಮ್ಮೆ ಪ್ರಾರಂಭಿಸಿ, ನಂತರ ಇಲ್ಲಿಗೆ ಹಿಂತಿರುಗಿ.",
+  "invConfigureRemote": "ದೂರಸ್ಥ ಸಂಪರ್ಕವನ್ನು ಕಾನ್ಫಿಗರ್ ಮಾಡಿ",
+  "invViewOnAppStore": "App Storeನಲ್ಲಿ ವೀಕ್ಷಿಸಿ",
+  "invViewOnWebsite": "eastmarkhk.comನಲ್ಲಿ ವೀಕ್ಷಿಸಿ",
+  "invRetry": "ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ",
+  "invDocInvoice": "ಇನ್‌ವಾಯ್ಸ್",
+  "invDocQuote": "ಉಲ್ಲೇಖ",
+  "invDocClient": "ಕ್ಲೈಂಟ್",
+  "invDocStatus": "ಸ್ಥಿತಿ",
+  "invDocDate": "ದಿನಾಂಕ",
+  "invOpenInStandalone": "e-Invoicingನಲ್ಲಿ ತೆರೆಯಿರಿ",
+  "invOpenStandaloneFailed": "e-Invoicing ತೆರೆಯಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ — ಅದು ಸ್ಥಾಪನೆಯಾಗಿದೆಯೇ ಎಂದು ಪರಿಶೀಲಿಸಿ.",
+  "invCreateInvoiceFromQuote": "ಇನ್‌ವಾಯ್ಸ್ ರಚಿಸಿ",
+  "invCreatingInvoice": "ಇನ್‌ವಾಯ್ಸ್ ರಚಿಸಲಾಗುತ್ತಿದೆ…",
+  "invInvoiceCreatedFromQuote": "ಉಲ್ಲೇಖದಿಂದ ಇನ್‌ವಾಯ್ಸ್ {number} ರಚಿಸಲಾಗಿದೆ.",
+  "@invInvoiceCreatedFromQuote": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invQuoteAlreadyInvoiced": "ಈ ಉಲ್ಲೇಖಕ್ಕೆ ಈಗಾಗಲೇ ಇನ್‌ವಾಯ್ಸ್ ಮಾಡಲಾಗಿದೆ.",
+  "invCreateInvoiceFailed": "ಇನ್‌ವಾಯ್ಸ್ ರಚಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ: {error}",
+  "@invCreateInvoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "invLinkMenu": "e-Invoicing ಲಿಂಕ್",
+  "invLinkStatusLinked": "e-Invoicing ಕ್ಲೈಂಟ್ ಲಿಂಕ್ ಆಗಿದೆ",
+  "invLinkStatusNone": "ಯಾವುದೇ e-Invoicing ಲಿಂಕ್ ಉಳಿಸಿಲ್ಲ",
+  "invUnlinkCustomer": "e-Invoicing ಕ್ಲೈಂಟ್ ಅನ್ನು ಅನ್‌ಲಿಂಕ್ ಮಾಡಿ",
+  "invUnlinkConfirmTitle": "ಕ್ಲೈಂಟ್ ಅನ್ನು ಅನ್‌ಲಿಂಕ್ ಮಾಡುವುದೇ?",
+  "invUnlinkConfirmBody": "ಮುಂದಿನ ಉಲ್ಲೇಖ ಅಥವಾ ಇನ್‌ವಾಯ್ಸ್ e-Invoicingನಲ್ಲಿ ಕ್ಲೈಂಟ್ ಅನ್ನು ಮತ್ತೆ ಆಯ್ಕೆಮಾಡಲು ಅಥವಾ ರಚಿಸಲು ಕೇಳುತ್ತದೆ.",
+  "invUnlinkDone": "e-Invoicing ಲಿಂಕ್ ತೆಗೆದುಹಾಕಲಾಗಿದೆ.",
+  "invAppStoreUrlMissing": "ಈ ಬಿಲ್ಡ್‌ಗಾಗಿ e-Invoicing ಇನ್ನೂ App Storeನಲ್ಲಿ ಪಟ್ಟಿ ಮಾಡಿಲ್ಲ. eastmarkhk.com ಬಳಸಿ ಅಥವಾ ಈಗಾಗಲೇ ಸ್ಥಾಪಿಸಲಾದ ಅಪ್ಲಿಕೇಶನ್ ಪ್ರಾರಂಭಿಸಿ.",
+  "shellSyncNeedsPassword": "ಹಂಚಿಕೆಯ ಡೇಟಾಬೇಸ್: ಈ ಸಾಧನವನ್ನು ಮರುಸಂಪರ್ಕಿಸಲು ಸೆಟ್ಟಿಂಗ್‌ಗಳಲ್ಲಿ ಸಿಂಕ್ ಪಾಸ್‌ವರ್ಡ್ ನಮೂದಿಸಿ."
 }

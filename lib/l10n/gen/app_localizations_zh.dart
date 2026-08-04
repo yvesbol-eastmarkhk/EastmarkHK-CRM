@@ -697,21 +697,20 @@ class AppLocalizationsZh extends AppLocalizations {
   String get modulesUseInCrm => '在 CRM 中使用';
 
   @override
-  String get modulesDontUseInCrm => 'Ne pas utiliser dans le CRM';
+  String get modulesDontUseInCrm => '不在CRM中使用';
 
   @override
-  String get modulesBuyOnAppStore => 'Acheter sur l\'App Store';
+  String get modulesBuyOnAppStore => '在App Store购买';
 
   @override
   String get modulesStoreUnavailable =>
-      'L\'App Store n\'est pas disponible sur cette installation. Utilisez une build App Store, ou activez un abonnement eastmarkhk.com.';
+      '此版本不支持App Store。请使用App Store版本，或激活eastmarkhk.com订阅。';
 
   @override
-  String get modulesCheckingPurchases =>
-      'Vérification des achats App Store et eastmarkhk.com…';
+  String get modulesCheckingPurchases => '正在检查App Store和eastmarkhk.com的购买情况…';
 
   @override
-  String get modulesCheckingAppStore => 'Vérification des achats App Store…';
+  String get modulesCheckingAppStore => '正在检查App Store购买情况…';
 
   @override
   String get modulesPerMonth => '/ 月';
@@ -775,19 +774,19 @@ class AppLocalizationsZh extends AppLocalizations {
   String get invFieldClient => 'Client';
 
   @override
-  String get invPickClientTitle => 'Choisir un client';
+  String get invPickClientTitle => '选择客户';
 
   @override
-  String get invPickClientSearch => 'Rechercher par nom, n° fiscal, pays…';
+  String get invPickClientSearch => '按名称、税号、国家搜索…';
 
   @override
-  String get invPickClientEmpty => 'Aucun client correspondant.';
+  String get invPickClientEmpty => '没有匹配的客户。';
 
   @override
-  String get invPickClientButton => 'Choisir le client';
+  String get invPickClientButton => '选择客户';
 
   @override
-  String get invClientRequired => 'Choisissez un client avant d’enregistrer.';
+  String get invClientRequired => '保存前请选择客户。';
 
   @override
   String get invFieldDate => 'Date';
@@ -844,33 +843,33 @@ class AppLocalizationsZh extends AppLocalizations {
   String get invCreating => 'Creating…';
 
   @override
-  String get invSave => 'Enregistrer';
+  String get invSave => '保存';
 
   @override
-  String get invSaving => 'Enregistrement…';
+  String get invSaving => '正在保存…';
 
   @override
   String invEditQuote(String number) {
-    return 'Modifier le devis $number';
+    return '编辑报价单 $number';
   }
 
   @override
   String invEditInvoice(String number) {
-    return 'Modifier la facture $number';
+    return '编辑发票 $number';
   }
 
   @override
   String invDocumentSaved(String number) {
-    return '$number enregistré.';
+    return '$number 已保存。';
   }
 
   @override
   String invDocumentSaveFailed(String error) {
-    return 'Enregistrement impossible : $error';
+    return '无法保存：$error';
   }
 
   @override
-  String get invEditDocument => 'Modifier';
+  String get invEditDocument => '编辑';
 
   @override
   String get invAddFromCatalog => 'Add from catalog';
@@ -934,152 +933,149 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get invHomeSubtitle =>
-      'Devis et factures — données EastmarkHK e-Invoicing (reçues et relances : app standalone)';
+      '报价单和发票 — 来自EastmarkHK e-Invoicing的数据（收据和提醒：独立应用程序）';
 
   @override
-  String get invOpenStandalone => 'Ouvrir e-Invoicing';
+  String get invOpenStandalone => '打开e-Invoicing';
 
   @override
-  String get invLaunchStandalone => 'Lancer e-Invoicing';
+  String get invLaunchStandalone => '启动e-Invoicing';
 
   @override
-  String get invRemoteConnectionTooltip => 'Connexion distante';
+  String get invRemoteConnectionTooltip => '远程连接';
 
   @override
   String invTabQuotes(int count) {
-    return 'Devis ($count)';
+    return '报价单（$count）';
   }
 
   @override
   String invTabInvoices(int count) {
-    return 'Factures ($count)';
+    return '发票（$count）';
   }
 
   @override
-  String get invEmptyQuotes =>
-      'Aucun devis — créez-en un depuis une opportunité gagnée ou le bouton ci-dessus.';
+  String get invEmptyQuotes => '暂无报价单 — 从已赢得的商机或上方按钮创建一个。';
 
   @override
-  String get invEmptyInvoices => 'Aucune facture.';
+  String get invEmptyInvoices => '暂无发票。';
 
   @override
-  String get invEmptyCompanyDocs => 'Aucun devis ni facture.';
+  String get invEmptyCompanyDocs => '暂无报价单或发票。';
 
   @override
-  String get invQuotesSection => 'DEVIS';
+  String get invQuotesSection => '报价单';
 
   @override
-  String get invInvoicesSection => 'FACTURES';
+  String get invInvoicesSection => '发票';
 
   @override
   String get invCompanyFooter =>
-      'Documents gérés par EastmarkHK e-Invoicing — envoi, PDF, reçues et relances dans l\'app standalone.';
+      '文档由EastmarkHK e-Invoicing管理 — 发送、PDF、收据和提醒均在独立应用程序中完成。';
 
   @override
-  String get invRemoteNotConfigured =>
-      'e-Invoicing est en mode distant — connexion non configurée.';
+  String get invRemoteNotConfigured => 'e-Invoicing处于远程模式 — 连接尚未配置。';
 
   @override
-  String get invConfigure => 'Configurer';
+  String get invConfigure => '配置';
 
   @override
   String get invAppNotDetected =>
-      'App e-Invoicing non détectée — installez/lancez EastmarkHK e-Invoicing pour créer des devis et factures depuis cette fiche.';
+      '未检测到e-Invoicing应用 — 请安装/启动EastmarkHK e-Invoicing以从此记录创建报价单和发票。';
 
   @override
   String get invRemoteSetupBody =>
-      'EastmarkHK e-Invoicing est configurée en mode « stockage distant ». Renseigne les mêmes identifiants ici pour connecter le CRM à la même API — mêmes valeurs que dans e-Invoicing → Réglages → Stockage distant.';
+      'EastmarkHK e-Invoicing已配置为远程存储。在此输入相同的凭据以将CRM连接到同一API — 与e-Invoicing→设置→远程存储中的值相同。';
 
   @override
   String get invLaunchOnceBody =>
-      'Lancez l\'app EastmarkHK e-Invoicing une première fois pour initialiser la base partagée, puis revenez ici.';
+      '先启动一次EastmarkHK e-Invoicing以初始化共享数据库，然后返回此处。';
 
   @override
   String get invAcquireAppStoreBody =>
-      'Le module utilise l\'app EastmarkHK e-Invoicing. Téléchargez-la et abonnez-vous depuis l\'App Store, lancez-la une fois, puis revenez ici.';
+      '此模块使用EastmarkHK e-Invoicing。请通过App Store下载并订阅，启动一次后返回此处。';
 
   @override
   String get invAcquireWebBody =>
-      'Le module utilise l\'app EastmarkHK e-Invoicing. Téléchargez-la et souscrivez sur eastmarkhk.com, lancez-la une fois, puis revenez ici.';
+      '此模块使用EastmarkHK e-Invoicing。请在eastmarkhk.com下载并订阅，启动一次后返回此处。';
 
   @override
-  String get invConfigureRemote => 'Configurer la connexion distante';
+  String get invConfigureRemote => '配置远程连接';
 
   @override
-  String get invViewOnAppStore => 'Voir sur l\'App Store';
+  String get invViewOnAppStore => '在App Store查看';
 
   @override
-  String get invViewOnWebsite => 'Voir sur eastmarkhk.com';
+  String get invViewOnWebsite => '在eastmarkhk.com查看';
 
   @override
-  String get invRetry => 'Réessayer';
+  String get invRetry => '重试';
 
   @override
-  String get invDocInvoice => 'Facture';
+  String get invDocInvoice => '发票';
 
   @override
-  String get invDocQuote => 'Devis';
+  String get invDocQuote => '报价单';
 
   @override
-  String get invDocClient => 'Client';
+  String get invDocClient => '客户';
 
   @override
-  String get invDocStatus => 'Statut';
+  String get invDocStatus => '状态';
 
   @override
-  String get invDocDate => 'Date';
+  String get invDocDate => '日期';
 
   @override
-  String get invOpenInStandalone => 'Ouvrir dans e-Invoicing';
+  String get invOpenInStandalone => '在e-Invoicing中打开';
 
   @override
-  String get invOpenStandaloneFailed =>
-      'Impossible d\'ouvrir e-Invoicing — vérifie qu\'elle est bien installée.';
+  String get invOpenStandaloneFailed => '无法打开e-Invoicing — 请检查是否已安装。';
 
   @override
-  String get invCreateInvoiceFromQuote => 'Créer la facture';
+  String get invCreateInvoiceFromQuote => '创建发票';
 
   @override
-  String get invCreatingInvoice => 'Création de la facture…';
+  String get invCreatingInvoice => '正在创建发票…';
 
   @override
   String invInvoiceCreatedFromQuote(String number) {
-    return 'Facture $number créée à partir du devis.';
+    return '已根据报价单创建发票 $number。';
   }
 
   @override
-  String get invQuoteAlreadyInvoiced => 'Ce devis est déjà facturé.';
+  String get invQuoteAlreadyInvoiced => '此报价单已开具发票。';
 
   @override
   String invCreateInvoiceFailed(String error) {
-    return 'Impossible de créer la facture : $error';
+    return '无法创建发票：$error';
   }
 
   @override
-  String get invLinkMenu => 'Lien e-Invoicing';
+  String get invLinkMenu => 'e-Invoicing关联';
 
   @override
-  String get invLinkStatusLinked => 'Client e-Invoicing lié';
+  String get invLinkStatusLinked => 'e-Invoicing客户已关联';
 
   @override
-  String get invLinkStatusNone => 'Aucun lien e-Invoicing mémorisé';
+  String get invLinkStatusNone => '没有已保存的e-Invoicing关联';
 
   @override
-  String get invUnlinkCustomer => 'Dissocier le client e-Invoicing';
+  String get invUnlinkCustomer => '取消关联e-Invoicing客户';
 
   @override
-  String get invUnlinkConfirmTitle => 'Dissocier le client ?';
+  String get invUnlinkConfirmTitle => '取消关联客户？';
 
   @override
   String get invUnlinkConfirmBody =>
-      'Le prochain devis ou facture redemandera de choisir ou créer le client dans e-Invoicing.';
+      '下一次创建报价单或发票时，系统将再次要求您在e-Invoicing中选择或创建客户。';
 
   @override
-  String get invUnlinkDone => 'Lien e-Invoicing dissocié.';
+  String get invUnlinkDone => '已移除e-Invoicing关联。';
 
   @override
   String get invAppStoreUrlMissing =>
-      'L\'app e-Invoicing n\'est pas encore listée sur l\'App Store pour ce build. Utilisez eastmarkhk.com ou lancez l\'app déjà installée.';
+      '此版本的e-Invoicing尚未在App Store上架。请使用eastmarkhk.com或启动已安装的应用程序。';
 
   @override
   String get shellModuleTitle => 'Module';
@@ -2488,8 +2484,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get shellOk => 'OK';
 
   @override
-  String get shellSyncNeedsPassword =>
-      'Base partagée : saisissez le mot de passe sync dans Réglages pour reconnecter cet appareil.';
+  String get shellSyncNeedsPassword => '共享数据库：请在设置中输入同步密码以重新连接此设备。';
 
   @override
   String get shellSearch => 'Search';

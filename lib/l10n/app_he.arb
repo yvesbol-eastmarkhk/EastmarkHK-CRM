@@ -1327,5 +1327,122 @@
   "richColorPickerTitle": "Text color",
   "eiHitEmailPlain": " — email",
   "eiHitPhonePlain": " — phone",
-  "tasksEditTaskTitle": "Edit task"
+  "tasksEditTaskTitle": "Edit task",
+  "modulesDontUseInCrm": "לא לשימוש ב-CRM",
+  "modulesBuyOnAppStore": "קנייה ב-App Store",
+  "modulesStoreUnavailable": "App Store אינו זמין בגרסה זו. השתמש בגרסת App Store, או הפעל מנוי ב-eastmarkhk.com.",
+  "modulesCheckingPurchases": "בודק רכישות מ-App Store ומ-eastmarkhk.com…",
+  "modulesCheckingAppStore": "בודק רכישות מ-App Store…",
+  "invPickClientTitle": "בחירת לקוח",
+  "invPickClientSearch": "חיפוש לפי שם, מספר עוסק, מדינה…",
+  "invPickClientEmpty": "לא נמצא לקוח מתאים.",
+  "invPickClientButton": "בחר לקוח",
+  "invClientRequired": "בחר לקוח לפני השמירה.",
+  "invSave": "שמור",
+  "invSaving": "שומר…",
+  "invEditQuote": "עריכת הצעת מחיר {number}",
+  "@invEditQuote": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invEditInvoice": "עריכת חשבונית {number}",
+  "@invEditInvoice": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invDocumentSaved": "{number} נשמר.",
+  "@invDocumentSaved": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invDocumentSaveFailed": "לא ניתן היה לשמור: {error}",
+  "@invDocumentSaveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "invEditDocument": "עריכה",
+  "invHomeSubtitle": "הצעות מחיר וחשבוניות — נתונים מ-EastmarkHK e-Invoicing (קבלות ותזכורות: אפליקציה עצמאית)",
+  "invOpenStandalone": "פתח את e-Invoicing",
+  "invLaunchStandalone": "הפעל את e-Invoicing",
+  "invRemoteConnectionTooltip": "חיבור מרוחק",
+  "invTabQuotes": "הצעות מחיר ({count})",
+  "@invTabQuotes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "invTabInvoices": "חשבוניות ({count})",
+  "@invTabInvoices": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "invEmptyQuotes": "אין הצעות מחיר — צור אחת מהזדמנות שנסגרה בהצלחה או מהכפתור למעלה.",
+  "invEmptyInvoices": "אין חשבוניות.",
+  "invEmptyCompanyDocs": "אין הצעות מחיר או חשבוניות.",
+  "invQuotesSection": "הצעות מחיר",
+  "invInvoicesSection": "חשבוניות",
+  "invCompanyFooter": "המסמכים מנוהלים על ידי EastmarkHK e-Invoicing — שליחה, PDF, קבלות ותזכורות באפליקציה העצמאית.",
+  "invRemoteNotConfigured": "e-Invoicing במצב מרוחק — החיבור לא הוגדר.",
+  "invConfigure": "הגדר",
+  "invAppNotDetected": "אפליקציית e-Invoicing לא זוהתה — התקן/הפעל את EastmarkHK e-Invoicing כדי ליצור הצעות מחיר וחשבוניות מרשומה זו.",
+  "invRemoteSetupBody": "EastmarkHK e-Invoicing מוגדרת לאחסון מרוחק. הזן כאן את אותם פרטי גישה כדי לחבר את ה-CRM לאותו API — אותם ערכים כמו ב-e-Invoicing ← הגדרות ← אחסון מרוחק.",
+  "invLaunchOnceBody": "הפעל את EastmarkHK e-Invoicing פעם אחת כדי לאתחל את מסד הנתונים המשותף, ואז חזור לכאן.",
+  "invAcquireAppStoreBody": "מודול זה משתמש ב-EastmarkHK e-Invoicing. הורד והירשם דרך App Store, הפעל פעם אחת, ואז חזור לכאן.",
+  "invAcquireWebBody": "מודול זה משתמש ב-EastmarkHK e-Invoicing. הורד והירשם ב-eastmarkhk.com, הפעל פעם אחת, ואז חזור לכאן.",
+  "invConfigureRemote": "הגדר חיבור מרוחק",
+  "invViewOnAppStore": "צפה ב-App Store",
+  "invViewOnWebsite": "צפה ב-eastmarkhk.com",
+  "invRetry": "נסה שוב",
+  "invDocInvoice": "חשבונית",
+  "invDocQuote": "הצעת מחיר",
+  "invDocClient": "לקוח",
+  "invDocStatus": "סטטוס",
+  "invDocDate": "תאריך",
+  "invOpenInStandalone": "פתח ב-e-Invoicing",
+  "invOpenStandaloneFailed": "לא ניתן היה לפתוח את e-Invoicing — ודא שהיא מותקנת.",
+  "invCreateInvoiceFromQuote": "צור חשבונית",
+  "invCreatingInvoice": "יוצר חשבונית…",
+  "invInvoiceCreatedFromQuote": "חשבונית {number} נוצרה מהצעת המחיר.",
+  "@invInvoiceCreatedFromQuote": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invQuoteAlreadyInvoiced": "כבר הופקה חשבונית להצעת מחיר זו.",
+  "invCreateInvoiceFailed": "לא ניתן היה ליצור את החשבונית: {error}",
+  "@invCreateInvoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "invLinkMenu": "קישור ל-e-Invoicing",
+  "invLinkStatusLinked": "לקוח e-Invoicing מקושר",
+  "invLinkStatusNone": "אין קישור שמור ל-e-Invoicing",
+  "invUnlinkCustomer": "בטל קישור ללקוח e-Invoicing",
+  "invUnlinkConfirmTitle": "לבטל את קישור הלקוח?",
+  "invUnlinkConfirmBody": "בהצעת המחיר או בחשבונית הבאה תתבקש שוב לבחור או ליצור את הלקוח ב-e-Invoicing.",
+  "invUnlinkDone": "קישור ה-e-Invoicing הוסר.",
+  "invAppStoreUrlMissing": "e-Invoicing עדיין אינה רשומה ב-App Store עבור גרסה זו. השתמש ב-eastmarkhk.com או הפעל אפליקציה שכבר מותקנת.",
+  "shellSyncNeedsPassword": "מסד נתונים משותף: הזן את סיסמת הסנכרון בהגדרות כדי לחבר מחדש מכשיר זה."
 }

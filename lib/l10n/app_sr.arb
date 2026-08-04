@@ -1327,5 +1327,122 @@
   "richColorPickerTitle": "Text color",
   "eiHitEmailPlain": " — email",
   "eiHitPhonePlain": " — phone",
-  "tasksEditTaskTitle": "Edit task"
+  "tasksEditTaskTitle": "Edit task",
+  "modulesDontUseInCrm": "Не користити у CRM-у",
+  "modulesBuyOnAppStore": "Купи на App Store-у",
+  "modulesStoreUnavailable": "App Store није доступан у овој верзији. Користите верзију за App Store, или активирајте претплату на eastmarkhk.com.",
+  "modulesCheckingPurchases": "Проверавају се куповине са App Store-а и eastmarkhk.com…",
+  "modulesCheckingAppStore": "Проверавају се куповине са App Store-а…",
+  "invPickClientTitle": "Изабери клијента",
+  "invPickClientSearch": "Претражи по имену, ПИБ-у, држави…",
+  "invPickClientEmpty": "Нема одговарајућег клијента.",
+  "invPickClientButton": "Изабери клијента",
+  "invClientRequired": "Изаберите клијента пре чувања.",
+  "invSave": "Сачувај",
+  "invSaving": "Чување…",
+  "invEditQuote": "Уреди понуду {number}",
+  "@invEditQuote": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invEditInvoice": "Уреди фактуру {number}",
+  "@invEditInvoice": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invDocumentSaved": "{number} сачувано.",
+  "@invDocumentSaved": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invDocumentSaveFailed": "Чување није успело: {error}",
+  "@invDocumentSaveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "invEditDocument": "Уреди",
+  "invHomeSubtitle": "Понуде и фактуре — подаци из EastmarkHK e-Invoicing (признанице и подсетници: самостална апликација)",
+  "invOpenStandalone": "Отвори e-Invoicing",
+  "invLaunchStandalone": "Покрени e-Invoicing",
+  "invRemoteConnectionTooltip": "Удаљена веза",
+  "invTabQuotes": "Понуде ({count})",
+  "@invTabQuotes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "invTabInvoices": "Фактуре ({count})",
+  "@invTabInvoices": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "invEmptyQuotes": "Нема понуда — направите једну из добијене прилике или дугметом изнад.",
+  "invEmptyInvoices": "Нема фактура.",
+  "invEmptyCompanyDocs": "Нема понуда ни фактура.",
+  "invQuotesSection": "ПОНУДЕ",
+  "invInvoicesSection": "ФАКТУРЕ",
+  "invCompanyFooter": "Документима управља EastmarkHK e-Invoicing — слање, PDF, признанице и подсетници у самосталној апликацији.",
+  "invRemoteNotConfigured": "e-Invoicing је у удаљеном режиму — веза није конфигурисана.",
+  "invConfigure": "Конфигуриши",
+  "invAppNotDetected": "Апликација e-Invoicing није откривена — инсталирајте/покрените EastmarkHK e-Invoicing да бисте направили понуде и фактуре из овог записа.",
+  "invRemoteSetupBody": "EastmarkHK e-Invoicing је конфигурисана за удаљено складиштење. Унесите овде исте акредитиве да повежете CRM на исти API — исте вредности као у e-Invoicing → Подешавања → Удаљено складиштење.",
+  "invLaunchOnceBody": "Покрените EastmarkHK e-Invoicing једном да иницијализујете дељену базу података, а затим се вратите овде.",
+  "invAcquireAppStoreBody": "Овај модул користи EastmarkHK e-Invoicing. Преузмите и претплатите се преко App Store-а, покрените је једном, а затим се вратите овде.",
+  "invAcquireWebBody": "Овај модул користи EastmarkHK e-Invoicing. Преузмите и претплатите се на eastmarkhk.com, покрените је једном, а затим се вратите овде.",
+  "invConfigureRemote": "Конфигуриши удаљену везу",
+  "invViewOnAppStore": "Погледај на App Store-у",
+  "invViewOnWebsite": "Погледај на eastmarkhk.com",
+  "invRetry": "Покушај поново",
+  "invDocInvoice": "Фактура",
+  "invDocQuote": "Понуда",
+  "invDocClient": "Клијент",
+  "invDocStatus": "Статус",
+  "invDocDate": "Датум",
+  "invOpenInStandalone": "Отвори у e-Invoicing",
+  "invOpenStandaloneFailed": "e-Invoicing није могао да се отвори — проверите да ли је инсталиран.",
+  "invCreateInvoiceFromQuote": "Направи фактуру",
+  "invCreatingInvoice": "Прављење фактуре…",
+  "invInvoiceCreatedFromQuote": "Фактура {number} направљена из понуде.",
+  "@invInvoiceCreatedFromQuote": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invQuoteAlreadyInvoiced": "За ову понуду је већ издата фактура.",
+  "invCreateInvoiceFailed": "Фактуру није могуће направити: {error}",
+  "@invCreateInvoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "invLinkMenu": "Веза са e-Invoicing",
+  "invLinkStatusLinked": "Клијент e-Invoicing повезан",
+  "invLinkStatusNone": "Нема сачуване везе са e-Invoicing",
+  "invUnlinkCustomer": "Прекини везу са клијентом e-Invoicing",
+  "invUnlinkConfirmTitle": "Прекинути везу са клијентом?",
+  "invUnlinkConfirmBody": "Следећа понуда или фактура ће поново тражити да изаберете или направите клијента у e-Invoicing.",
+  "invUnlinkDone": "Веза са e-Invoicing уклоњена.",
+  "invAppStoreUrlMissing": "e-Invoicing још увек није наведен на App Store-у за ову верзију. Користите eastmarkhk.com или покрените већ инсталирану апликацију.",
+  "shellSyncNeedsPassword": "Дељена база података: унесите лозинку за синхронизацију у Подешавањима да бисте поново повезали овај уређај."
 }

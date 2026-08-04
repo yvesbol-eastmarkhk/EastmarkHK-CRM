@@ -22,4 +22,12 @@ abstract final class CrmLayout {
   /// Tablette / iPad (ou desktop étroit) : pas téléphone, pas split desktop.
   static bool isCompactTablet(BuildContext context) =>
       !isPhone(context) && !isDesktopSplit(context);
+
+  /// Nombre de colonnes pour une grille d'onglets d'étapes sur téléphone
+  /// (ex. onglets du pipeline) : tient sur 1 ligne si peu d'étapes (≤3),
+  /// sinon 2 lignes égales quel que soit le nombre d'étapes configurées.
+  static int stageTabColumns(int stageCount) {
+    if (stageCount <= 0) return 0;
+    return stageCount <= 3 ? stageCount : (stageCount / 2).ceil();
+  }
 }

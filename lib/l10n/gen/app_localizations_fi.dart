@@ -726,21 +726,21 @@ class AppLocalizationsFi extends AppLocalizations {
   String get modulesUseInCrm => 'Käytä CRM:ssä';
 
   @override
-  String get modulesDontUseInCrm => 'Ne pas utiliser dans le CRM';
+  String get modulesDontUseInCrm => 'Älä käytä CRM:ssä';
 
   @override
-  String get modulesBuyOnAppStore => 'Acheter sur l\'App Store';
+  String get modulesBuyOnAppStore => 'Osta App Storesta';
 
   @override
   String get modulesStoreUnavailable =>
-      'L\'App Store n\'est pas disponible sur cette installation. Utilisez une build App Store, ou activez un abonnement eastmarkhk.com.';
+      'App Store ei ole käytettävissä tässä versiossa. Käytä App Store -versiota tai aktivoi eastmarkhk.com-tilaus.';
 
   @override
   String get modulesCheckingPurchases =>
-      'Vérification des achats App Store et eastmarkhk.com…';
+      'Tarkistetaan App Storen ja eastmarkhk.comin ostoksia…';
 
   @override
-  String get modulesCheckingAppStore => 'Vérification des achats App Store…';
+  String get modulesCheckingAppStore => 'Tarkistetaan App Store -ostoksia…';
 
   @override
   String get modulesPerMonth => '/ kuukausi';
@@ -804,19 +804,19 @@ class AppLocalizationsFi extends AppLocalizations {
   String get invFieldClient => 'Client';
 
   @override
-  String get invPickClientTitle => 'Choisir un client';
+  String get invPickClientTitle => 'Valitse asiakas';
 
   @override
-  String get invPickClientSearch => 'Rechercher par nom, n° fiscal, pays…';
+  String get invPickClientSearch => 'Hae nimellä, Y-tunnuksella, maalla…';
 
   @override
-  String get invPickClientEmpty => 'Aucun client correspondant.';
+  String get invPickClientEmpty => 'Ei vastaavaa asiakasta.';
 
   @override
-  String get invPickClientButton => 'Choisir le client';
+  String get invPickClientButton => 'Valitse asiakas';
 
   @override
-  String get invClientRequired => 'Choisissez un client avant d’enregistrer.';
+  String get invClientRequired => 'Valitse asiakas ennen tallentamista.';
 
   @override
   String get invFieldDate => 'Date';
@@ -873,33 +873,33 @@ class AppLocalizationsFi extends AppLocalizations {
   String get invCreating => 'Creating…';
 
   @override
-  String get invSave => 'Enregistrer';
+  String get invSave => 'Tallenna';
 
   @override
-  String get invSaving => 'Enregistrement…';
+  String get invSaving => 'Tallennetaan…';
 
   @override
   String invEditQuote(String number) {
-    return 'Modifier le devis $number';
+    return 'Muokkaa tarjousta $number';
   }
 
   @override
   String invEditInvoice(String number) {
-    return 'Modifier la facture $number';
+    return 'Muokkaa laskua $number';
   }
 
   @override
   String invDocumentSaved(String number) {
-    return '$number enregistré.';
+    return '$number tallennettu.';
   }
 
   @override
   String invDocumentSaveFailed(String error) {
-    return 'Enregistrement impossible : $error';
+    return 'Tallennus epäonnistui: $error';
   }
 
   @override
-  String get invEditDocument => 'Modifier';
+  String get invEditDocument => 'Muokkaa';
 
   @override
   String get invAddFromCatalog => 'Add from catalog';
@@ -963,152 +963,152 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get invHomeSubtitle =>
-      'Devis et factures — données EastmarkHK e-Invoicing (reçues et relances : app standalone)';
+      'Tarjoukset ja laskut — EastmarkHK e-Invoicing -tiedot (kuitit ja muistutukset: erillinen sovellus)';
 
   @override
-  String get invOpenStandalone => 'Ouvrir e-Invoicing';
+  String get invOpenStandalone => 'Avaa e-Invoicing';
 
   @override
-  String get invLaunchStandalone => 'Lancer e-Invoicing';
+  String get invLaunchStandalone => 'Käynnistä e-Invoicing';
 
   @override
-  String get invRemoteConnectionTooltip => 'Connexion distante';
+  String get invRemoteConnectionTooltip => 'Etäyhteys';
 
   @override
   String invTabQuotes(int count) {
-    return 'Devis ($count)';
+    return 'Tarjoukset ($count)';
   }
 
   @override
   String invTabInvoices(int count) {
-    return 'Factures ($count)';
+    return 'Laskut ($count)';
   }
 
   @override
   String get invEmptyQuotes =>
-      'Aucun devis — créez-en un depuis une opportunité gagnée ou le bouton ci-dessus.';
+      'Ei tarjouksia — luo yksi voitetusta mahdollisuudesta tai yllä olevasta painikkeesta.';
 
   @override
-  String get invEmptyInvoices => 'Aucune facture.';
+  String get invEmptyInvoices => 'Ei laskuja.';
 
   @override
-  String get invEmptyCompanyDocs => 'Aucun devis ni facture.';
+  String get invEmptyCompanyDocs => 'Ei tarjouksia eikä laskuja.';
 
   @override
-  String get invQuotesSection => 'DEVIS';
+  String get invQuotesSection => 'TARJOUKSET';
 
   @override
-  String get invInvoicesSection => 'FACTURES';
+  String get invInvoicesSection => 'LASKUT';
 
   @override
   String get invCompanyFooter =>
-      'Documents gérés par EastmarkHK e-Invoicing — envoi, PDF, reçues et relances dans l\'app standalone.';
+      'Asiakirjoja hallitaan EastmarkHK e-Invoicing -sovelluksessa — lähetys, PDF, kuitit ja muistutukset erillisessä sovelluksessa.';
 
   @override
   String get invRemoteNotConfigured =>
-      'e-Invoicing est en mode distant — connexion non configurée.';
+      'e-Invoicing on etätilassa — yhteyttä ei ole määritetty.';
 
   @override
-  String get invConfigure => 'Configurer';
+  String get invConfigure => 'Määritä';
 
   @override
   String get invAppNotDetected =>
-      'App e-Invoicing non détectée — installez/lancez EastmarkHK e-Invoicing pour créer des devis et factures depuis cette fiche.';
+      'e-Invoicing-sovellusta ei havaittu — asenna/käynnistä EastmarkHK e-Invoicing luodaksesi tarjouksia ja laskuja tästä tietueesta.';
 
   @override
   String get invRemoteSetupBody =>
-      'EastmarkHK e-Invoicing est configurée en mode « stockage distant ». Renseigne les mêmes identifiants ici pour connecter le CRM à la même API — mêmes valeurs que dans e-Invoicing → Réglages → Stockage distant.';
+      'EastmarkHK e-Invoicing on määritetty etätallennukseen. Syötä samat tunnukset tähän yhdistääksesi CRM:n samaan rajapintaan — samat arvot kuin e-Invoicing → Asetukset → Etätallennus.';
 
   @override
   String get invLaunchOnceBody =>
-      'Lancez l\'app EastmarkHK e-Invoicing une première fois pour initialiser la base partagée, puis revenez ici.';
+      'Käynnistä EastmarkHK e-Invoicing kerran alustaaksesi jaetun tietokannan ja palaa sitten tänne.';
 
   @override
   String get invAcquireAppStoreBody =>
-      'Le module utilise l\'app EastmarkHK e-Invoicing. Téléchargez-la et abonnez-vous depuis l\'App Store, lancez-la une fois, puis revenez ici.';
+      'Tämä moduuli käyttää EastmarkHK e-Invoicing -sovellusta. Lataa ja tilaa App Storesta, käynnistä se kerran ja palaa tänne.';
 
   @override
   String get invAcquireWebBody =>
-      'Le module utilise l\'app EastmarkHK e-Invoicing. Téléchargez-la et souscrivez sur eastmarkhk.com, lancez-la une fois, puis revenez ici.';
+      'Tämä moduuli käyttää EastmarkHK e-Invoicing -sovellusta. Lataa ja tilaa osoitteessa eastmarkhk.com, käynnistä se kerran ja palaa tänne.';
 
   @override
-  String get invConfigureRemote => 'Configurer la connexion distante';
+  String get invConfigureRemote => 'Määritä etäyhteys';
 
   @override
-  String get invViewOnAppStore => 'Voir sur l\'App Store';
+  String get invViewOnAppStore => 'Katso App Storessa';
 
   @override
-  String get invViewOnWebsite => 'Voir sur eastmarkhk.com';
+  String get invViewOnWebsite => 'Katso osoitteessa eastmarkhk.com';
 
   @override
-  String get invRetry => 'Réessayer';
+  String get invRetry => 'Yritä uudelleen';
 
   @override
-  String get invDocInvoice => 'Facture';
+  String get invDocInvoice => 'Lasku';
 
   @override
-  String get invDocQuote => 'Devis';
+  String get invDocQuote => 'Tarjous';
 
   @override
-  String get invDocClient => 'Client';
+  String get invDocClient => 'Asiakas';
 
   @override
-  String get invDocStatus => 'Statut';
+  String get invDocStatus => 'Tila';
 
   @override
-  String get invDocDate => 'Date';
+  String get invDocDate => 'Päivämäärä';
 
   @override
-  String get invOpenInStandalone => 'Ouvrir dans e-Invoicing';
+  String get invOpenInStandalone => 'Avaa e-Invoicingissa';
 
   @override
   String get invOpenStandaloneFailed =>
-      'Impossible d\'ouvrir e-Invoicing — vérifie qu\'elle est bien installée.';
+      'e-Invoicingia ei voitu avata — tarkista, että se on asennettu.';
 
   @override
-  String get invCreateInvoiceFromQuote => 'Créer la facture';
+  String get invCreateInvoiceFromQuote => 'Luo lasku';
 
   @override
-  String get invCreatingInvoice => 'Création de la facture…';
+  String get invCreatingInvoice => 'Luodaan laskua…';
 
   @override
   String invInvoiceCreatedFromQuote(String number) {
-    return 'Facture $number créée à partir du devis.';
+    return 'Lasku $number luotu tarjouksesta.';
   }
 
   @override
-  String get invQuoteAlreadyInvoiced => 'Ce devis est déjà facturé.';
+  String get invQuoteAlreadyInvoiced => 'Tästä tarjouksesta on jo luotu lasku.';
 
   @override
   String invCreateInvoiceFailed(String error) {
-    return 'Impossible de créer la facture : $error';
+    return 'Laskua ei voitu luoda: $error';
   }
 
   @override
-  String get invLinkMenu => 'Lien e-Invoicing';
+  String get invLinkMenu => 'e-Invoicing-linkitys';
 
   @override
-  String get invLinkStatusLinked => 'Client e-Invoicing lié';
+  String get invLinkStatusLinked => 'e-Invoicing-asiakas linkitetty';
 
   @override
-  String get invLinkStatusNone => 'Aucun lien e-Invoicing mémorisé';
+  String get invLinkStatusNone => 'Ei tallennettua e-Invoicing-linkitystä';
 
   @override
-  String get invUnlinkCustomer => 'Dissocier le client e-Invoicing';
+  String get invUnlinkCustomer => 'Poista e-Invoicing-asiakkaan linkitys';
 
   @override
-  String get invUnlinkConfirmTitle => 'Dissocier le client ?';
+  String get invUnlinkConfirmTitle => 'Poistetaanko asiakkaan linkitys?';
 
   @override
   String get invUnlinkConfirmBody =>
-      'Le prochain devis ou facture redemandera de choisir ou créer le client dans e-Invoicing.';
+      'Seuraava tarjous tai lasku pyytää valitsemaan tai luomaan asiakkaan e-Invoicingissa uudelleen.';
 
   @override
-  String get invUnlinkDone => 'Lien e-Invoicing dissocié.';
+  String get invUnlinkDone => 'e-Invoicing-linkitys poistettu.';
 
   @override
   String get invAppStoreUrlMissing =>
-      'L\'app e-Invoicing n\'est pas encore listée sur l\'App Store pour ce build. Utilisez eastmarkhk.com ou lancez l\'app déjà installée.';
+      'e-Invoicingia ei ole vielä listattu App Storessa tälle versiolle. Käytä eastmarkhk.comia tai käynnistä jo asennettu sovellus.';
 
   @override
   String get shellModuleTitle => 'Module';
@@ -2518,7 +2518,7 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get shellSyncNeedsPassword =>
-      'Base partagée : saisissez le mot de passe sync dans Réglages pour reconnecter cet appareil.';
+      'Jaettu tietokanta: syötä synkronointisalasana Asetuksissa yhdistääksesi tämän laitteen uudelleen.';
 
   @override
   String get shellSearch => 'Search';

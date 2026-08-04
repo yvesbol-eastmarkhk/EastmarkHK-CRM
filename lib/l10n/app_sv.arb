@@ -1327,5 +1327,122 @@
   "richColorPickerTitle": "Text color",
   "eiHitEmailPlain": " — email",
   "eiHitPhonePlain": " — phone",
-  "tasksEditTaskTitle": "Edit task"
+  "tasksEditTaskTitle": "Edit task",
+  "modulesDontUseInCrm": "Använd inte i CRM",
+  "modulesBuyOnAppStore": "Köp på App Store",
+  "modulesStoreUnavailable": "App Store är inte tillgängligt i den här versionen. Använd en App Store-version, eller aktivera en eastmarkhk.com-prenumeration.",
+  "modulesCheckingPurchases": "Kontrollerar köp från App Store och eastmarkhk.com…",
+  "modulesCheckingAppStore": "Kontrollerar köp från App Store…",
+  "invPickClientTitle": "Välj en klient",
+  "invPickClientSearch": "Sök efter namn, momsregistreringsnummer, land…",
+  "invPickClientEmpty": "Ingen matchande klient.",
+  "invPickClientButton": "Välj klient",
+  "invClientRequired": "Välj en klient innan du sparar.",
+  "invSave": "Spara",
+  "invSaving": "Sparar…",
+  "invEditQuote": "Redigera offert {number}",
+  "@invEditQuote": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invEditInvoice": "Redigera faktura {number}",
+  "@invEditInvoice": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invDocumentSaved": "{number} sparad.",
+  "@invDocumentSaved": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invDocumentSaveFailed": "Det gick inte att spara: {error}",
+  "@invDocumentSaveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "invEditDocument": "Redigera",
+  "invHomeSubtitle": "Offerter och fakturor — data från EastmarkHK e-Invoicing (kvitton och påminnelser: fristående app)",
+  "invOpenStandalone": "Öppna e-Invoicing",
+  "invLaunchStandalone": "Starta e-Invoicing",
+  "invRemoteConnectionTooltip": "Fjärranslutning",
+  "invTabQuotes": "Offerter ({count})",
+  "@invTabQuotes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "invTabInvoices": "Fakturor ({count})",
+  "@invTabInvoices": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "invEmptyQuotes": "Inga offerter — skapa en från en vunnen möjlighet eller knappen ovan.",
+  "invEmptyInvoices": "Inga fakturor.",
+  "invEmptyCompanyDocs": "Inga offerter eller fakturor.",
+  "invQuotesSection": "OFFERTER",
+  "invInvoicesSection": "FAKTUROR",
+  "invCompanyFooter": "Dokument hanteras av EastmarkHK e-Invoicing — sändning, PDF, kvitton och påminnelser i den fristående appen.",
+  "invRemoteNotConfigured": "e-Invoicing är i fjärrläge — anslutning inte konfigurerad.",
+  "invConfigure": "Konfigurera",
+  "invAppNotDetected": "e-Invoicing-appen upptäcktes inte — installera/starta EastmarkHK e-Invoicing för att skapa offerter och fakturor från denna post.",
+  "invRemoteSetupBody": "EastmarkHK e-Invoicing är konfigurerad för fjärrlagring. Ange samma inloggningsuppgifter här för att ansluta CRM till samma API — samma värden som i e-Invoicing → Inställningar → Fjärrlagring.",
+  "invLaunchOnceBody": "Starta EastmarkHK e-Invoicing en gång för att initiera den delade databasen och kom sedan tillbaka hit.",
+  "invAcquireAppStoreBody": "Denna modul använder EastmarkHK e-Invoicing. Ladda ner och prenumerera via App Store, starta den en gång och kom sedan tillbaka hit.",
+  "invAcquireWebBody": "Denna modul använder EastmarkHK e-Invoicing. Ladda ner och prenumerera på eastmarkhk.com, starta den en gång och kom sedan tillbaka hit.",
+  "invConfigureRemote": "Konfigurera fjärranslutning",
+  "invViewOnAppStore": "Visa på App Store",
+  "invViewOnWebsite": "Visa på eastmarkhk.com",
+  "invRetry": "Försök igen",
+  "invDocInvoice": "Faktura",
+  "invDocQuote": "Offert",
+  "invDocClient": "Klient",
+  "invDocStatus": "Status",
+  "invDocDate": "Datum",
+  "invOpenInStandalone": "Öppna i e-Invoicing",
+  "invOpenStandaloneFailed": "Det gick inte att öppna e-Invoicing — kontrollera att den är installerad.",
+  "invCreateInvoiceFromQuote": "Skapa faktura",
+  "invCreatingInvoice": "Skapar faktura…",
+  "invInvoiceCreatedFromQuote": "Faktura {number} skapad från offerten.",
+  "@invInvoiceCreatedFromQuote": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invQuoteAlreadyInvoiced": "Den här offerten har redan fakturerats.",
+  "invCreateInvoiceFailed": "Det gick inte att skapa fakturan: {error}",
+  "@invCreateInvoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "invLinkMenu": "e-Invoicing-länk",
+  "invLinkStatusLinked": "e-Invoicing-kund länkad",
+  "invLinkStatusNone": "Ingen sparad e-Invoicing-länk",
+  "invUnlinkCustomer": "Ta bort länk till e-Invoicing-kund",
+  "invUnlinkConfirmTitle": "Ta bort länk till klient?",
+  "invUnlinkConfirmBody": "Nästa offert eller faktura kommer att be dig välja eller skapa klienten i e-Invoicing igen.",
+  "invUnlinkDone": "e-Invoicing-länk borttagen.",
+  "invAppStoreUrlMissing": "e-Invoicing är ännu inte listad på App Store för den här versionen. Använd eastmarkhk.com eller starta en redan installerad app.",
+  "shellSyncNeedsPassword": "Delad databas: ange synkroniseringslösenordet i Inställningar för att återansluta den här enheten."
 }

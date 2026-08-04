@@ -1327,5 +1327,122 @@
   "richColorPickerTitle": "Text color",
   "eiHitEmailPlain": " — email",
   "eiHitPhonePlain": " — phone",
-  "tasksEditTaskTitle": "Edit task"
+  "tasksEditTaskTitle": "Edit task",
+  "modulesDontUseInCrm": "Huwag gamitin sa CRM",
+  "modulesBuyOnAppStore": "Bilhin sa App Store",
+  "modulesStoreUnavailable": "Hindi available ang App Store sa build na ito. Gumamit ng App Store build, o i-activate ang subscription sa eastmarkhk.com.",
+  "modulesCheckingPurchases": "Sinusuri ang mga binili sa App Store at eastmarkhk.com…",
+  "modulesCheckingAppStore": "Sinusuri ang mga binili sa App Store…",
+  "invPickClientTitle": "Pumili ng kliyente",
+  "invPickClientSearch": "Maghanap ayon sa pangalan, tax ID, bansa…",
+  "invPickClientEmpty": "Walang tugmang kliyente.",
+  "invPickClientButton": "Piliin ang kliyente",
+  "invClientRequired": "Pumili ng kliyente bago mag-save.",
+  "invSave": "I-save",
+  "invSaving": "Sine-save…",
+  "invEditQuote": "I-edit ang quote {number}",
+  "@invEditQuote": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invEditInvoice": "I-edit ang invoice {number}",
+  "@invEditInvoice": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invDocumentSaved": "Na-save ang {number}.",
+  "@invDocumentSaved": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invDocumentSaveFailed": "Hindi na-save: {error}",
+  "@invDocumentSaveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "invEditDocument": "I-edit",
+  "invHomeSubtitle": "Mga quote at invoice — datos mula sa EastmarkHK e-Invoicing (mga resibo at paalala: standalone app)",
+  "invOpenStandalone": "Buksan ang e-Invoicing",
+  "invLaunchStandalone": "Ilunsad ang e-Invoicing",
+  "invRemoteConnectionTooltip": "Malayuang koneksyon",
+  "invTabQuotes": "Mga Quote ({count})",
+  "@invTabQuotes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "invTabInvoices": "Mga Invoice ({count})",
+  "@invTabInvoices": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "invEmptyQuotes": "Walang quote — gumawa ng isa mula sa napanalunang oportunidad o sa button sa itaas.",
+  "invEmptyInvoices": "Walang invoice.",
+  "invEmptyCompanyDocs": "Walang quote o invoice.",
+  "invQuotesSection": "MGA QUOTE",
+  "invInvoicesSection": "MGA INVOICE",
+  "invCompanyFooter": "Ang mga dokumento ay pinamamahalaan ng EastmarkHK e-Invoicing — pagpapadala, PDF, resibo at paalala sa standalone app.",
+  "invRemoteNotConfigured": "Nasa remote mode ang e-Invoicing — hindi pa naka-configure ang koneksyon.",
+  "invConfigure": "I-configure",
+  "invAppNotDetected": "Hindi na-detect ang e-Invoicing app — i-install/ilunsad ang EastmarkHK e-Invoicing para gumawa ng quote at invoice mula sa record na ito.",
+  "invRemoteSetupBody": "Naka-configure ang EastmarkHK e-Invoicing para sa remote storage. Ilagay dito ang parehong kredensyal para ikonekta ang CRM sa parehong API — kaparehong halaga tulad sa e-Invoicing → Settings → Remote storage.",
+  "invLaunchOnceBody": "Ilunsad ang EastmarkHK e-Invoicing nang isang beses para i-initialize ang shared database, pagkatapos ay bumalik dito.",
+  "invAcquireAppStoreBody": "Ginagamit ng module na ito ang EastmarkHK e-Invoicing. I-download at mag-subscribe mula sa App Store, ilunsad ito nang isang beses, pagkatapos ay bumalik dito.",
+  "invAcquireWebBody": "Ginagamit ng module na ito ang EastmarkHK e-Invoicing. I-download at mag-subscribe sa eastmarkhk.com, ilunsad ito nang isang beses, pagkatapos ay bumalik dito.",
+  "invConfigureRemote": "I-configure ang malayuang koneksyon",
+  "invViewOnAppStore": "Tingnan sa App Store",
+  "invViewOnWebsite": "Tingnan sa eastmarkhk.com",
+  "invRetry": "Subukan muli",
+  "invDocInvoice": "Invoice",
+  "invDocQuote": "Quote",
+  "invDocClient": "Kliyente",
+  "invDocStatus": "Katayuan",
+  "invDocDate": "Petsa",
+  "invOpenInStandalone": "Buksan sa e-Invoicing",
+  "invOpenStandaloneFailed": "Hindi mabuksan ang e-Invoicing — tiyakin na naka-install ito.",
+  "invCreateInvoiceFromQuote": "Gumawa ng invoice",
+  "invCreatingInvoice": "Gumagawa ng invoice…",
+  "invInvoiceCreatedFromQuote": "Nagawa ang invoice {number} mula sa quote.",
+  "@invInvoiceCreatedFromQuote": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invQuoteAlreadyInvoiced": "Na-invoice na ang quote na ito.",
+  "invCreateInvoiceFailed": "Hindi magawa ang invoice: {error}",
+  "@invCreateInvoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "invLinkMenu": "Link sa e-Invoicing",
+  "invLinkStatusLinked": "Naka-link ang kliyente sa e-Invoicing",
+  "invLinkStatusNone": "Walang naka-save na link sa e-Invoicing",
+  "invUnlinkCustomer": "Alisin ang link ng kliyente sa e-Invoicing",
+  "invUnlinkConfirmTitle": "Alisin ang link ng kliyente?",
+  "invUnlinkConfirmBody": "Sa susunod na quote o invoice, hihilingin muli na piliin o gawin ang kliyente sa e-Invoicing.",
+  "invUnlinkDone": "Naalis ang link sa e-Invoicing.",
+  "invAppStoreUrlMissing": "Hindi pa nakalista ang e-Invoicing sa App Store para sa build na ito. Gamitin ang eastmarkhk.com o ilunsad ang naka-install na app.",
+  "shellSyncNeedsPassword": "Shared database: ilagay ang sync password sa Settings para ikonekta muli ang device na ito."
 }

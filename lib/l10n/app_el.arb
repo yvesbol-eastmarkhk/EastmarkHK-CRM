@@ -1327,5 +1327,122 @@
   "richColorPickerTitle": "Text color",
   "eiHitEmailPlain": " — email",
   "eiHitPhonePlain": " — phone",
-  "tasksEditTaskTitle": "Edit task"
+  "tasksEditTaskTitle": "Edit task",
+  "modulesDontUseInCrm": "Να μη χρησιμοποιείται στο CRM",
+  "modulesBuyOnAppStore": "Αγορά από το App Store",
+  "modulesStoreUnavailable": "Το App Store δεν είναι διαθέσιμο σε αυτήν την έκδοση. Χρησιμοποιήστε έκδοση App Store ή ενεργοποιήστε συνδρομή eastmarkhk.com.",
+  "modulesCheckingPurchases": "Έλεγχος αγορών App Store και eastmarkhk.com…",
+  "modulesCheckingAppStore": "Έλεγχος αγορών App Store…",
+  "invPickClientTitle": "Επιλογή πελάτη",
+  "invPickClientSearch": "Αναζήτηση με όνομα, ΑΦΜ, χώρα…",
+  "invPickClientEmpty": "Δεν βρέθηκε αντίστοιχος πελάτης.",
+  "invPickClientButton": "Επιλογή πελάτη",
+  "invClientRequired": "Επιλέξτε πελάτη πριν την αποθήκευση.",
+  "invSave": "Αποθήκευση",
+  "invSaving": "Αποθήκευση…",
+  "invEditQuote": "Επεξεργασία προσφοράς {number}",
+  "@invEditQuote": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invEditInvoice": "Επεξεργασία τιμολογίου {number}",
+  "@invEditInvoice": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invDocumentSaved": "{number} αποθηκεύτηκε.",
+  "@invDocumentSaved": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invDocumentSaveFailed": "Δεν ήταν δυνατή η αποθήκευση: {error}",
+  "@invDocumentSaveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "invEditDocument": "Επεξεργασία",
+  "invHomeSubtitle": "Προσφορές και τιμολόγια — δεδομένα EastmarkHK e-Invoicing (αποδείξεις και υπενθυμίσεις: αυτόνομη εφαρμογή)",
+  "invOpenStandalone": "Άνοιγμα e-Invoicing",
+  "invLaunchStandalone": "Εκκίνηση e-Invoicing",
+  "invRemoteConnectionTooltip": "Απομακρυσμένη σύνδεση",
+  "invTabQuotes": "Προσφορές ({count})",
+  "@invTabQuotes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "invTabInvoices": "Τιμολόγια ({count})",
+  "@invTabInvoices": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "invEmptyQuotes": "Καμία προσφορά — δημιουργήστε μία από μια κερδισμένη ευκαιρία ή το παραπάνω κουμπί.",
+  "invEmptyInvoices": "Κανένα τιμολόγιο.",
+  "invEmptyCompanyDocs": "Καμία προσφορά ή τιμολόγιο.",
+  "invQuotesSection": "ΠΡΟΣΦΟΡΕΣ",
+  "invInvoicesSection": "ΤΙΜΟΛΟΓΙΑ",
+  "invCompanyFooter": "Τα έγγραφα διαχειρίζονται από το EastmarkHK e-Invoicing — αποστολή, PDF, αποδείξεις και υπενθυμίσεις στην αυτόνομη εφαρμογή.",
+  "invRemoteNotConfigured": "Το e-Invoicing βρίσκεται σε απομακρυσμένη λειτουργία — η σύνδεση δεν έχει ρυθμιστεί.",
+  "invConfigure": "Ρύθμιση",
+  "invAppNotDetected": "Δεν εντοπίστηκε η εφαρμογή e-Invoicing — εγκαταστήστε/εκκινήστε το EastmarkHK e-Invoicing για να δημιουργήσετε προσφορές και τιμολόγια από αυτήν την εγγραφή.",
+  "invRemoteSetupBody": "Το EastmarkHK e-Invoicing έχει ρυθμιστεί για απομακρυσμένη αποθήκευση. Εισαγάγετε εδώ τα ίδια διαπιστευτήρια για να συνδέσετε το CRM στο ίδιο API — ίδιες τιμές όπως στο e-Invoicing → Ρυθμίσεις → Απομακρυσμένη αποθήκευση.",
+  "invLaunchOnceBody": "Εκκινήστε το EastmarkHK e-Invoicing μία φορά για να αρχικοποιηθεί η κοινόχρηστη βάση δεδομένων και μετά επιστρέψτε εδώ.",
+  "invAcquireAppStoreBody": "Αυτή η ενότητα χρησιμοποιεί το EastmarkHK e-Invoicing. Κατεβάστε το και εγγραφείτε συνδρομητής από το App Store, εκκινήστε το μία φορά και επιστρέψτε εδώ.",
+  "invAcquireWebBody": "Αυτή η ενότητα χρησιμοποιεί το EastmarkHK e-Invoicing. Κατεβάστε το και εγγραφείτε συνδρομητής στο eastmarkhk.com, εκκινήστε το μία φορά και επιστρέψτε εδώ.",
+  "invConfigureRemote": "Ρύθμιση απομακρυσμένης σύνδεσης",
+  "invViewOnAppStore": "Προβολή στο App Store",
+  "invViewOnWebsite": "Προβολή στο eastmarkhk.com",
+  "invRetry": "Επανάληψη",
+  "invDocInvoice": "Τιμολόγιο",
+  "invDocQuote": "Προσφορά",
+  "invDocClient": "Πελάτης",
+  "invDocStatus": "Κατάσταση",
+  "invDocDate": "Ημερομηνία",
+  "invOpenInStandalone": "Άνοιγμα στο e-Invoicing",
+  "invOpenStandaloneFailed": "Δεν ήταν δυνατό το άνοιγμα του e-Invoicing — βεβαιωθείτε ότι είναι εγκατεστημένο.",
+  "invCreateInvoiceFromQuote": "Δημιουργία τιμολογίου",
+  "invCreatingInvoice": "Δημιουργία τιμολογίου…",
+  "invInvoiceCreatedFromQuote": "Το τιμολόγιο {number} δημιουργήθηκε από την προσφορά.",
+  "@invInvoiceCreatedFromQuote": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invQuoteAlreadyInvoiced": "Αυτή η προσφορά έχει ήδη τιμολογηθεί.",
+  "invCreateInvoiceFailed": "Δεν ήταν δυνατή η δημιουργία του τιμολογίου: {error}",
+  "@invCreateInvoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "invLinkMenu": "Σύνδεση e-Invoicing",
+  "invLinkStatusLinked": "Ο πελάτης e-Invoicing είναι συνδεδεμένος",
+  "invLinkStatusNone": "Δεν υπάρχει αποθηκευμένη σύνδεση e-Invoicing",
+  "invUnlinkCustomer": "Αποσύνδεση πελάτη e-Invoicing",
+  "invUnlinkConfirmTitle": "Αποσύνδεση πελάτη;",
+  "invUnlinkConfirmBody": "Η επόμενη προσφορά ή τιμολόγιο θα ζητήσει ξανά να επιλέξετε ή να δημιουργήσετε τον πελάτη στο e-Invoicing.",
+  "invUnlinkDone": "Η σύνδεση e-Invoicing αφαιρέθηκε.",
+  "invAppStoreUrlMissing": "Το e-Invoicing δεν είναι ακόμη καταχωρημένο στο App Store για αυτήν την έκδοση. Χρησιμοποιήστε το eastmarkhk.com ή εκκινήστε μια ήδη εγκατεστημένη εφαρμογή.",
+  "shellSyncNeedsPassword": "Κοινόχρηστη βάση δεδομένων: εισαγάγετε τον κωδικό συγχρονισμού στις Ρυθμίσεις για να επανασυνδέσετε αυτήν τη συσκευή."
 }

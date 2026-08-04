@@ -1416,5 +1416,122 @@
   "richColorPickerTitle": "Text color",
   "eiHitEmailPlain": " — email",
   "eiHitPhonePlain": " — phone",
-  "tasksEditTaskTitle": "Edit task"
+  "tasksEditTaskTitle": "Edit task",
+  "modulesDontUseInCrm": "Không sử dụng trong CRM",
+  "modulesBuyOnAppStore": "Mua trên App Store",
+  "modulesStoreUnavailable": "App Store không khả dụng trong bản dựng này. Sử dụng bản dựng App Store, hoặc kích hoạt gói đăng ký eastmarkhk.com.",
+  "modulesCheckingPurchases": "Đang kiểm tra giao dịch mua từ App Store và eastmarkhk.com…",
+  "modulesCheckingAppStore": "Đang kiểm tra giao dịch mua từ App Store…",
+  "invPickClientTitle": "Chọn khách hàng",
+  "invPickClientSearch": "Tìm theo tên, mã số thuế, quốc gia…",
+  "invPickClientEmpty": "Không có khách hàng phù hợp.",
+  "invPickClientButton": "Chọn khách hàng",
+  "invClientRequired": "Chọn khách hàng trước khi lưu.",
+  "invSave": "Lưu",
+  "invSaving": "Đang lưu…",
+  "invEditQuote": "Chỉnh sửa báo giá {number}",
+  "@invEditQuote": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invEditInvoice": "Chỉnh sửa hóa đơn {number}",
+  "@invEditInvoice": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invDocumentSaved": "{number} đã được lưu.",
+  "@invDocumentSaved": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invDocumentSaveFailed": "Không thể lưu: {error}",
+  "@invDocumentSaveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "invEditDocument": "Chỉnh sửa",
+  "invHomeSubtitle": "Báo giá và hóa đơn — dữ liệu từ EastmarkHK e-Invoicing (biên nhận và nhắc nhở: ứng dụng độc lập)",
+  "invOpenStandalone": "Mở e-Invoicing",
+  "invLaunchStandalone": "Khởi chạy e-Invoicing",
+  "invRemoteConnectionTooltip": "Kết nối từ xa",
+  "invTabQuotes": "Báo giá ({count})",
+  "@invTabQuotes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "invTabInvoices": "Hóa đơn ({count})",
+  "@invTabInvoices": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "invEmptyQuotes": "Không có báo giá — tạo một báo giá từ cơ hội đã thắng hoặc nút ở trên.",
+  "invEmptyInvoices": "Không có hóa đơn.",
+  "invEmptyCompanyDocs": "Không có báo giá hoặc hóa đơn.",
+  "invQuotesSection": "BÁO GIÁ",
+  "invInvoicesSection": "HÓA ĐƠN",
+  "invCompanyFooter": "Tài liệu được quản lý bởi EastmarkHK e-Invoicing — gửi, PDF, biên nhận và nhắc nhở trong ứng dụng độc lập.",
+  "invRemoteNotConfigured": "e-Invoicing đang ở chế độ từ xa — kết nối chưa được cấu hình.",
+  "invConfigure": "Cấu hình",
+  "invAppNotDetected": "Không phát hiện ứng dụng e-Invoicing — cài đặt/khởi chạy EastmarkHK e-Invoicing để tạo báo giá và hóa đơn từ bản ghi này.",
+  "invRemoteSetupBody": "EastmarkHK e-Invoicing được cấu hình để lưu trữ từ xa. Nhập cùng thông tin đăng nhập tại đây để kết nối CRM với cùng API — cùng giá trị như trong e-Invoicing → Cài đặt → Lưu trữ từ xa.",
+  "invLaunchOnceBody": "Khởi chạy EastmarkHK e-Invoicing một lần để khởi tạo cơ sở dữ liệu chia sẻ, sau đó quay lại đây.",
+  "invAcquireAppStoreBody": "Mô-đun này sử dụng EastmarkHK e-Invoicing. Tải xuống và đăng ký qua App Store, khởi chạy một lần, sau đó quay lại đây.",
+  "invAcquireWebBody": "Mô-đun này sử dụng EastmarkHK e-Invoicing. Tải xuống và đăng ký tại eastmarkhk.com, khởi chạy một lần, sau đó quay lại đây.",
+  "invConfigureRemote": "Cấu hình kết nối từ xa",
+  "invViewOnAppStore": "Xem trên App Store",
+  "invViewOnWebsite": "Xem tại eastmarkhk.com",
+  "invRetry": "Thử lại",
+  "invDocInvoice": "Hóa đơn",
+  "invDocQuote": "Báo giá",
+  "invDocClient": "Khách hàng",
+  "invDocStatus": "Trạng thái",
+  "invDocDate": "Ngày",
+  "invOpenInStandalone": "Mở trong e-Invoicing",
+  "invOpenStandaloneFailed": "Không thể mở e-Invoicing — kiểm tra xem đã cài đặt chưa.",
+  "invCreateInvoiceFromQuote": "Tạo hóa đơn",
+  "invCreatingInvoice": "Đang tạo hóa đơn…",
+  "invInvoiceCreatedFromQuote": "Hóa đơn {number} đã được tạo từ báo giá.",
+  "@invInvoiceCreatedFromQuote": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invQuoteAlreadyInvoiced": "Báo giá này đã được lập hóa đơn.",
+  "invCreateInvoiceFailed": "Không thể tạo hóa đơn: {error}",
+  "@invCreateInvoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "invLinkMenu": "Liên kết e-Invoicing",
+  "invLinkStatusLinked": "Khách hàng e-Invoicing đã được liên kết",
+  "invLinkStatusNone": "Không có liên kết e-Invoicing nào được lưu",
+  "invUnlinkCustomer": "Hủy liên kết khách hàng e-Invoicing",
+  "invUnlinkConfirmTitle": "Hủy liên kết khách hàng?",
+  "invUnlinkConfirmBody": "Báo giá hoặc hóa đơn tiếp theo sẽ yêu cầu bạn chọn hoặc tạo lại khách hàng trong e-Invoicing.",
+  "invUnlinkDone": "Đã xóa liên kết e-Invoicing.",
+  "invAppStoreUrlMissing": "e-Invoicing chưa được liệt kê trên App Store cho bản dựng này. Sử dụng eastmarkhk.com hoặc khởi chạy ứng dụng đã cài đặt.",
+  "shellSyncNeedsPassword": "Cơ sở dữ liệu chia sẻ: nhập mật khẩu đồng bộ trong Cài đặt để kết nối lại thiết bị này."
 }

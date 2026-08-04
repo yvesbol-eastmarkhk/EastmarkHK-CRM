@@ -730,21 +730,21 @@ class AppLocalizationsBg extends AppLocalizations {
   String get modulesUseInCrm => 'Използване в CRM';
 
   @override
-  String get modulesDontUseInCrm => 'Ne pas utiliser dans le CRM';
+  String get modulesDontUseInCrm => 'Да не се използва в CRM';
 
   @override
-  String get modulesBuyOnAppStore => 'Acheter sur l\'App Store';
+  String get modulesBuyOnAppStore => 'Купи от App Store';
 
   @override
   String get modulesStoreUnavailable =>
-      'L\'App Store n\'est pas disponible sur cette installation. Utilisez une build App Store, ou activez un abonnement eastmarkhk.com.';
+      'App Store не е достъпен в тази версия. Използвайте версия за App Store или активирайте абонамент на eastmarkhk.com.';
 
   @override
   String get modulesCheckingPurchases =>
-      'Vérification des achats App Store et eastmarkhk.com…';
+      'Проверка на покупки от App Store и eastmarkhk.com…';
 
   @override
-  String get modulesCheckingAppStore => 'Vérification des achats App Store…';
+  String get modulesCheckingAppStore => 'Проверка на покупки от App Store…';
 
   @override
   String get modulesPerMonth => '/ месец';
@@ -810,19 +810,19 @@ class AppLocalizationsBg extends AppLocalizations {
   String get invFieldClient => 'Client';
 
   @override
-  String get invPickClientTitle => 'Choisir un client';
+  String get invPickClientTitle => 'Избор на клиент';
 
   @override
-  String get invPickClientSearch => 'Rechercher par nom, n° fiscal, pays…';
+  String get invPickClientSearch => 'Търсене по име, данъчен номер, държава…';
 
   @override
-  String get invPickClientEmpty => 'Aucun client correspondant.';
+  String get invPickClientEmpty => 'Няма съответстващ клиент.';
 
   @override
-  String get invPickClientButton => 'Choisir le client';
+  String get invPickClientButton => 'Избор на клиент';
 
   @override
-  String get invClientRequired => 'Choisissez un client avant d’enregistrer.';
+  String get invClientRequired => 'Изберете клиент преди запис.';
 
   @override
   String get invFieldDate => 'Date';
@@ -879,33 +879,33 @@ class AppLocalizationsBg extends AppLocalizations {
   String get invCreating => 'Creating…';
 
   @override
-  String get invSave => 'Enregistrer';
+  String get invSave => 'Запази';
 
   @override
-  String get invSaving => 'Enregistrement…';
+  String get invSaving => 'Записване…';
 
   @override
   String invEditQuote(String number) {
-    return 'Modifier le devis $number';
+    return 'Редактиране на оферта $number';
   }
 
   @override
   String invEditInvoice(String number) {
-    return 'Modifier la facture $number';
+    return 'Редактиране на фактура $number';
   }
 
   @override
   String invDocumentSaved(String number) {
-    return '$number enregistré.';
+    return '$number записан(a).';
   }
 
   @override
   String invDocumentSaveFailed(String error) {
-    return 'Enregistrement impossible : $error';
+    return 'Записът не бе възможен: $error';
   }
 
   @override
-  String get invEditDocument => 'Modifier';
+  String get invEditDocument => 'Редактиране';
 
   @override
   String get invAddFromCatalog => 'Add from catalog';
@@ -969,152 +969,152 @@ class AppLocalizationsBg extends AppLocalizations {
 
   @override
   String get invHomeSubtitle =>
-      'Devis et factures — données EastmarkHK e-Invoicing (reçues et relances : app standalone)';
+      'Оферти и фактури — данни от EastmarkHK e-Invoicing (разписки и напомняния: самостоятелно приложение)';
 
   @override
-  String get invOpenStandalone => 'Ouvrir e-Invoicing';
+  String get invOpenStandalone => 'Отвори e-Invoicing';
 
   @override
-  String get invLaunchStandalone => 'Lancer e-Invoicing';
+  String get invLaunchStandalone => 'Стартирай e-Invoicing';
 
   @override
-  String get invRemoteConnectionTooltip => 'Connexion distante';
+  String get invRemoteConnectionTooltip => 'Отдалечена връзка';
 
   @override
   String invTabQuotes(int count) {
-    return 'Devis ($count)';
+    return 'Оферти ($count)';
   }
 
   @override
   String invTabInvoices(int count) {
-    return 'Factures ($count)';
+    return 'Фактури ($count)';
   }
 
   @override
   String get invEmptyQuotes =>
-      'Aucun devis — créez-en un depuis une opportunité gagnée ou le bouton ci-dessus.';
+      'Няма оферти — създайте от спечелена възможност или бутона по-горе.';
 
   @override
-  String get invEmptyInvoices => 'Aucune facture.';
+  String get invEmptyInvoices => 'Няма фактури.';
 
   @override
-  String get invEmptyCompanyDocs => 'Aucun devis ni facture.';
+  String get invEmptyCompanyDocs => 'Няма оферти или фактури.';
 
   @override
-  String get invQuotesSection => 'DEVIS';
+  String get invQuotesSection => 'ОФЕРТИ';
 
   @override
-  String get invInvoicesSection => 'FACTURES';
+  String get invInvoicesSection => 'ФАКТУРИ';
 
   @override
   String get invCompanyFooter =>
-      'Documents gérés par EastmarkHK e-Invoicing — envoi, PDF, reçues et relances dans l\'app standalone.';
+      'Документите се управляват от EastmarkHK e-Invoicing — изпращане, PDF, разписки и напомняния в самостоятелното приложение.';
 
   @override
   String get invRemoteNotConfigured =>
-      'e-Invoicing est en mode distant — connexion non configurée.';
+      'e-Invoicing е в отдалечен режим — връзката не е конфигурирана.';
 
   @override
-  String get invConfigure => 'Configurer';
+  String get invConfigure => 'Конфигуриране';
 
   @override
   String get invAppNotDetected =>
-      'App e-Invoicing non détectée — installez/lancez EastmarkHK e-Invoicing pour créer des devis et factures depuis cette fiche.';
+      'Приложението e-Invoicing не е открито — инсталирайте/стартирайте EastmarkHK e-Invoicing, за да създавате оферти и фактури от този запис.';
 
   @override
   String get invRemoteSetupBody =>
-      'EastmarkHK e-Invoicing est configurée en mode « stockage distant ». Renseigne les mêmes identifiants ici pour connecter le CRM à la même API — mêmes valeurs que dans e-Invoicing → Réglages → Stockage distant.';
+      'EastmarkHK e-Invoicing е конфигурирано за отдалечено съхранение. Въведете същите данни тук, за да свържете CRM към същото API — същите стойности като в e-Invoicing → Настройки → Отдалечено съхранение.';
 
   @override
   String get invLaunchOnceBody =>
-      'Lancez l\'app EastmarkHK e-Invoicing une première fois pour initialiser la base partagée, puis revenez ici.';
+      'Стартирайте EastmarkHK e-Invoicing веднъж, за да инициализирате споделената база данни, след което се върнете тук.';
 
   @override
   String get invAcquireAppStoreBody =>
-      'Le module utilise l\'app EastmarkHK e-Invoicing. Téléchargez-la et abonnez-vous depuis l\'App Store, lancez-la une fois, puis revenez ici.';
+      'Този модул използва EastmarkHK e-Invoicing. Изтеглете и абонирайте се от App Store, стартирайте го веднъж, след което се върнете тук.';
 
   @override
   String get invAcquireWebBody =>
-      'Le module utilise l\'app EastmarkHK e-Invoicing. Téléchargez-la et souscrivez sur eastmarkhk.com, lancez-la une fois, puis revenez ici.';
+      'Този модул използва EastmarkHK e-Invoicing. Изтеглете и абонирайте се на eastmarkhk.com, стартирайте го веднъж, след което се върнете тук.';
 
   @override
-  String get invConfigureRemote => 'Configurer la connexion distante';
+  String get invConfigureRemote => 'Конфигуриране на отдалечена връзка';
 
   @override
-  String get invViewOnAppStore => 'Voir sur l\'App Store';
+  String get invViewOnAppStore => 'Виж в App Store';
 
   @override
-  String get invViewOnWebsite => 'Voir sur eastmarkhk.com';
+  String get invViewOnWebsite => 'Виж на eastmarkhk.com';
 
   @override
-  String get invRetry => 'Réessayer';
+  String get invRetry => 'Опитай отново';
 
   @override
-  String get invDocInvoice => 'Facture';
+  String get invDocInvoice => 'Фактура';
 
   @override
-  String get invDocQuote => 'Devis';
+  String get invDocQuote => 'Оферта';
 
   @override
-  String get invDocClient => 'Client';
+  String get invDocClient => 'Клиент';
 
   @override
-  String get invDocStatus => 'Statut';
+  String get invDocStatus => 'Статус';
 
   @override
-  String get invDocDate => 'Date';
+  String get invDocDate => 'Дата';
 
   @override
-  String get invOpenInStandalone => 'Ouvrir dans e-Invoicing';
+  String get invOpenInStandalone => 'Отвори в e-Invoicing';
 
   @override
   String get invOpenStandaloneFailed =>
-      'Impossible d\'ouvrir e-Invoicing — vérifie qu\'elle est bien installée.';
+      'e-Invoicing не можа да се отвори — проверете дали е инсталирано.';
 
   @override
-  String get invCreateInvoiceFromQuote => 'Créer la facture';
+  String get invCreateInvoiceFromQuote => 'Създай фактура';
 
   @override
-  String get invCreatingInvoice => 'Création de la facture…';
+  String get invCreatingInvoice => 'Създаване на фактура…';
 
   @override
   String invInvoiceCreatedFromQuote(String number) {
-    return 'Facture $number créée à partir du devis.';
+    return 'Фактура $number създадена от офертата.';
   }
 
   @override
-  String get invQuoteAlreadyInvoiced => 'Ce devis est déjà facturé.';
+  String get invQuoteAlreadyInvoiced => 'Тази оферта вече е фактурирана.';
 
   @override
   String invCreateInvoiceFailed(String error) {
-    return 'Impossible de créer la facture : $error';
+    return 'Фактурата не можа да се създаде: $error';
   }
 
   @override
-  String get invLinkMenu => 'Lien e-Invoicing';
+  String get invLinkMenu => 'Връзка с e-Invoicing';
 
   @override
-  String get invLinkStatusLinked => 'Client e-Invoicing lié';
+  String get invLinkStatusLinked => 'Клиент в e-Invoicing свързан';
 
   @override
-  String get invLinkStatusNone => 'Aucun lien e-Invoicing mémorisé';
+  String get invLinkStatusNone => 'Няма запазена връзка с e-Invoicing';
 
   @override
-  String get invUnlinkCustomer => 'Dissocier le client e-Invoicing';
+  String get invUnlinkCustomer => 'Прекрати връзката с клиента в e-Invoicing';
 
   @override
-  String get invUnlinkConfirmTitle => 'Dissocier le client ?';
+  String get invUnlinkConfirmTitle => 'Прекратяване на връзката с клиента?';
 
   @override
   String get invUnlinkConfirmBody =>
-      'Le prochain devis ou facture redemandera de choisir ou créer le client dans e-Invoicing.';
+      'Следващата оферта или фактура ще поиска отново избор или създаване на клиента в e-Invoicing.';
 
   @override
-  String get invUnlinkDone => 'Lien e-Invoicing dissocié.';
+  String get invUnlinkDone => 'Връзката с e-Invoicing е прекратена.';
 
   @override
   String get invAppStoreUrlMissing =>
-      'L\'app e-Invoicing n\'est pas encore listée sur l\'App Store pour ce build. Utilisez eastmarkhk.com ou lancez l\'app déjà installée.';
+      'e-Invoicing все още не е листнато в App Store за тази версия. Използвайте eastmarkhk.com или стартирайте вече инсталирано приложение.';
 
   @override
   String get shellModuleTitle => 'Module';
@@ -2524,7 +2524,7 @@ class AppLocalizationsBg extends AppLocalizations {
 
   @override
   String get shellSyncNeedsPassword =>
-      'Base partagée : saisissez le mot de passe sync dans Réglages pour reconnecter cet appareil.';
+      'Споделена база данни: въведете паролата за синхронизация в Настройки, за да свържете отново това устройство.';
 
   @override
   String get shellSearch => 'Search';

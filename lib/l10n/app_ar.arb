@@ -1327,5 +1327,122 @@
   "richColorPickerTitle": "Text color",
   "eiHitEmailPlain": " — email",
   "eiHitPhonePlain": " — phone",
-  "tasksEditTaskTitle": "Edit task"
+  "tasksEditTaskTitle": "Edit task",
+  "modulesDontUseInCrm": "Ne pas utiliser dans le CRM",
+  "modulesBuyOnAppStore": "الشراء من App Store",
+  "modulesStoreUnavailable": "متجر App Store غير متاح في هذا الإصدار. استخدم إصدار App Store، أو فعّل اشتراك eastmarkhk.com.",
+  "modulesCheckingPurchases": "جارٍ التحقق من مشتريات App Store وeastmarkhk.com…",
+  "modulesCheckingAppStore": "جارٍ التحقق من مشتريات App Store…",
+  "invPickClientTitle": "اختيار عميل",
+  "invPickClientSearch": "البحث بالاسم أو الرقم الضريبي أو البلد…",
+  "invPickClientEmpty": "لا يوجد عميل مطابق.",
+  "invPickClientButton": "اختيار العميل",
+  "invClientRequired": "اختر عميلاً قبل الحفظ.",
+  "invSave": "حفظ",
+  "invSaving": "جارٍ الحفظ…",
+  "invEditQuote": "تعديل عرض السعر {number}",
+  "@invEditQuote": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invEditInvoice": "تعديل الفاتورة {number}",
+  "@invEditInvoice": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invDocumentSaved": "تم حفظ {number}.",
+  "@invDocumentSaved": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invDocumentSaveFailed": "تعذر الحفظ: {error}",
+  "@invDocumentSaveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "invEditDocument": "تعديل",
+  "invHomeSubtitle": "عروض الأسعار والفواتير — بيانات EastmarkHK e-Invoicing (الإيصالات والتذكيرات في التطبيق المستقل)",
+  "invOpenStandalone": "فتح e-Invoicing",
+  "invLaunchStandalone": "تشغيل e-Invoicing",
+  "invRemoteConnectionTooltip": "الاتصال عن بُعد",
+  "invTabQuotes": "عروض الأسعار ({count})",
+  "@invTabQuotes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "invTabInvoices": "الفواتير ({count})",
+  "@invTabInvoices": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "invEmptyQuotes": "لا توجد عروض أسعار — أنشئ واحدًا من صفقة رابحة أو من الزر أعلاه.",
+  "invEmptyInvoices": "لا توجد فواتير.",
+  "invEmptyCompanyDocs": "لا توجد عروض أسعار أو فواتير.",
+  "invQuotesSection": "عروض الأسعار",
+  "invInvoicesSection": "الفواتير",
+  "invCompanyFooter": "المستندات تُدار عبر تطبيق EastmarkHK e-Invoicing — الإرسال وPDF والإيصالات والتذكيرات في التطبيق المستقل.",
+  "invRemoteNotConfigured": "e-Invoicing في وضع الاتصال عن بُعد — لم يتم إعداد الاتصال.",
+  "invConfigure": "إعداد",
+  "invAppNotDetected": "لم يتم اكتشاف تطبيق e-Invoicing — ثبّت أو شغّل EastmarkHK e-Invoicing لإنشاء عروض الأسعار والفواتير من هذا السجل.",
+  "invRemoteSetupBody": "تم إعداد EastmarkHK e-Invoicing للتخزين عن بُعد. أدخل نفس بيانات الاعتماد هنا لربط CRM بنفس واجهة API — نفس القيم الموجودة في e-Invoicing ← الإعدادات ← التخزين عن بُعد.",
+  "invLaunchOnceBody": "شغّل تطبيق EastmarkHK e-Invoicing مرة واحدة لتهيئة قاعدة البيانات المشتركة، ثم عد إلى هنا.",
+  "invAcquireAppStoreBody": "تستخدم هذه الوحدة تطبيق EastmarkHK e-Invoicing. نزّله واشترك عبر App Store، شغّله مرة واحدة، ثم عد إلى هنا.",
+  "invAcquireWebBody": "تستخدم هذه الوحدة تطبيق EastmarkHK e-Invoicing. نزّله واشترك عبر eastmarkhk.com، شغّله مرة واحدة، ثم عد إلى هنا.",
+  "invConfigureRemote": "إعداد الاتصال عن بُعد",
+  "invViewOnAppStore": "عرض على App Store",
+  "invViewOnWebsite": "عرض على eastmarkhk.com",
+  "invRetry": "إعادة المحاولة",
+  "invDocInvoice": "فاتورة",
+  "invDocQuote": "عرض سعر",
+  "invDocClient": "عميل",
+  "invDocStatus": "الحالة",
+  "invDocDate": "التاريخ",
+  "invOpenInStandalone": "فتح في e-Invoicing",
+  "invOpenStandaloneFailed": "تعذر فتح e-Invoicing — تحقق من أنه مثبّت.",
+  "invCreateInvoiceFromQuote": "إنشاء الفاتورة",
+  "invCreatingInvoice": "جارٍ إنشاء الفاتورة…",
+  "invInvoiceCreatedFromQuote": "تم إنشاء الفاتورة {number} من عرض السعر.",
+  "@invInvoiceCreatedFromQuote": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "invQuoteAlreadyInvoiced": "تم إصدار فاتورة لهذا العرض بالفعل.",
+  "invCreateInvoiceFailed": "تعذر إنشاء الفاتورة: {error}",
+  "@invCreateInvoiceFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "invLinkMenu": "ربط e-Invoicing",
+  "invLinkStatusLinked": "تم ربط عميل e-Invoicing",
+  "invLinkStatusNone": "لا يوجد رابط e-Invoicing محفوظ",
+  "invUnlinkCustomer": "إلغاء ربط عميل e-Invoicing",
+  "invUnlinkConfirmTitle": "إلغاء ربط العميل؟",
+  "invUnlinkConfirmBody": "سيُطلب منك في عرض السعر أو الفاتورة التالية اختيار العميل أو إنشاؤه مجددًا في e-Invoicing.",
+  "invUnlinkDone": "تم إلغاء ربط e-Invoicing.",
+  "invAppStoreUrlMissing": "تطبيق e-Invoicing غير مدرج بعد على App Store لهذا الإصدار. استخدم eastmarkhk.com أو شغّل تطبيقًا مثبتًا بالفعل.",
+  "shellSyncNeedsPassword": "قاعدة بيانات مشتركة: أدخل كلمة مرور المزامنة في الإعدادات لإعادة ربط هذا الجهاز."
 }
