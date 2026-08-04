@@ -59,6 +59,17 @@ dependencies:
   # dépendance que les autres apps EastmarkHK (e-Invoicing, Trading).
   pdf: ^3.13.0
 
+# sqflite_common_ffi → sqlite3 : évite le téléchargement GitHub des .dylib/.dll
+# (échecs réseau intermittents au build) et un binaire embarqué en plus.
+# Utilise la lib système : libsqlite3 sur macOS/Linux, winsqlite3.dll sur
+# Windows 10+ (même config que EastmarkHK e-Invoicing).
+hooks:
+  user_defines:
+    sqlite3:
+      source: system
+      name: sqlite3
+      name_windows: winsqlite3
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -100,6 +111,32 @@ flutter_launcher_icons:
   windows:
     generate: true
     icon_size: 256
+
+# Microsoft Store / sideload MSIX.
+# Pour le Store : réserver le nom dans Partner Center, puis coller les 3
+# valeurs de "Product management > Product identity" ci-dessous et passer
+# store: true — ou garder store: false ici et utiliser
+# tool\build_msix.ps1 -Store avec les paramètres/env vars.
+# Sans ça, `dart run msix:create` produit un paquet sideload signé localement.
+#
+# NB : EastmarkHK CRM est gratuit. Le module e-Invoicing (payant sur
+# iOS/macOS via App Store IAP) n'a pas encore d'équivalent Microsoft Store
+# sur Windows — en attendant, l'activation web (code + e-mail) reste
+# disponible depuis l'écran Modules, comme sur les autres plateformes non
+# App Store.
+msix_config:
+  display_name: EastmarkHK CRM
+  publisher_display_name: EastmarkHK
+  identity_name: EastmarkHK.CRM
+  # Partner Center > Product identity > Package/Properties/Publisher :
+  # publisher: CN=XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+  msix_version: 0.1.15.18
+  logo_path: assets/branding/app_icon_v3.png
+  capabilities: internetClient, microphone
+  languages: en-us, fr-fr, nl-nl, de-de, es-es, it-it, pt-pt, pt-br, ja-jp, ko-kr, zh-cn, th-th, vi-vn, tr-tr, pl-pl, ru-ru, ar-sa, id-id, sv-se, el-gr, da-dk, fi-fi, cs-cz, sk-sk, hu-hu, ro-ro, bg-bg, hr-hr, uk-ua
+  output_name: EastmarkHK-CRM
+  install_certificate: false
+  store: false
 
 # Écran de chargement (splash natif au démarrage) — régénérer avec :
 # dart run flutter_native_splash:create

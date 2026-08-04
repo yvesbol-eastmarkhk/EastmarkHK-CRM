@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.eastmarkhk" "\0"
-            VALUE "FileDescription", "eastmarkhk_crm" "\0"
+            VALUE "FileDescription", "EastmarkHK CRM" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
             VALUE "InternalName", "eastmarkhk_crm" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2026 com.eastmarkhk. All rights reserved." "\0"
             VALUE "OriginalFilename", "eastmarkhk_crm.exe" "\0"
-            VALUE "ProductName", "eastmarkhk_crm" "\0"
+            VALUE "ProductName", "EastmarkHK CRM" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END
