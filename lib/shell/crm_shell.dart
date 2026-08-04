@@ -397,7 +397,10 @@ class _WorkspaceDetailPanel extends StatelessWidget {
 
     if (section == CrmSection.dashboard && !showTodayAction && !showSplitRecord) {
       return DashboardScreen(
-        key: ValueKey('dashboard-${workspace.version}'),
+        // Clé stable (comme `workspace-pipeline`) — ne PAS y coller
+        // `workspace.version` : ça remontait le State à chaque sync et
+        // faisait remonter le scroll en haut.
+        key: const ValueKey('workspace-dashboard'),
         workspace: workspace,
         embedded: true,
       );
@@ -923,7 +926,7 @@ class _MobileList extends StatelessWidget {
     }
     if (workspace.section == CrmSection.dashboard) {
       return DashboardScreen(
-        key: ValueKey('mobile-dashboard-${workspace.version}'),
+        key: const ValueKey('mobile-dashboard'),
         workspace: workspace,
         embedded: true,
       );

@@ -61,7 +61,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   void initState() {
     super.initState();
+    // Même pattern que PipelineBoard / ClientsListPanel : recharger les
+    // données quand le workspace bump (sync/refresh), SANS remonter le
+    // widget — sinon le ListView repart à offset 0 à chaque actualisation.
+    widget.workspace?.addListener(_onWorkspaceChanged);
     _load();
+  }
+
+  void _onWorkspaceChanged() => _load();
+
+  @override
+  void dispose() {
+    widget.workspace?.removeListener(_onWorkspaceChanged);
+    super.dispose();
   }
 
   Future<void> _load() async {
