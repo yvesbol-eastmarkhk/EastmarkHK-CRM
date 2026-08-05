@@ -712,6 +712,8 @@ class _EiDocumentEditorScreenState extends State<EiDocumentEditorScreen> {
                       child: NotesEditor(
                         key: _notesKey,
                         initialHtml: _notesInitial,
+                        // Devis / factures : pas de Jodit (WebView) — texte + dictée.
+                        plainOnly: true,
                       ),
                     ),
                   ],

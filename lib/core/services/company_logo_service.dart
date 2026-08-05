@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/painting.dart';
 import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as p;
@@ -93,6 +94,24 @@ class CompanyLogoService {
     return dest;
   }
 
+  /// Purge le cache d'images de Flutter pour ce fichier. `Image.file` met en
+  /// cache les octets décodés par **chemin**, pas par contenu ni mtime — si
+  /// on réécrit `company_logo.jpg` avec de nouveaux octets (import local ou
+  /// pull sync depuis un autre appareil), Flutter continue d'afficher
+  /// l'ancienne image tant que ce chemin reste dans le cache. C'est la cause
+  /// du bug « je change le logo sur un appareil, les autres ne s'actualisent
+  /// pas » : la donnée arrive bien (fichier + `company_logo_path` à jour),
+  /// seul l'affichage restait figé. Valable sur toutes les plateformes
+  /// (macOS, Windows, mobile) — ce n'est pas un souci réseau/sync.
+  static void _evictImageCache(File file) {
+    try {
+      PaintingBinding.instance.imageCache.evict(FileImage(file));
+    } catch (_) {
+      // PaintingBinding pas encore initialisé (ex. exécuté hors app Flutter,
+      // comme un script) — sans effet, rien à évincer dans ce cas.
+    }
+  }
+
   /// Écrit le logo local (sync pull ou import) et met à jour `company_logo_path`.
   static Future<File> saveBytes(Uint8List bytes, String extension) async {
     final brandingDir = await _brandingDir();
@@ -102,6 +121,7 @@ class CompanyLogoService {
     // Un seul fichier actif — évite d'accumuler d'anciens formats.
     for (final old in brandingDir.listSync().whereType<File>()) {
       if (p.basename(old.path).startsWith('company_logo')) {
+        _evictImageCache(old);
         try {
           await old.delete();
         } catch (_) {}
@@ -109,7 +129,12 @@ class CompanyLogoService {
     }
     final destPath = p.join(brandingDir.path, 'company_logo$ext');
     final dest = File(destPath);
+    // Évince aussi le chemin de destination avant d'écrire : si l'extension
+    // n'a pas changé depuis la dernière fois, c'est exactement le même
+    // chemin que celui potentiellement déjà en cache.
+    _evictImageCache(dest);
     await dest.writeAsBytes(bytes, flush: true);
+    _evictImageCache(dest);
     await AppDatabase.instance.setSetting('company_logo_path', destPath);
     await AppDatabase.instance.setSetting('company_logo_cleared', null);
     return dest;
@@ -119,6 +144,7 @@ class CompanyLogoService {
     final path = await currentPath();
     if (path != null) {
       final file = File(path);
+      _evictImageCache(file);
       if (file.existsSync()) await file.delete();
     }
     await AppDatabase.instance.setSetting('company_logo_path', null);

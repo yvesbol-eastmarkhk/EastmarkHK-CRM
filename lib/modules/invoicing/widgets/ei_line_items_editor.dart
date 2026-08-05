@@ -13,7 +13,7 @@ import '../einvoice_connector.dart';
 import 'ei_line_photo_picker.dart';
 import 'ei_product_picker.dart';
 
-/// Titre catalogue (+ réf.) bien visible + corps description HTML Jodit.
+/// Titre catalogue (+ réf.) bien visible + corps description (texte).
 String _lineDescriptionFromProduct(EiProduct product) {
   final title = product.ref.trim().isEmpty
       ? product.name
@@ -563,9 +563,7 @@ class EiLineItemsEditorState extends State<EiLineItemsEditor> {
   }
 }
 
-/// Nom produit bien visible + description en dessous.
-///
-/// Windows : texte simple (pas de WebView). macOS/mobile : Jodit.
+/// Nom produit bien visible + description en dessous (texte, pas de Jodit).
 class _LineDescriptionBlock extends StatefulWidget {
   const _LineDescriptionBlock({
     super.key,
@@ -587,9 +585,6 @@ class _LineDescriptionBlockState extends State<_LineDescriptionBlock> {
   late String _bodyHtml;
   final _bodyKey = GlobalKey<NotesEditorState>();
   late bool _bodyExpanded;
-
-  static const _heightCollapsed = 160.0;
-  static const _heightExpanded = 520.0;
 
   @override
   void initState() {
@@ -640,10 +635,8 @@ class _LineDescriptionBlockState extends State<_LineDescriptionBlock> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    // Sur Windows le plain text n’a pas besoin d’une zone 520 px.
-    final height = notesEditorAvoidsWebView
-        ? (_bodyExpanded ? 220.0 : 140.0)
-        : (_bodyExpanded ? _heightExpanded : _heightCollapsed);
+    // Description ligne devis/facture : plain text (pas de Jodit/WebView).
+    final height = _bodyExpanded ? 220.0 : 140.0;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -683,6 +676,7 @@ class _LineDescriptionBlockState extends State<_LineDescriptionBlock> {
           child: NotesEditor(
             key: _bodyKey,
             initialHtml: _bodyHtml,
+            plainOnly: true,
             onChanged: (_) => _emit(),
             onReady: () {
               if (!mounted) return;
