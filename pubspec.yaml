@@ -137,9 +137,10 @@ msix_config:
   output_name: EastmarkHK-CRM
   install_certificate: false
   store: false
-  # Sideload timestamp options are set by tool\build_msix.ps1 (-TimestampUrl).
-  # Do not set signtool_options here: msix already passes /fd, and the script
-  # adds /tr + /td. Store builds use -Store (unsigned; Partner Center signs).
+  # Do not set signtool_options here: msix already appends /fd /td /tr DigiCert.
+  # Partial options cause "option twice" SignTool errors. Override TSA via
+  # tool\build_msix.ps1 -TimestampUrl (full custom /f command). Use -Store
+  # for Microsoft Store (unsigned; Partner Center signs).
 
 # Écran de chargement (splash natif au démarrage) — régénérer avec :
 # dart run flutter_native_splash:create

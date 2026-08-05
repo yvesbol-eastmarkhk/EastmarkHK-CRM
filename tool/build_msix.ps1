@@ -24,9 +24,15 @@
   Version bump: -MsixVersion 1.0.2.28 (or msix_version in pubspec.yaml).
   The Store requires a strictly increasing version on each submission.
 
-  If SignTool fails on the timestamp (sideload):
-    - retry (DigiCert/Sectigo TSA is sometimes down)
-    - or use -Store for a Microsoft Store submission (no local signing)
+  Sideload uses the msix package defaults (DigiCert timestamp). Do NOT pass
+  partial --signtool-options: msix always appends /fd /td /tr and duplicates fail.
+
+  If DigiCert is unreachable, retry with an alternate TSA (full custom command):
+
+      powershell -ExecutionPolicy Bypass -File tool\build_msix.ps1 `
+        -TimestampUrl http://timestamp.sectigo.com
+
+  Or use -Store for a Microsoft Store submission (no local signing).
 #>
 
 param(
@@ -35,13 +41,29 @@ param(
   [string]$Publisher = $env:EMHK_STORE_PUBLISHER,
   [string]$PublisherDisplayName = $env:EMHK_STORE_PUBLISHER_DISPLAY_NAME,
   [string]$MsixVersion = '',
-  # Sideload: alternate timestamp server if DigiCert/Sectigo is down.
-  [string]$TimestampUrl = 'http://timestamp.sectigo.com'
+  # Optional. When set, replaces the whole SignTool command (needed to change TSA).
+  [string]$TimestampUrl = ''
 )
 
 $ErrorActionPreference = "Stop"
 $root = Split-Path -Parent $PSScriptRoot
 Set-Location $root
+
+function Get-MsixTestCertificate {
+  $pubCache = if ($env:PUB_CACHE) { $env:PUB_CACHE } else { Join-Path $env:LOCALAPPDATA 'Pub\Cache' }
+  $hosted = Join-Path $pubCache 'hosted\pub.dev'
+  if (-not (Test-Path $hosted)) {
+    throw "Pub cache not found at $hosted (needed for alternate -TimestampUrl)."
+  }
+  $cert = Get-ChildItem -Path $hosted -Filter 'test_certificate.pfx' -Recurse -ErrorAction SilentlyContinue |
+    Where-Object { $_.FullName -match '[\\/]msix-\d' } |
+    Sort-Object FullName -Descending |
+    Select-Object -First 1
+  if (-not $cert) {
+    throw "msix test_certificate.pfx not found under $hosted. Run 'flutter pub get' first."
+  }
+  return $cert.FullName
+}
 
 Write-Host "==> flutter pub get"
 flutter pub get
@@ -71,12 +93,20 @@ if ($Store) {
   Write-Host "==> Mode Microsoft Store: $IdentityName (unsigned - Partner Center signs)"
 } else {
   Write-Host "==> Mode sideload (local signing)"
-  Write-Host "    timestamp: $TimestampUrl"
-  # Do not pass /fd here: msix already adds /fd SHA256.
-  $msixArgs += @(
-    '--signtool-options',
-    "/tr $TimestampUrl /td SHA256"
-  )
+  if (-not [string]::IsNullOrWhiteSpace($TimestampUrl)) {
+    # Partial /tr /td alone is MERGED with msix defaults and causes
+    # "You cannot use the /td option twice". A full custom command (/f)
+    # replaces the defaults instead.
+    $certPath = Get-MsixTestCertificate
+    Write-Host "    timestamp override: $TimestampUrl"
+    Write-Host "    certificate: $certPath"
+    $msixArgs += @(
+      '--signtool-options',
+      "/v /fd SHA256 /tr $TimestampUrl /td SHA256 /f `"$certPath`" /p 1234"
+    )
+  } else {
+    Write-Host "    timestamp: DigiCert (msix default)"
+  }
 }
 if (-not [string]::IsNullOrWhiteSpace($MsixVersion)) {
   $msixArgs += @('--version', $MsixVersion)
@@ -87,9 +117,8 @@ dart run msix:create --build-windows false @msixArgs
 if ($LASTEXITCODE -ne 0) {
   if (-not $Store) {
     Write-Host ""
-    Write-Host "SignTool timestamp failed often means the TSA is unreachable."
-    Write-Host "Retry with another server, e.g.:"
-    Write-Host "  powershell -ExecutionPolicy Bypass -File tool\build_msix.ps1 -TimestampUrl http://timestamp.digicert.com"
+    Write-Host "If SignTool failed on the timestamp server, retry:"
+    Write-Host "  powershell -ExecutionPolicy Bypass -File tool\build_msix.ps1 -TimestampUrl http://timestamp.sectigo.com"
     Write-Host "  powershell -ExecutionPolicy Bypass -File tool\build_msix.ps1 -TimestampUrl http://timestamp.globalsign.com/tsa/r6advanced1"
     Write-Host "For Microsoft Store submission use -Store (no local signing)."
   }
