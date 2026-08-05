@@ -9,7 +9,7 @@ import '../../../core/data/countries.dart';
 import '../../../core/utils/formatters.dart';
 import '../../../core/utils/rich_notes.dart';
 import '../../../core/widgets/dictation_field.dart';
-import '../../../core/widgets/jodit_editor.dart';
+import '../../../core/widgets/notes_editor.dart';
 import '../../../l10n/gen/app_localizations.dart';
 import '../../../ui/crm_page.dart';
 import '../../../widgets/section_card.dart';
@@ -657,7 +657,7 @@ class _EiProductEditScreen extends StatefulWidget {
 /// Fiche produit — même structure / champs que ProductEditScreen (e-Invoicing).
 class _EiProductEditScreenState extends State<_EiProductEditScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _descriptionKey = GlobalKey<JoditEditorState>();
+  final _descriptionKey = GlobalKey<NotesEditorState>();
   final _scrollController = ScrollController();
   late final TextEditingController _notesCtrl;
   bool _saving = false;
@@ -948,7 +948,7 @@ class _EiProductEditScreenState extends State<_EiProductEditScreen> {
                   const SizedBox(height: 6),
                   SizedBox(
                     height: 320,
-                    child: JoditEditor(
+                    child: NotesEditor(
                       key: _descriptionKey,
                       initialHtml: _initialDescription,
                     ),

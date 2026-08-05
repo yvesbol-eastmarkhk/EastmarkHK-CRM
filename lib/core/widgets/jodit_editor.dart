@@ -40,10 +40,14 @@ class JoditEditor extends StatefulWidget {
     super.key,
     required this.initialHtml,
     this.onChanged,
+    this.onReady,
   });
 
   final String initialHtml;
   final ValueChanged<String>? onChanged;
+
+  /// Appelé une fois le HTML initial injecté (FlutterReady + setEditorContent).
+  final VoidCallback? onReady;
 
   @override
   State<JoditEditor> createState() => JoditEditorState();
@@ -72,6 +76,13 @@ class JoditEditorState extends State<JoditEditor> {
   bool _editorFocused = false;
   bool _listening = false;
   bool _busy = false;
+  /// True après le 1er `setEditorContent` post-FlutterReady.
+  /// Avant ça, Jodit peut émettre un `change` vide au boot — il ne faut
+  /// pas le remonter (sinon une ligne catalogue devis/facture perd son HTML).
+  bool _contentApplied = false;
+  /// Overlay loader — ValueNotifier pour ne PAS setState le State parent
+  /// (sinon WebView2 Windows est détruite/recréée → flash OK puis gris).
+  final ValueNotifier<bool> _showBootOverlay = ValueNotifier(true);
   String _dictationBase = '';
   // Incrémenté à chaque (re)démarrage de la dictée — protège contre un
   // callback tardif d'une session précédente (stop puis reprise rapide).
@@ -93,14 +104,27 @@ class JoditEditorState extends State<JoditEditor> {
       ..addJavaScriptChannel(
         'FlutterReady',
         onMessageReceived: (_) {
-          final encoded = _jsStringLiteral(widget.initialHtml);
+          _contentApplied = true;
+          // Utilise _currentHtml (peut avoir été mis à jour via setHtml
+          // pendant le chargement de la WebView).
+          final encoded = _jsStringLiteral(_currentHtml);
           _webController.runJavaScript('setEditorContent($encoded);');
+          _showBootOverlay.value = false;
+          widget.onReady?.call();
         },
       )
       ..addJavaScriptChannel(
         'FlutterChange',
         onMessageReceived: (message) {
-          _currentHtml = message.message;
+          final next = message.message;
+          // Ignore le change vide de boot tant que le contenu initial
+          // catalogue / notes n'a pas encore été injecté.
+          if (!_contentApplied &&
+              next.trim().isEmpty &&
+              _currentHtml.trim().isNotEmpty) {
+            return;
+          }
+          _currentHtml = next;
           widget.onChanged?.call(_currentHtml);
         },
       )
@@ -126,6 +150,7 @@ class JoditEditorState extends State<JoditEditor> {
 
   @override
   void dispose() {
+    _showBootOverlay.dispose();
     if (_listening) {
       // ignore: unawaited_futures
       _speech.stop();
@@ -133,15 +158,10 @@ class JoditEditorState extends State<JoditEditor> {
     super.dispose();
   }
 
-  String _jsStringLiteral(String s) {
-    final escaped = s
-        .replaceAll(r'\', r'\\')
-        .replaceAll("'", r"\'")
-        .replaceAll('\n', r'\n')
-        .replaceAll('\r', '')
-        .replaceAll('</script>', '<\\/script>');
-    return "'$escaped'";
-  }
+  /// Literal JS sûr (JSON) — l’ancien escape manuel cassait le HTML produit
+  /// (apostrophes FR, guillemets d’attributs, unicode…) et Jodit affichait
+  /// alors un contenu tronqué / faux après choix catalogue.
+  String _jsStringLiteral(String s) => jsonEncode(s);
 
   String _unwrapJsString(dynamic raw) {
     if (raw is! String) return raw.toString();
@@ -419,7 +439,11 @@ class JoditEditorState extends State<JoditEditor> {
     // Cadre dessiné en *fond* (couleur + padding) et sans clip : sur macOS,
     // tout pixel peint au-dessus d'une platform view lui vole le hit-test et
     // la WebView devient inerte (flutter/flutter#181257).
-    final editor = _loadFailed
+    //
+    // IMPORTANT Windows : la WebView doit rester au **même** emplacement dans
+    // l'arbre (Stack slot 0). La basculer hors/dans un Stack au ready la
+    // détruit → contenu OK une fraction de seconde puis surface grise.
+    final webView = _loadFailed
         ? Center(
             child: Padding(
               padding: const EdgeInsets.all(16),
@@ -508,7 +532,34 @@ class JoditEditorState extends State<JoditEditor> {
                 ),
               ),
             ),
-          Expanded(child: ColoredBox(color: Colors.white, child: editor)),
+          Expanded(
+            child: ColoredBox(
+              color: Colors.white,
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  webView,
+                  if (!_loadFailed)
+                    ValueListenableBuilder<bool>(
+                      valueListenable: _showBootOverlay,
+                      builder: (context, show, _) {
+                        if (!show) return const SizedBox.shrink();
+                        return const ColoredBox(
+                          color: Colors.white,
+                          child: Center(
+                            child: SizedBox(
+                              width: 22,
+                              height: 22,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );

@@ -1,11 +1,12 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../../core/utils/formatters.dart';
 import '../../../core/utils/rich_notes.dart';
 import '../../../core/widgets/dictation_field.dart';
-import '../../../core/widgets/jodit_editor.dart';
+import '../../../core/widgets/notes_editor.dart';
 import '../../../l10n/gen/app_localizations.dart';
 import '../../../theme/crm_tokens.dart';
 import '../einvoice_connector.dart';
@@ -88,16 +89,25 @@ class EiLineItemsEditorState extends State<EiLineItemsEditor> {
   }
 
   Future<void> _resolvePhotos() async {
+    var changed = false;
     for (final l in widget.lines) {
       final key = l.photoPath ?? '';
       if (key.isEmpty || _resolvedPhotos.containsKey(key)) continue;
       final local = await EInvoiceConnector.instance.resolvePhotoPath(key);
-      if (local != null) _resolvedPhotos[key] = local;
+      if (local != null) {
+        _resolvedPhotos[key] = local;
+        changed = true;
+      }
     }
-    if (mounted) setState(() {});
+    // Évite un setState inutile qui rebuild Jodit (WebView2 Windows → gris).
+    if (changed && mounted) setState(() {});
   }
 
   Future<void> _pickFromCatalog() async {
+    // Flush Jodit des lignes déjà ouvertes — sinon un change vide au boot
+    // de la nouvelle WebView peut écraser une description encore en mémoire.
+    await commitEdits();
+    if (!mounted) return;
     final product = await showEiProductPicker(context);
     if (product == null || !mounted) return;
 
@@ -115,6 +125,19 @@ class EiLineItemsEditorState extends State<EiLineItemsEditor> {
       photoPath = chosen;
     }
 
+    // Résoudre la photo *avant* d'ajouter la ligne — sinon _resolvePhotos
+    // setState après le mount Jodit et WebView2 repasse au gris.
+    if (photoPath.isNotEmpty && !_resolvedPhotos.containsKey(photoPath)) {
+      final local =
+          await EInvoiceConnector.instance.resolvePhotoPath(photoPath);
+      if (local != null) _resolvedPhotos[photoPath] = local;
+    }
+
+    // Windows WebView2 : créer Jodit pendant/juste après la fermeture des
+    // dialogs → surface grise + zone qui s'étire. Laisser les routes finir.
+    await _settleWindowsWebViewHost();
+    if (!mounted) return;
+
     setState(() {
       widget.lines.add(EiLine(
         description: _lineDescriptionFromProduct(product),
@@ -125,8 +148,23 @@ class EiLineItemsEditorState extends State<EiLineItemsEditor> {
         photoPath: photoPath.isEmpty ? null : photoPath,
       ));
     });
+    // Sur Windows, différer le rebuild parent (quote editor) pour laisser
+    // WebView2 finir son 1er paint.
+    if (defaultTargetPlatform == TargetPlatform.windows) {
+      await Future<void>.delayed(const Duration(milliseconds: 200));
+      if (!mounted) return;
+    }
     widget.onChanged();
-    _resolvePhotos();
+  }
+
+  /// Attend la fin des animations de dialog avant de monter une WebView2.
+  Future<void> _settleWindowsWebViewHost() async {
+    if (defaultTargetPlatform != TargetPlatform.windows) return;
+    await Future<void>.delayed(const Duration(milliseconds: 450));
+    if (!mounted) return;
+    await WidgetsBinding.instance.endOfFrame;
+    if (!mounted) return;
+    await Future<void>.delayed(const Duration(milliseconds: 100));
   }
 
   void _addFreeLine() {
@@ -253,6 +291,7 @@ class EiLineItemsEditorState extends State<EiLineItemsEditor> {
   }
 
   Widget _qtyField(EiLine l) => TextFormField(
+        key: ValueKey('qty-${identityHashCode(l)}-${l.qty}'),
         initialValue:
             l.qty == 0 ? '' : formatNumber(l.qty, decimals: l.qty % 1 != 0),
         textAlign: TextAlign.center,
@@ -267,6 +306,7 @@ class EiLineItemsEditorState extends State<EiLineItemsEditor> {
       );
 
   Widget _unitPriceField(EiLine l) => TextFormField(
+        key: ValueKey('pu-${identityHashCode(l)}-${l.unitPrice}'),
         initialValue: l.unitPrice == 0 ? '' : l.unitPrice.toStringAsFixed(2),
         textAlign: TextAlign.center,
         style: const TextStyle(fontWeight: FontWeight.w500),
@@ -523,7 +563,9 @@ class EiLineItemsEditorState extends State<EiLineItemsEditor> {
   }
 }
 
-/// Nom produit bien visible + description riche (Jodit) en dessous.
+/// Nom produit bien visible + description en dessous.
+///
+/// Windows : texte simple (pas de WebView). macOS/mobile : Jodit.
 class _LineDescriptionBlock extends StatefulWidget {
   const _LineDescriptionBlock({
     super.key,
@@ -542,8 +584,8 @@ class _LineDescriptionBlock extends StatefulWidget {
 
 class _LineDescriptionBlockState extends State<_LineDescriptionBlock> {
   late final TextEditingController _title;
-  late final String _initialBody;
-  final _bodyKey = GlobalKey<JoditEditorState>();
+  late String _bodyHtml;
+  final _bodyKey = GlobalKey<NotesEditorState>();
   late bool _bodyExpanded;
 
   static const _heightCollapsed = 160.0;
@@ -554,8 +596,8 @@ class _LineDescriptionBlockState extends State<_LineDescriptionBlock> {
     super.initState();
     final parts = splitLineDescriptionHtml(widget.initialHtml);
     _title = TextEditingController(text: parts.title);
-    _initialBody = parts.bodyHtml;
-    _bodyExpanded = !isBlankNotesHtml(_initialBody);
+    _bodyHtml = parts.bodyHtml;
+    _bodyExpanded = !isBlankNotesHtml(_bodyHtml);
     _title.addListener(_emit);
   }
 
@@ -569,7 +611,8 @@ class _LineDescriptionBlockState extends State<_LineDescriptionBlock> {
   Future<void> commit() async {
     final body = await _bodyKey.currentState?.flushHtml() ??
         _bodyKey.currentState?.getHtml() ??
-        _initialBody;
+        _bodyHtml;
+    _bodyHtml = body;
     widget.onChanged(
       composeLineDescriptionHtml(title: _title.text, bodyHtml: body),
     );
@@ -580,19 +623,27 @@ class _LineDescriptionBlockState extends State<_LineDescriptionBlock> {
   }
 
   void _emit() {
-    final body = _bodyKey.currentState?.getHtml() ?? _initialBody;
+    final raw = _bodyKey.currentState?.getHtml();
+    var body = raw ?? _bodyHtml;
+    if (isBlankNotesHtml(body) && !isBlankNotesHtml(_bodyHtml)) {
+      body = _bodyHtml;
+    }
+    if (raw != null) _bodyHtml = raw;
     widget.onChanged(
       composeLineDescriptionHtml(title: _title.text, bodyHtml: body),
     );
-    final expanded = !isBlankNotesHtml(body);
-    if (expanded != _bodyExpanded) {
-      setState(() => _bodyExpanded = expanded);
+    if (raw != null && !isBlankNotesHtml(raw) && !_bodyExpanded) {
+      setState(() => _bodyExpanded = true);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    // Sur Windows le plain text n’a pas besoin d’une zone 520 px.
+    final height = notesEditorAvoidsWebView
+        ? (_bodyExpanded ? 220.0 : 140.0)
+        : (_bodyExpanded ? _heightExpanded : _heightCollapsed);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -628,11 +679,17 @@ class _LineDescriptionBlockState extends State<_LineDescriptionBlock> {
         ),
         const SizedBox(height: 4),
         SizedBox(
-          height: _bodyExpanded ? _heightExpanded : _heightCollapsed,
-          child: JoditEditor(
+          height: height,
+          child: NotesEditor(
             key: _bodyKey,
-            initialHtml: _initialBody,
+            initialHtml: _bodyHtml,
             onChanged: (_) => _emit(),
+            onReady: () {
+              if (!mounted) return;
+              if (!isBlankNotesHtml(_bodyHtml) && !_bodyExpanded) {
+                setState(() => _bodyExpanded = true);
+              }
+            },
           ),
         ),
       ],

@@ -14,7 +14,7 @@ import '../services/pipeline_settings.dart';
 import '../utils/formatters.dart';
 import '../utils/responsive_form.dart';
 import '../widgets/dictation_field.dart';
-import '../widgets/jodit_editor.dart';
+import '../widgets/notes_editor.dart';
 import '../../modules/invoicing/invoicing_module.dart';
 import '../modules/module_registry.dart';
 import '../../theme/app_theme.dart';
@@ -28,7 +28,7 @@ Future<bool> showOpportunityDialog(
 }) async {
   final title = TextEditingController(text: existing?.title ?? '');
   final amount = TextEditingController(text: formatAmountForEditing(existing?.amount));
-  final notesKey = GlobalKey<JoditEditorState>();
+  final notesKey = GlobalKey<NotesEditorState>();
   String? savedNotesHtml = existing?.notes;
   var stage = existing?.stage ?? 'lead';
   var probability = existing?.probability ?? 50;
@@ -293,7 +293,10 @@ Future<bool> showOpportunityDialog(
                     style: Theme.of(context).textTheme.bodySmall),
                 const SizedBox(height: 4),
                 Expanded(
-                  child: JoditEditor(key: notesKey, initialHtml: existing?.notes ?? ''),
+                  child: NotesEditor(
+                    key: notesKey,
+                    initialHtml: existing?.notes ?? '',
+                  ),
                 ),
               ],
             ),

@@ -59,6 +59,66 @@ String notesPlainText(String? html) {
   }
 }
 
+/// Texte multiligne pour édition plain (Windows) — conserve les retours ligne.
+String notesPlainTextMultiline(String? html) {
+  if (html == null || html.trim().isEmpty) return '';
+  try {
+    final fragment = html_parser.parseFragment(html);
+    final buf = StringBuffer();
+    void walk(dom.Node node, {bool block = false}) {
+      if (node is dom.Text) {
+        buf.write(node.data.replaceAll('\u00A0', ' '));
+        return;
+      }
+      if (node is! dom.Element) return;
+      final tag = node.localName?.toLowerCase() ?? '';
+      final isBlock = tag == 'p' ||
+          tag == 'div' ||
+          tag == 'br' ||
+          tag == 'li' ||
+          tag == 'h1' ||
+          tag == 'h2' ||
+          tag == 'h3' ||
+          tag == 'tr';
+      if (tag == 'br') {
+        buf.writeln();
+        return;
+      }
+      if (isBlock && buf.isNotEmpty && !buf.toString().endsWith('\n')) {
+        buf.writeln();
+      }
+      for (final c in node.nodes) {
+        walk(c, block: isBlock);
+      }
+      if (isBlock && tag != 'br' && buf.isNotEmpty && !buf.toString().endsWith('\n')) {
+        buf.writeln();
+      }
+    }
+    for (final n in fragment.nodes) {
+      walk(n);
+    }
+    return buf.toString().replaceAll(RegExp(r'\n{3,}'), '\n\n').trim();
+  } catch (_) {
+    return notesPlainText(html);
+  }
+}
+
+String _escapeHtmlText(String s) => s
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;');
+
+/// Convertit du texte brut (édition Windows) en HTML notes simple.
+String notesHtmlFromPlainText(String plain) {
+  final trimmed = plain.replaceAll('\r\n', '\n').replaceAll('\r', '\n').trim();
+  if (trimmed.isEmpty) return '';
+  final paragraphs = trimmed.split(RegExp(r'\n{2,}'));
+  return paragraphs.map((p) {
+    final lines = p.split('\n').map(_escapeHtmlText).join('<br>');
+    return '<p>$lines</p>';
+  }).join();
+}
+
 /// Marqueur du titre produit dans une description de ligne devis/facture.
 const kLineTitleAttr = 'data-emhk-line-title';
 

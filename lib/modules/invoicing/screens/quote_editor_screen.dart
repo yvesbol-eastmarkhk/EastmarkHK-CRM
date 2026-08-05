@@ -7,7 +7,7 @@ import '../../../core/db/app_database.dart';
 import '../../../core/models/models.dart';
 import '../../../core/utils/formatters.dart';
 import '../../../core/utils/rich_notes.dart';
-import '../../../core/widgets/jodit_editor.dart';
+import '../../../core/widgets/notes_editor.dart';
 import '../../../db/crm_db.dart';
 import '../../../l10n/gen/app_localizations.dart';
 import '../../../platform/desktop_chrome.dart';
@@ -58,7 +58,7 @@ class EiDocumentEditorScreen extends StatefulWidget {
 class _EiDocumentEditorScreenState extends State<EiDocumentEditorScreen> {
   String? _companyId;
   late bool _asInvoice = widget.existing?.isInvoice ?? widget.asInvoice;
-  final _notesKey = GlobalKey<JoditEditorState>();
+  final _notesKey = GlobalKey<NotesEditorState>();
   final _linesKey = GlobalKey<EiLineItemsEditorState>();
   final _vat = TextEditingController(text: '21');
   late DateTime _date = DateTime.now();
@@ -709,7 +709,7 @@ class _EiDocumentEditorScreenState extends State<EiDocumentEditorScreen> {
                   children: [
                     SizedBox(
                       height: 220,
-                      child: JoditEditor(
+                      child: NotesEditor(
                         key: _notesKey,
                         initialHtml: _notesInitial,
                       ),
