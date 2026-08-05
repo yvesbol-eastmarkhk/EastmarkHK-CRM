@@ -21,13 +21,12 @@
   Le mode -Store ne signe PAS le paquet : Partner Center le signe à
   la soumission. Uploadez le .msix résultant dans Partner Center > Packages.
 
-  Bump de version : -MsixVersion 1.0.1.0 (ou msix_version dans pubspec.yaml).
+  Bump de version : -MsixVersion 1.0.2.28 (ou msix_version dans pubspec.yaml).
   Le Store exige une version strictement croissante à chaque soumission.
 
-  NB : EastmarkHK CRM est gratuit — pas d'IAP à ce jour sur cette build.
-  Le module e-Invoicing (payant sur iOS/macOS) n'a pas encore d'équivalent
-  Microsoft Store ; il reste désactivé/masqué côté Windows en attendant,
-  avec activation web (code + e-mail) comme seule voie de secours.
+  Si SignTool échoue sur le timestamp (sideload) :
+    - réessayer (serveur DigiCert/Sectigo parfois down)
+    - ou utiliser -Store pour une soumission Microsoft Store (pas de signature locale)
 #>
 
 param(
@@ -35,7 +34,9 @@ param(
   [string]$IdentityName = $env:EMHK_STORE_IDENTITY_NAME,
   [string]$Publisher = $env:EMHK_STORE_PUBLISHER,
   [string]$PublisherDisplayName = $env:EMHK_STORE_PUBLISHER_DISPLAY_NAME,
-  [string]$MsixVersion = ''
+  [string]$MsixVersion = '',
+  # Sideload : autre serveur d'horodatage si DigiCert/Sectigo est down.
+  [string]$TimestampUrl = 'http://timestamp.sectigo.com'
 )
 
 $ErrorActionPreference = "Stop"
@@ -67,9 +68,14 @@ if ($Store) {
     '--publisher', $Publisher,
     '--publisher-display-name', $PublisherDisplayName
   )
-  Write-Host "==> Mode Microsoft Store : $IdentityName"
+  Write-Host "==> Mode Microsoft Store : $IdentityName (unsigned — Partner Center signs)"
 } else {
-  Write-Host "==> Mode sideload (signature locale de test)"
+  Write-Host "==> Mode sideload (signature locale)"
+  Write-Host "    timestamp: $TimestampUrl"
+  $msixArgs += @(
+    '--signtool-options',
+    "/fd SHA256 /tr $TimestampUrl /td SHA256"
+  )
 }
 if (-not [string]::IsNullOrWhiteSpace($MsixVersion)) {
   $msixArgs += @('--version', $MsixVersion)
@@ -77,7 +83,17 @@ if (-not [string]::IsNullOrWhiteSpace($MsixVersion)) {
 
 Write-Host "==> dart run msix:create $msixArgs"
 dart run msix:create --build-windows false @msixArgs
-if ($LASTEXITCODE -ne 0) { throw "msix:create failed ($LASTEXITCODE)" }
+if ($LASTEXITCODE -ne 0) {
+  if (-not $Store) {
+    Write-Host ""
+    Write-Host "SignTool timestamp failed often means the TSA is unreachable."
+    Write-Host "Retry with another server, e.g.:"
+    Write-Host "  powershell -ExecutionPolicy Bypass -File tool\build_msix.ps1 -TimestampUrl http://timestamp.digicert.com"
+    Write-Host "  powershell -ExecutionPolicy Bypass -File tool\build_msix.ps1 -TimestampUrl http://timestamp.globalsign.com/tsa/r6advanced1"
+    Write-Host "For Microsoft Store submission use -Store (no local signing)."
+  }
+  throw "msix:create failed ($LASTEXITCODE)"
+}
 
 $outDir = Join-Path $root "build\windows\x64\runner\Release"
 Get-ChildItem $outDir -Filter *.msix -ErrorAction SilentlyContinue |
