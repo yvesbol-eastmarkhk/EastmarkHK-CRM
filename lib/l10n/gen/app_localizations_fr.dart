@@ -3136,4 +3136,18 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get invNoPhoto => 'Sans photo';
+
+  @override
+  String get modulesBuyOnMicrosoftStore => 'Obtenir sur le Microsoft Store';
+
+  @override
+  String get modulesMicrosoftStoreNote =>
+      'Téléchargez EastmarkHK e-Invoicing depuis le Microsoft Store, puis revenez ici pour l’activer dans le CRM.';
+
+  @override
+  String get invAcquireMicrosoftStoreBody =>
+      'Ce module utilise EastmarkHK e-Invoicing. Téléchargez-le depuis le Microsoft Store, lancez-le une fois, puis revenez ici.';
+
+  @override
+  String get invViewOnMicrosoftStore => 'Voir sur le Microsoft Store';
 }

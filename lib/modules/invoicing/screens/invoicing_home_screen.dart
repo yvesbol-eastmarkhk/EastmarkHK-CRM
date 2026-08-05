@@ -225,14 +225,13 @@ class _InvoicingHomeScreenState extends State<InvoicingHomeScreen>
     );
   }
 
-  /// Le canal d'obtention d'e-Invoicing suit celui du CRM lui-même : un CRM
-  /// distribué App Store renvoie vers l'App Store (achat/téléchargement
-  /// StoreKit) ; un CRM distribué webstore renvoie vers eastmarkhk.com
-  /// (téléchargement ET paiement s'y font tous les deux).
+  /// Canal d’obtention e-Invoicing : App Store / Microsoft Store (Windows) /
+  /// eastmarkhk.com.
   Widget _unavailable(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context);
     final appStoreChannel = emhkUsesAppStoreIap;
+    final msStoreChannel = emhkUsesMicrosoftStoreForEinvoicing;
     final hasStoreUrl = emhkHasEinvoicingAppStoreUrl;
     return Center(
       child: ConstrainedBox(
@@ -247,11 +246,13 @@ class _InvoicingHomeScreenState extends State<InvoicingHomeScreen>
                   ? l10n.invRemoteSetupBody
                   : _appInstalled
                       ? l10n.invLaunchOnceBody
-                      : appStoreChannel
-                          ? (hasStoreUrl
-                              ? l10n.invAcquireAppStoreBody
-                              : l10n.invAppStoreUrlMissing)
-                          : l10n.invAcquireWebBody,
+                      : msStoreChannel
+                          ? l10n.invAcquireMicrosoftStoreBody
+                          : appStoreChannel
+                              ? (hasStoreUrl
+                                  ? l10n.invAcquireAppStoreBody
+                                  : l10n.invAppStoreUrlMissing)
+                              : l10n.invAcquireWebBody,
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 16),
@@ -269,15 +270,21 @@ class _InvoicingHomeScreenState extends State<InvoicingHomeScreen>
                 icon: const Icon(Icons.open_in_new, size: 18),
                 label: Text(l10n.invLaunchStandalone),
               )
+            else if (msStoreChannel)
+              FilledButton.icon(
+                onPressed: () => _openAcquisitionLink(_AcquireChannel.microsoftStore),
+                icon: const Icon(Icons.shop_outlined, size: 18),
+                label: Text(l10n.invViewOnMicrosoftStore),
+              )
             else if (appStoreChannel && hasStoreUrl)
               FilledButton.icon(
-                onPressed: () => _openAcquisitionLink(appStore: true),
+                onPressed: () => _openAcquisitionLink(_AcquireChannel.appStore),
                 icon: const Icon(Icons.storefront_outlined, size: 18),
                 label: Text(l10n.invViewOnAppStore),
               )
             else if (!appStoreChannel)
               FilledButton.icon(
-                onPressed: () => _openAcquisitionLink(appStore: false),
+                onPressed: () => _openAcquisitionLink(_AcquireChannel.website),
                 icon: const Icon(Icons.language, size: 18),
                 label: Text(l10n.invViewOnWebsite),
               ),
@@ -289,11 +296,14 @@ class _InvoicingHomeScreenState extends State<InvoicingHomeScreen>
     );
   }
 
-  Future<void> _openAcquisitionLink({required bool appStore}) async {
-    final url = appStore
-        ? kEmhkEinvoicingAppStoreUrl.trim()
-        : (LicenseManager.modulePurchaseUrls['invoicing'] ??
-            'https://eastmarkhk.com');
+  Future<void> _openAcquisitionLink(_AcquireChannel channel) async {
+    final url = switch (channel) {
+      _AcquireChannel.microsoftStore => kEmhkEinvoicingMicrosoftStoreUrl.trim(),
+      _AcquireChannel.appStore => kEmhkEinvoicingAppStoreUrl.trim(),
+      _AcquireChannel.website =>
+        LicenseManager.instance.purchaseUrlForModule('invoicing') ??
+            'https://eastmarkhk.com',
+    };
     if (url.isEmpty) return;
     await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
   }
@@ -369,3 +379,5 @@ class _InvoicingHomeScreenState extends State<InvoicingHomeScreen>
         _ => code,
       };
 }
+
+enum _AcquireChannel { appStore, microsoftStore, website }

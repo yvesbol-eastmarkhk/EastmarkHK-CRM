@@ -1615,5 +1615,9 @@
   "dictationStarting": "Démarrage de la dictée…",
   "invChooseLinePhotoTitle": "Choisir la photo pour le PDF",
   "invChooseNewPhoto": "Choisir un autre fichier…",
-  "invNoPhoto": "Sans photo"
+  "invNoPhoto": "Sans photo",
+  "modulesBuyOnMicrosoftStore": "Obtenir sur le Microsoft Store",
+  "modulesMicrosoftStoreNote": "Téléchargez EastmarkHK e-Invoicing depuis le Microsoft Store, puis revenez ici pour l’activer dans le CRM.",
+  "invAcquireMicrosoftStoreBody": "Ce module utilise EastmarkHK e-Invoicing. Téléchargez-le depuis le Microsoft Store, lancez-le une fois, puis revenez ici.",
+  "invViewOnMicrosoftStore": "Voir sur le Microsoft Store"
 }

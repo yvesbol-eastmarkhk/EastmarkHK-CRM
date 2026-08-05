@@ -3128,6 +3128,20 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get invNoPhoto => 'No photo';
+
+  @override
+  String get modulesBuyOnMicrosoftStore => 'Get on Microsoft Store';
+
+  @override
+  String get modulesMicrosoftStoreNote =>
+      'Download EastmarkHK e-Invoicing from the Microsoft Store, then return here to enable it in the CRM.';
+
+  @override
+  String get invAcquireMicrosoftStoreBody =>
+      'This module uses EastmarkHK e-Invoicing. Download it from the Microsoft Store, launch it once, then return here.';
+
+  @override
+  String get invViewOnMicrosoftStore => 'View on Microsoft Store';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
@@ -6253,4 +6267,18 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get invNoPhoto => 'No photo';
+
+  @override
+  String get modulesBuyOnMicrosoftStore => 'Get on Microsoft Store';
+
+  @override
+  String get modulesMicrosoftStoreNote =>
+      'Download EastmarkHK e-Invoicing from the Microsoft Store, then return here to enable it in the CRM.';
+
+  @override
+  String get invAcquireMicrosoftStoreBody =>
+      'This module uses EastmarkHK e-Invoicing. Download it from the Microsoft Store, launch it once, then return here.';
+
+  @override
+  String get invViewOnMicrosoftStore => 'View on Microsoft Store';
 }

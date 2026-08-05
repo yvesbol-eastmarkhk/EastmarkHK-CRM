@@ -1556,5 +1556,9 @@
   "bannerCompanyPlaceholder": "A sua empresa",
   "invChooseLinePhotoTitle": "Choose photo for the PDF",
   "invChooseNewPhoto": "Choose another file…",
-  "invNoPhoto": "No photo"
+  "invNoPhoto": "No photo",
+  "modulesBuyOnMicrosoftStore": "Get on Microsoft Store",
+  "modulesMicrosoftStoreNote": "Download EastmarkHK e-Invoicing from the Microsoft Store, then return here to enable it in the CRM.",
+  "invAcquireMicrosoftStoreBody": "This module uses EastmarkHK e-Invoicing. Download it from the Microsoft Store, launch it once, then return here.",
+  "invViewOnMicrosoftStore": "View on Microsoft Store"
 }

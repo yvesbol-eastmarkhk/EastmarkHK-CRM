@@ -178,8 +178,18 @@ class _ModuleActivationSheetState extends State<ModuleActivationSheet> {
               const SizedBox(height: 8),
               OutlinedButton.icon(
                 onPressed: _openPurchase,
-                icon: const Icon(Icons.shopping_bag_outlined),
-                label: Text(l10n.modulesBuyOnWebsite),
+                icon: Icon(
+                  emhkUsesMicrosoftStoreForEinvoicing &&
+                          widget.moduleId == 'invoicing'
+                      ? Icons.shop_outlined
+                      : Icons.shopping_bag_outlined,
+                ),
+                label: Text(
+                  emhkUsesMicrosoftStoreForEinvoicing &&
+                          widget.moduleId == 'invoicing'
+                      ? l10n.modulesBuyOnMicrosoftStore
+                      : l10n.modulesBuyOnWebsite,
+                ),
               ),
             ],
             if (emhkShowsWebStorePurchaseLinks) ...[

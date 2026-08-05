@@ -36,6 +36,33 @@ const String kEmhkEinvoicingAppStoreUrl = String.fromEnvironment(
 bool get emhkHasEinvoicingAppStoreUrl =>
     kEmhkEinvoicingAppStoreUrl.trim().isNotEmpty;
 
+/// Fiche Microsoft Store d'EastmarkHK e-Invoicing (CRM Windows / MSIX).
+/// Surcharge possible : `--dart-define=EMHK_EINVOICING_MS_STORE_URL=…`.
+const String kEmhkEinvoicingMicrosoftStoreUrl = String.fromEnvironment(
+  'EMHK_EINVOICING_MS_STORE_URL',
+  defaultValue: 'https://apps.microsoft.com/detail/9NHV9X5RN3P4',
+);
+
+bool get emhkHasEinvoicingMicrosoftStoreUrl =>
+    kEmhkEinvoicingMicrosoftStoreUrl.trim().isNotEmpty;
+
+/// Windows : ouvrir e-Invoicing via Microsoft Store (pas App Store / pas site).
+bool get emhkUsesMicrosoftStoreForEinvoicing {
+  if (kIsWeb) return false;
+  return Platform.isWindows && emhkHasEinvoicingMicrosoftStoreUrl;
+}
+
+/// URL d’acquisition d’e-Invoicing selon la plateforme.
+String? get emhkEinvoicingAcquireUrl {
+  if (emhkUsesMicrosoftStoreForEinvoicing) {
+    return kEmhkEinvoicingMicrosoftStoreUrl.trim();
+  }
+  if (emhkUsesAppStoreIap && emhkHasEinvoicingAppStoreUrl) {
+    return kEmhkEinvoicingAppStoreUrl.trim();
+  }
+  return null;
+}
+
 /// Activation par code (client déjà abonné sur le webstore).
 /// Masquée sur iOS / macOS App Store (Guideline 3.1.1 — pas d’UI
 /// « abonnement eastmarkhk.com » à côté de l’IAP).

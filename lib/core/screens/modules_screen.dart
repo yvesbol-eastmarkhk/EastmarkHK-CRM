@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../l10n/gen/app_localizations.dart';
 import '../../modules/invoicing/invoicing_module.dart';
@@ -224,6 +225,12 @@ class _ModuleCardState extends State<_ModuleCard> {
     );
   }
 
+  Future<void> _openMicrosoftStore() async {
+    final url = kEmhkEinvoicingMicrosoftStoreUrl.trim();
+    if (url.isEmpty) return;
+    await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+  }
+
   Future<void> _useInCrm() async {
     await ModuleRegistry.instance.setUsedInCrm(module.id, true);
     if (!mounted) return;
@@ -347,7 +354,9 @@ class _ModuleCardState extends State<_ModuleCard> {
           if (emhkShowsWebStorePurchaseLinks && !active) ...[
             const SizedBox(height: 8),
             Text(
-              l10n.modulesWebStoreNote,
+              emhkUsesMicrosoftStoreForEinvoicing && module.id == 'invoicing'
+                  ? l10n.modulesMicrosoftStoreNote
+                  : l10n.modulesWebStoreNote,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
             ),
           ],
@@ -356,6 +365,18 @@ class _ModuleCardState extends State<_ModuleCard> {
             spacing: 8,
             runSpacing: 8,
             children: [
+              if (!active &&
+                  emhkUsesMicrosoftStoreForEinvoicing &&
+                  module.id == 'invoicing')
+                FilledButton.icon(
+                  onPressed: _busy ? null : _openMicrosoftStore,
+                  style: FilledButton.styleFrom(
+                    backgroundColor: const Color(0xFF0078D4),
+                    foregroundColor: Colors.white,
+                  ),
+                  icon: const Icon(Icons.shop_outlined, size: 20),
+                  label: Text(l10n.modulesBuyOnMicrosoftStore),
+                ),
               if (!active && emhkShowsWebStorePurchaseLinks && module.id == 'invoicing')
                 FilledButton.icon(
                   onPressed: _busy ? null : _importFromEinvoicing,

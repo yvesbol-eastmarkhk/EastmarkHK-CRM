@@ -6,6 +6,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'distribution_config.dart';
+
 /// Licence eastmarkhk.com — achat webstore, activation offline par code.
 /// Compatible App Store : pas de lien d'achat externe, mais un client déjà
 /// abonné sur le site peut coller son code (Apple 3.1.3(b) multi-plateforme).
@@ -68,8 +70,12 @@ class LicenseManager extends ChangeNotifier {
     return _expiryFromToken(token);
   }
 
-  String? purchaseUrlForModule(String moduleId) =>
-      modulePurchaseUrls[moduleId];
+  String? purchaseUrlForModule(String moduleId) {
+    if (moduleId == 'invoicing' && emhkUsesMicrosoftStoreForEinvoicing) {
+      return kEmhkEinvoicingMicrosoftStoreUrl.trim();
+    }
+    return modulePurchaseUrls[moduleId];
+  }
 
   Future<void> init() async {
     if (_ready) return;

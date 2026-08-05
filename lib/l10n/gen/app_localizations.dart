@@ -5629,6 +5629,30 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Sans photo'**
   String get invNoPhoto;
+
+  /// No description provided for @modulesBuyOnMicrosoftStore.
+  ///
+  /// In fr, this message translates to:
+  /// **'Obtenir sur le Microsoft Store'**
+  String get modulesBuyOnMicrosoftStore;
+
+  /// No description provided for @modulesMicrosoftStoreNote.
+  ///
+  /// In fr, this message translates to:
+  /// **'Téléchargez EastmarkHK e-Invoicing depuis le Microsoft Store, puis revenez ici pour l’activer dans le CRM.'**
+  String get modulesMicrosoftStoreNote;
+
+  /// No description provided for @invAcquireMicrosoftStoreBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ce module utilise EastmarkHK e-Invoicing. Téléchargez-le depuis le Microsoft Store, lancez-le une fois, puis revenez ici.'**
+  String get invAcquireMicrosoftStoreBody;
+
+  /// No description provided for @invViewOnMicrosoftStore.
+  ///
+  /// In fr, this message translates to:
+  /// **'Voir sur le Microsoft Store'**
+  String get invViewOnMicrosoftStore;
 }
 
 class _AppLocalizationsDelegate
