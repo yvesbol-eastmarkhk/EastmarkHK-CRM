@@ -1,32 +1,32 @@
 <#
 .SYNOPSIS
-  Build MSIX pour EastmarkHK CRM — sideload (défaut) ou Microsoft Store.
+  Build MSIX for EastmarkHK CRM - sideload (default) or Microsoft Store.
 
 .DESCRIPTION
-  Sideload (test local / distribution directe) :
+  Sideload (local test / direct distribution):
 
       powershell -ExecutionPolicy Bypass -File tool\build_msix.ps1
 
-  Microsoft Store (valeurs de Partner Center > Product identity) :
+  Microsoft Store (values from Partner Center > Product identity):
 
       powershell -ExecutionPolicy Bypass -File tool\build_msix.ps1 -Store `
         -IdentityName "12345EastmarkHK.EastmarkHKCRM" `
         -Publisher "CN=XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX" `
         -PublisherDisplayName "EastmarkHK"
 
-  Les 3 valeurs Store peuvent aussi venir des variables d'environnement
+  The 3 Store values can also come from environment variables
   EMHK_STORE_IDENTITY_NAME / EMHK_STORE_PUBLISHER / EMHK_STORE_PUBLISHER_DISPLAY_NAME
-  (évite de les mettre dans le repo).
+  (keeps them out of the repo).
 
-  Le mode -Store ne signe PAS le paquet : Partner Center le signe à
-  la soumission. Uploadez le .msix résultant dans Partner Center > Packages.
+  -Store mode does NOT sign the package: Partner Center signs on submission.
+  Upload the resulting .msix in Partner Center > Packages.
 
-  Bump de version : -MsixVersion 1.0.2.28 (ou msix_version dans pubspec.yaml).
-  Le Store exige une version strictement croissante à chaque soumission.
+  Version bump: -MsixVersion 1.0.2.28 (or msix_version in pubspec.yaml).
+  The Store requires a strictly increasing version on each submission.
 
-  Si SignTool échoue sur le timestamp (sideload) :
-    - réessayer (serveur DigiCert/Sectigo parfois down)
-    - ou utiliser -Store pour une soumission Microsoft Store (pas de signature locale)
+  If SignTool fails on the timestamp (sideload):
+    - retry (DigiCert/Sectigo TSA is sometimes down)
+    - or use -Store for a Microsoft Store submission (no local signing)
 #>
 
 param(
@@ -35,7 +35,7 @@ param(
   [string]$Publisher = $env:EMHK_STORE_PUBLISHER,
   [string]$PublisherDisplayName = $env:EMHK_STORE_PUBLISHER_DISPLAY_NAME,
   [string]$MsixVersion = '',
-  # Sideload : autre serveur d'horodatage si DigiCert/Sectigo est down.
+  # Sideload: alternate timestamp server if DigiCert/Sectigo is down.
   [string]$TimestampUrl = 'http://timestamp.sectigo.com'
 )
 
@@ -54,13 +54,13 @@ if ($LASTEXITCODE -ne 0) { throw "flutter build windows failed ($LASTEXITCODE)" 
 $msixArgs = @()
 if ($Store) {
   if ([string]::IsNullOrWhiteSpace($IdentityName)) {
-    throw "Mode -Store : -IdentityName requis (Partner Center > Product identity > Package/Identity/Name)."
+    throw "Mode -Store: -IdentityName required (Partner Center > Product identity > Package/Identity/Name)."
   }
   if ([string]::IsNullOrWhiteSpace($Publisher)) {
-    throw "Mode -Store : -Publisher requis (Product identity > Package/Properties/Publisher)."
+    throw "Mode -Store: -Publisher required (Product identity > Package/Properties/Publisher)."
   }
   if ([string]::IsNullOrWhiteSpace($PublisherDisplayName)) {
-    throw "Mode -Store : -PublisherDisplayName requis (Product identity > Package/Properties/PublisherDisplayName)."
+    throw "Mode -Store: -PublisherDisplayName required (Product identity > Package/Properties/PublisherDisplayName)."
   }
   $msixArgs += @(
     '--store',
@@ -68,9 +68,9 @@ if ($Store) {
     '--publisher', $Publisher,
     '--publisher-display-name', $PublisherDisplayName
   )
-  Write-Host "==> Mode Microsoft Store : $IdentityName (unsigned — Partner Center signs)"
+  Write-Host "==> Mode Microsoft Store: $IdentityName (unsigned - Partner Center signs)"
 } else {
-  Write-Host "==> Mode sideload (signature locale)"
+  Write-Host "==> Mode sideload (local signing)"
   Write-Host "    timestamp: $TimestampUrl"
   $msixArgs += @(
     '--signtool-options',
@@ -99,4 +99,7 @@ $outDir = Join-Path $root "build\windows\x64\runner\Release"
 Get-ChildItem $outDir -Filter *.msix -ErrorAction SilentlyContinue |
   Sort-Object LastWriteTime -Descending |
   Select-Object -First 1 |
-  ForEach-Object { Write-Host "==> MSIX prêt : $($_.FullName) ($([math]::Round($_.Length / 1MB, 1)) MB)" }
+  ForEach-Object {
+    $mb = [math]::Round($_.Length / 1MB, 1)
+    Write-Host "==> MSIX ready: $($_.FullName) ($mb MB)"
+  }
