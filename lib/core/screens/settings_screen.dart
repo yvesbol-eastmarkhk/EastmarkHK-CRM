@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:intl/intl.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../l10n/gen/app_localizations.dart';
@@ -858,7 +859,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 }
 
-/// Version marketing + numéro de build (Info.plist / pubspec).
+/// À propos : Version 1.0.2 (28) + date d'install/update en jj/mm/aaaa.
 class _AppVersionSection extends StatelessWidget {
   const _AppVersionSection();
 
@@ -889,13 +890,26 @@ class _AppVersionSection extends StatelessWidget {
                 ),
               );
             }
-            final build = p.buildNumber.isEmpty ? '—' : p.buildNumber;
+            // Ex. Version 1.0.2 (28) — marketing + build sur une seule ligne.
+            final versionText = p.buildNumber.isEmpty
+                ? p.version
+                : '${p.version} (${p.buildNumber})';
+            // Date d'install/update du binaire, format français jj/mm/aaaa.
+            final builtOn = p.updateTime ?? p.installTime;
+            final dateText = builtOn == null
+                ? null
+                : DateFormat('dd/MM/yyyy').format(builtOn.toLocal());
             return Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                _VersionInfoRow(label: l10n.settingsVersion, value: p.version),
-                const SizedBox(height: 10),
-                _VersionInfoRow(label: l10n.settingsBuild, value: build),
+                _VersionInfoRow(
+                  label: l10n.settingsVersion,
+                  value: versionText,
+                ),
+                if (dateText != null) ...[
+                  const SizedBox(height: 10),
+                  _VersionInfoRow(label: l10n.invDocDate, value: dateText),
+                ],
                 const SizedBox(height: 8),
                 Text(
                   p.appName,
