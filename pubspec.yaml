@@ -137,9 +137,9 @@ msix_config:
   output_name: EastmarkHK-CRM
   install_certificate: false
   store: false
-  # Sideload only — /tr + /td avoids SignTool "timestamp server" failures.
-  # Store builds use tool\build_msix.ps1 -Store (unsigned; Partner Center signs).
-  signtool_options: /fd SHA256 /tr http://timestamp.sectigo.com /td SHA256
+  # Sideload timestamp options are set by tool\build_msix.ps1 (-TimestampUrl).
+  # Do not set signtool_options here: msix already passes /fd, and the script
+  # adds /tr + /td. Store builds use -Store (unsigned; Partner Center signs).
 
 # Écran de chargement (splash natif au démarrage) — régénérer avec :
 # dart run flutter_native_splash:create

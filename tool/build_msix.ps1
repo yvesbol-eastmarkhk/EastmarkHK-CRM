@@ -72,9 +72,10 @@ if ($Store) {
 } else {
   Write-Host "==> Mode sideload (local signing)"
   Write-Host "    timestamp: $TimestampUrl"
+  # Do not pass /fd here: msix already adds /fd SHA256.
   $msixArgs += @(
     '--signtool-options',
-    "/fd SHA256 /tr $TimestampUrl /td SHA256"
+    "/tr $TimestampUrl /td SHA256"
   )
 }
 if (-not [string]::IsNullOrWhiteSpace($MsixVersion)) {
