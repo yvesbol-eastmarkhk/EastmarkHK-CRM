@@ -27,5 +27,11 @@ flutter pub get
 echo "==> flutter build macos --config-only"
 flutter build macos --config-only --release
 
+echo "==> silence_storekit_deprecations (post-clone macos)"
+python3 tool/silence_storekit_deprecations.py \
+  "$CI_PRIMARY_REPOSITORY_PATH/macos/Flutter/ephemeral" \
+  "${PUB_CACHE:-$HOME/.pub-cache}/hosted" \
+  || true
+
 echo "==> ci_post_clone (macos) OK"
 exit 0

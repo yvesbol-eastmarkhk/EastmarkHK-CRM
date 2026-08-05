@@ -28,5 +28,11 @@ flutter pub get
 echo "==> flutter build ios --config-only (SPM / Generated.xcconfig)"
 flutter build ios --config-only --release
 
+echo "==> silence_storekit_deprecations (post-clone ios)"
+python3 tool/silence_storekit_deprecations.py \
+  "$CI_PRIMARY_REPOSITORY_PATH/ios/Flutter/ephemeral" \
+  "${PUB_CACHE:-$HOME/.pub-cache}/hosted" \
+  || true
+
 echo "==> ci_post_clone (ios) OK"
 exit 0
