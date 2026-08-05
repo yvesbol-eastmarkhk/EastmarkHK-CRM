@@ -160,7 +160,9 @@ class LoginPanelState extends State<LoginPanel> {
       user.touchIdEnabled = true;
       await AppDatabase.instance.upsertUser(user);
       if (mounted) setState(() => _hasPasskeyToken = true);
-    } catch (_) {}
+    } catch (e, st) {
+      debugPrint('LoginPanel._enablePasskeyByDefault failed: $e\n$st');
+    }
   }
 
   void _enterApp() {
