@@ -3115,4 +3115,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get dictationStarting => 'جارٍ بدء الإملاء…';
+
+  @override
+  String get invChooseLinePhotoTitle => 'Choose photo for the PDF';
+
+  @override
+  String get invChooseNewPhoto => 'Choose another file…';
+
+  @override
+  String get invNoPhoto => 'No photo';
 }

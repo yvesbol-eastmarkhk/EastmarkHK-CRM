@@ -185,11 +185,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
     await db.setSetting('company_phone', _phone);
     await db.setSetting('company_phone_country', _phoneCountry);
     await db.setSetting('company_email', _email);
+    await db.touchCompanyProfileForSync();
     await db.setSetting('sync_mode', _syncMode == _SyncMode.remote ? 'remote' : 'local');
     await db.setSetting('sync_server', _syncServer.text.trim());
     await db.setSetting('sync_account', _syncAccount.text.trim());
     // Le mot de passe de sync vit dans le trousseau sécurisé, jamais dans
-    // la table settings (qui elle sera synchronisée en clair plus tard).
+    // company_profile / settings synchronisés.
     // Champ vide : on ne touche pas au trousseau (évite d’effacer un MDP
     // déjà stocké si la lecture a échoué au chargement).
     var keychainError = false;

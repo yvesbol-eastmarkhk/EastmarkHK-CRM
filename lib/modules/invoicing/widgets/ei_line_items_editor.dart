@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 
 import '../../../core/utils/formatters.dart';
@@ -10,6 +9,7 @@ import '../../../core/widgets/jodit_editor.dart';
 import '../../../l10n/gen/app_localizations.dart';
 import '../../../theme/crm_tokens.dart';
 import '../einvoice_connector.dart';
+import 'ei_line_photo_picker.dart';
 import 'ei_product_picker.dart';
 
 /// Titre catalogue (+ réf.) bien visible + corps description HTML Jodit.
@@ -100,8 +100,21 @@ class EiLineItemsEditorState extends State<EiLineItemsEditor> {
   Future<void> _pickFromCatalog() async {
     final product = await showEiProductPicker(context);
     if (product == null || !mounted) return;
-    final photo =
-        product.mainPhotoPath.isEmpty ? null : product.mainPhotoPath;
+
+    var photoPath = '';
+    final paths = product.photoPaths.where((p) => p.trim().isNotEmpty).toList();
+    if (paths.length == 1) {
+      photoPath = paths.first;
+    } else if (paths.length > 1) {
+      final chosen = await showEiLinePhotoPicker(
+        context,
+        photoPaths: paths,
+        selectedPath: product.mainPhotoPath,
+      );
+      if (chosen == null || !mounted) return;
+      photoPath = chosen;
+    }
+
     setState(() {
       widget.lines.add(EiLine(
         description: _lineDescriptionFromProduct(product),
@@ -109,7 +122,7 @@ class EiLineItemsEditorState extends State<EiLineItemsEditor> {
         unitPrice: product.salePrice,
         productId: product.id,
         productUuid: product.uuid.isEmpty ? null : product.uuid,
-        photoPath: photo,
+        photoPath: photoPath.isEmpty ? null : photoPath,
       ));
     });
     widget.onChanged();
@@ -122,32 +135,55 @@ class EiLineItemsEditorState extends State<EiLineItemsEditor> {
   }
 
   Future<void> _pickPhoto(EiLine l) async {
-    const typeGroup = XTypeGroup(
-      label: 'images',
-      extensions: ['jpg', 'jpeg', 'png', 'webp', 'heic'],
-    );
-    final file = await openFile(acceptedTypeGroups: [typeGroup]);
-    if (file == null || !mounted) return;
-    try {
-      final stored =
-          await EInvoiceConnector.instance.saveLinePhotoFromPath(file.path);
-      if (!mounted) return;
-      if (stored.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              content: Text(AppLocalizations.of(context).eiPhotoSaveFailed)),
+    List<String> paths = [];
+    if (l.productUuid != null || l.productId != null) {
+      final product = await EInvoiceConnector.instance.findProduct(
+        id: l.productId,
+        uuid: l.productUuid,
+      );
+      paths = product?.photoPaths.where((p) => p.trim().isNotEmpty).toList() ??
+          [];
+    }
+    final current = (l.photoPath ?? '').trim();
+    if (current.isNotEmpty && !paths.contains(current)) {
+      paths = [...paths, current];
+    }
+
+    if (!mounted) return;
+
+    // Ligne libre / catalogue sans photo : fichier ou sélecteur.
+    if ((l.productUuid == null && l.productId == null) || paths.isEmpty) {
+      String? path;
+      if (paths.isEmpty) {
+        path = await pickLinePhotoFromDevice(context);
+      } else {
+        path = await showEiLinePhotoPicker(
+          context,
+          photoPaths: paths,
+          selectedPath: current,
+          allowChooseNewFile: true,
+          allowNone: true,
         );
-        return;
       }
-      setState(() => l.photoPath = stored);
+      if (path == null || !mounted) return;
+      final stored = path;
+      setState(() => l.photoPath = stored.isEmpty ? null : stored);
       widget.onChanged();
       _resolvePhotos();
-    } catch (e) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('$e')),
-      );
+      return;
     }
+
+    final chosen = await showEiLinePhotoPicker(
+      context,
+      photoPaths: paths,
+      selectedPath: current,
+      allowChooseNewFile: true,
+      allowNone: true,
+    );
+    if (chosen == null || !mounted) return;
+    setState(() => l.photoPath = chosen.isEmpty ? null : chosen);
+    widget.onChanged();
+    _resolvePhotos();
   }
 
   Future<void> _saveAsProduct(EiLine l) async {

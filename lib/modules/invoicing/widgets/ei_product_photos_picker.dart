@@ -1,8 +1,8 @@
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:desktop_drop/desktop_drop.dart';
 import 'package:file_selector/file_selector.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -16,10 +16,14 @@ class EiProductPhotosPicker extends StatefulWidget {
     super.key,
     required this.photoPaths,
     required this.onChanged,
+    this.onBusyChanged,
   });
 
   final List<String> photoPaths;
   final ValueChanged<List<String>> onChanged;
+
+  /// true pendant compression / écriture dossier e-Invoicing / upload.
+  final ValueChanged<bool>? onBusyChanged;
 
   @override
   State<EiProductPhotosPicker> createState() => _EiProductPhotosPickerState();
@@ -37,14 +41,17 @@ class _EiProductPhotosPickerState extends State<EiProductPhotosPicker> {
 
   static const _imageTypes = XTypeGroup(
     label: 'Images',
-    extensions: ['png', 'jpg', 'jpeg'],
+    extensions: ['png', 'jpg', 'jpeg', 'webp', 'heic'],
     uniformTypeIdentifiers: [
       'public.png',
       'public.jpeg',
+      'public.heic',
       'public.image',
       'public.data',
     ],
   );
+
+  static const _imageExts = {'png', 'jpg', 'jpeg', 'webp', 'heic'};
 
   @override
   void initState() {
@@ -60,6 +67,12 @@ class _EiProductPhotosPickerState extends State<EiProductPhotosPicker> {
     }
   }
 
+  void _setBusy(bool value) {
+    if (_busy == value) return;
+    setState(() => _busy = value);
+    widget.onBusyChanged?.call(value);
+  }
+
   Future<void> _resolveAll() async {
     for (final path in widget.photoPaths) {
       if (_resolved.containsKey(path)) continue;
@@ -70,18 +83,34 @@ class _EiProductPhotosPickerState extends State<EiProductPhotosPicker> {
   }
 
   Future<void> _addBytes(Uint8List bytes, String fileName) async {
-    setState(() => _busy = true);
+    _setBusy(true);
     try {
       final rel = await EInvoiceConnector.instance.importCatalogPhotoBytes(
         bytes,
         fileName: fileName,
       );
-      if (rel.isEmpty) return;
+      if (!mounted) return;
+      if (rel.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context).eiPhotoSaveFailed),
+          ),
+        );
+        return;
+      }
       final local = await EInvoiceConnector.instance.resolvePhotoPath(rel);
       if (local != null) _resolved[rel] = local;
       widget.onChanged([...widget.photoPaths, rel]);
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(AppLocalizations.of(context).eiPhotoSaveFailed),
+        ),
+      );
+      debugPrint('EiProductPhotosPicker._addBytes: $e');
     } finally {
-      if (mounted) setState(() => _busy = false);
+      if (mounted) _setBusy(false);
     }
   }
 
@@ -117,7 +146,7 @@ class _EiProductPhotosPickerState extends State<EiProductPhotosPicker> {
       final ext = file.name.contains('.')
           ? file.name.split('.').last.toLowerCase()
           : '';
-      if (!['png', 'jpg', 'jpeg'].contains(ext)) continue;
+      if (!_imageExts.contains(ext)) continue;
       await _addBytes(await file.readAsBytes(), file.name);
     }
   }
@@ -177,7 +206,22 @@ class _EiProductPhotosPickerState extends State<EiProductPhotosPicker> {
     );
   }
 
-  Future<void> _openAddMenu() async {
+  static bool get _isDesktop {
+    if (kIsWeb) return false;
+    return Platform.isMacOS || Platform.isWindows || Platform.isLinux;
+  }
+
+  /// Desktop : dialogue natif fichiers (drag & drop géré à part).
+  /// Mobile : appareil photo / photothèque / fichiers.
+  Future<void> _onAddTap() async {
+    if (_isDesktop) {
+      await _pickFiles();
+      return;
+    }
+    await _openMobileAddMenu();
+  }
+
+  Future<void> _openMobileAddMenu() async {
     final l10n = AppLocalizations.of(context);
     final choice = await showModalBottomSheet<String>(
       context: context,
@@ -216,6 +260,28 @@ class _EiProductPhotosPickerState extends State<EiProductPhotosPicker> {
 
   @override
   Widget build(BuildContext context) {
+    final dropChild = Container(
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: _dragging ? _teal.withValues(alpha: 0.08) : null,
+        border: Border.all(
+          color: _dragging ? _teal : _border,
+          width: _dragging ? 2 : 1,
+        ),
+      ),
+      child: Wrap(
+        spacing: 10,
+        runSpacing: 10,
+        children: [
+          for (var i = 0; i < widget.photoPaths.length; i++) _photoTile(i),
+          _addTile(),
+        ],
+      ),
+    );
+    // DropTarget : macOS / Windows / Linux seulement — évite un no-op confus
+    // sur iOS/Android et gère le vrai drag & drop Finder.
+    if (!_isDesktop) return dropChild;
     return DropTarget(
       onDragEntered: (_) => setState(() => _dragging = true),
       onDragExited: (_) => setState(() => _dragging = false),
@@ -223,25 +289,7 @@ class _EiProductPhotosPickerState extends State<EiProductPhotosPicker> {
         setState(() => _dragging = false);
         await _handleDrop(d);
       },
-      child: Container(
-        padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          color: _dragging ? _teal.withValues(alpha: 0.08) : null,
-          border: Border.all(
-            color: _dragging ? _teal : _border,
-            width: _dragging ? 2 : 1,
-          ),
-        ),
-        child: Wrap(
-          spacing: 10,
-          runSpacing: 10,
-          children: [
-            for (var i = 0; i < widget.photoPaths.length; i++) _photoTile(i),
-            _addTile(),
-          ],
-        ),
-      ),
+      child: dropChild,
     );
   }
 
@@ -318,7 +366,7 @@ class _EiProductPhotosPickerState extends State<EiProductPhotosPicker> {
   Widget _addTile() {
     final l10n = AppLocalizations.of(context);
     return InkWell(
-      onTap: _busy ? null : _openAddMenu,
+      onTap: _busy ? null : _onAddTap,
       borderRadius: BorderRadius.circular(8),
       child: Container(
         width: 96,

@@ -3119,6 +3119,15 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get dictationStarting => 'A iniciar o ditado…';
+
+  @override
+  String get invChooseLinePhotoTitle => 'Choose photo for the PDF';
+
+  @override
+  String get invChooseNewPhoto => 'Choose another file…';
+
+  @override
+  String get invNoPhoto => 'No photo';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
@@ -6235,4 +6244,13 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get dictationStarting => 'Iniciando o ditado…';
+
+  @override
+  String get invChooseLinePhotoTitle => 'Choose photo for the PDF';
+
+  @override
+  String get invChooseNewPhoto => 'Choose another file…';
+
+  @override
+  String get invNoPhoto => 'No photo';
 }

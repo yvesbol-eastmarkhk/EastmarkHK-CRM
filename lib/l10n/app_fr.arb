@@ -1612,5 +1612,8 @@
   "activityTaskCreated": "Tâche créée",
   "dictationOfflineTip": "Dictée hors ligne — elle capture souvent le bruit (TV) au lieu de votre voix. Activez « Reconnaissance vocale en ligne » dans Paramètres Windows → Confidentialité → Discours, baissez le bruit, puis réessayez.",
   "dictationLanguageFallbackTip": "Cette variante de langue n’est pas installée sur Windows — une variante proche est utilisée. Installez le pack Speech souhaité dans Paramètres → Heure et langue → Speech.",
-  "dictationStarting": "Démarrage de la dictée…"
+  "dictationStarting": "Démarrage de la dictée…",
+  "invChooseLinePhotoTitle": "Choisir la photo pour le PDF",
+  "invChooseNewPhoto": "Choisir un autre fichier…",
+  "invNoPhoto": "Sans photo"
 }

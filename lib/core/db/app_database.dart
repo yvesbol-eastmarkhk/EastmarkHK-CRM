@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -11,6 +12,7 @@ import '../../platform/entitlement_service.dart';
 import '../models/models.dart';
 import '../models/user_account.dart';
 import '../services/auth_service.dart';
+import '../services/company_logo_service.dart';
 import '../services/remote_crm_sync_service.dart';
 
 /// Base SQLite du CRM — même patron qu'EastmarkHK e-Invoicing.
@@ -769,6 +771,144 @@ class AppDatabase {
       await db.insert('settings', {'key': key, 'value': value},
           conflictAlgorithm: ConflictAlgorithm.replace);
     }
+  }
+
+  /// Identifiant singleton du profil entreprise sur le serveur de sync.
+  static const companyProfileSyncId = 'company_profile';
+  static const companyProfileUpdatedAtKey = 'company_profile_updated_at';
+
+  static const companyProfileSettingKeys = <String>[
+    'company_name',
+    'company_country',
+    'company_tax_id',
+    'company_address',
+    'company_district',
+    'company_zip',
+    'company_city',
+    'company_state',
+    'company_phone',
+    'company_phone_country',
+    'company_email',
+  ];
+
+  /// Marque le profil entreprise comme modifié → inclus au prochain push.
+  Future<void> touchCompanyProfileForSync() async {
+    await setSetting(companyProfileUpdatedAtKey, nowIso());
+    _scheduleRemotePush();
+  }
+
+  /// Si des infos société existent déjà sans stamp sync (installs antérieures),
+  /// pose un `updated_at` pour qu’elles partent au prochain push.
+  Future<void> ensureCompanyProfileSyncStamp() async {
+    final at = await getSetting(companyProfileUpdatedAtKey);
+    if (at != null && at.isNotEmpty) return;
+    final values = await getSettings([
+      ...companyProfileSettingKeys,
+      'company_logo_path',
+    ]);
+    final hasText = companyProfileSettingKeys
+        .any((k) => (values[k] ?? '').trim().isNotEmpty);
+    final hasLogo = (values['company_logo_path'] ?? '').trim().isNotEmpty;
+    if (hasText || hasLogo) {
+      await setSetting(companyProfileUpdatedAtKey, nowIso());
+    }
+  }
+
+  /// Ligne `company_profile` à pousser, ou null si rien de plus récent.
+  Future<Map<String, Object?>?> companyProfileRowForPush(String sincePush) async {
+    await ensureCompanyProfileSyncStamp();
+    final updated = await getSetting(companyProfileUpdatedAtKey) ?? '';
+    if (updated.isEmpty || updated.compareTo(sincePush) <= 0) return null;
+
+    final values = await getSettings(companyProfileSettingKeys);
+    final logo = await CompanyLogoService.logoForSync();
+    final created = await getSetting('company_profile_created_at') ?? updated;
+    await setSetting('company_profile_created_at', created);
+
+    // Suppression explicite uniquement — sinon on omet le logo pour laisser
+    // le serveur conserver l’existant (appareil sans fichier local).
+    final row = <String, Object?>{
+      'id': companyProfileSyncId,
+      'name': values['company_name'] ?? '',
+      'country': values['company_country'] ?? '',
+      'tax_id': values['company_tax_id'] ?? '',
+      'address': values['company_address'] ?? '',
+      'district': values['company_district'] ?? '',
+      'zip': values['company_zip'] ?? '',
+      'city': values['company_city'] ?? '',
+      'state': values['company_state'] ?? '',
+      'phone': values['company_phone'] ?? '',
+      'phone_country': values['company_phone_country'] ?? '',
+      'email': values['company_email'] ?? '',
+      'created_at': created,
+      'updated_at': updated,
+      'deleted_at': null,
+    };
+    if (logo.cleared) {
+      row['logo_base64'] = '';
+      row['logo_ext'] = '.cleared';
+    } else if (logo.base64.isNotEmpty) {
+      row['logo_base64'] = logo.base64;
+      row['logo_ext'] = logo.ext;
+    }
+    return row;
+  }
+
+  /// Applique un profil distant (LWW sur `company_profile_updated_at`).
+  Future<bool> mergeCompanyProfileFromSync(Map<String, Object?> row) async {
+    final remoteAt = '${row['updated_at'] ?? ''}';
+    if (remoteAt.isEmpty) return false;
+    final localAt = await getSetting(companyProfileUpdatedAtKey) ?? '';
+    if (localAt.compareTo(remoteAt) >= 0) return false;
+
+    await setSetting('company_name', '${row['name'] ?? ''}');
+    await setSetting('company_country', '${row['country'] ?? ''}');
+    await setSetting('company_tax_id', '${row['tax_id'] ?? ''}');
+    await setSetting('company_address', '${row['address'] ?? ''}');
+    await setSetting('company_district', '${row['district'] ?? ''}');
+    await setSetting('company_zip', '${row['zip'] ?? ''}');
+    await setSetting('company_city', '${row['city'] ?? ''}');
+    await setSetting('company_state', '${row['state'] ?? ''}');
+    await setSetting('company_phone', '${row['phone'] ?? ''}');
+    await setSetting('company_phone_country', '${row['phone_country'] ?? ''}');
+    await setSetting('company_email', '${row['email'] ?? ''}');
+    await setSetting(
+      'company_profile_created_at',
+      '${row['created_at'] ?? remoteAt}',
+    );
+
+    final b64 = '${row['logo_base64'] ?? ''}';
+    final extRaw = '${row['logo_ext'] ?? ''}';
+    final cleared = extRaw == '.cleared' || extRaw == '__none__';
+    // Ne jamais effacer un logo local juste parce que le distant n’en a pas
+    // (appareil sans logo qui a poussé un profil texte plus récent).
+    if (cleared) {
+      final path = await getSetting('company_logo_path');
+      if (path != null) {
+        try {
+          final f = File(path);
+          if (await f.exists()) await f.delete();
+        } catch (_) {}
+      }
+      await setSetting('company_logo_path', null);
+      await setSetting('company_logo_cleared', '1');
+    } else if (b64.isNotEmpty) {
+      try {
+        final bytes = base64Decode(b64);
+        final ext = extRaw.isEmpty ? '.jpg' : extRaw;
+        await CompanyLogoService.saveBytes(
+          Uint8List.fromList(bytes),
+          ext,
+        );
+        await setSetting('company_logo_cleared', null);
+      } catch (e) {
+        debugPrint('mergeCompanyProfileFromSync logo: $e');
+      }
+    }
+
+    await setSetting(companyProfileUpdatedAtKey, remoteAt);
+    await CompanyLogoSettings.instance.refresh();
+    return true;
   }
 
   // ---- Helpers -------------------------------------------------------------

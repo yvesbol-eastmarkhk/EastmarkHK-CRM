@@ -3118,4 +3118,13 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get dictationStarting => 'Diktálás indítása…';
+
+  @override
+  String get invChooseLinePhotoTitle => 'Choose photo for the PDF';
+
+  @override
+  String get invChooseNewPhoto => 'Choose another file…';
+
+  @override
+  String get invNoPhoto => 'No photo';
 }

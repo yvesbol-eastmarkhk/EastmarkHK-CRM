@@ -150,21 +150,22 @@ class _InvoicingHomeScreenState extends State<InvoicingHomeScreen>
           ),
           const SizedBox(width: 8),
         ],
-        OutlinedButton.icon(
-          onPressed: () => EInvoiceConnector.instance.openStandaloneApp(
-            kind: _tabs.index == 1 ? 'invoice' : 'quote',
+        // Sur iOS l'app sœur ne s'ouvre pas comme sur macOS — cacher le bouton
+        // pour libérer la place et éviter un CTA cassé.
+        if (Theme.of(context).platform != TargetPlatform.iOS)
+          OutlinedButton.icon(
+            onPressed: () => EInvoiceConnector.instance.openStandaloneApp(
+              kind: _tabs.index == 1 ? 'invoice' : 'quote',
+            ),
+            icon: const Icon(Icons.open_in_new, size: 18),
+            label: Text(l10n.invOpenStandalone),
           ),
-          icon: const Icon(Icons.open_in_new, size: 18),
-          label: Text(l10n.invOpenStandalone),
-        ),
-        if (_mode == EiMode.remote) ...[
-          const SizedBox(width: 8),
+        if (_mode == EiMode.remote || _needsRemoteSetup)
           IconButton(
             tooltip: l10n.invRemoteConnectionTooltip,
             onPressed: _openRemoteSettings,
             icon: const Icon(Icons.settings_ethernet),
           ),
-        ],
       ],
       child: _loading
           ? const Center(child: CircularProgressIndicator())

@@ -1553,5 +1553,8 @@
     }
   },
   "bannerSyncIdleTooltip": "同期",
-  "bannerCompanyPlaceholder": "会社名"
+  "bannerCompanyPlaceholder": "会社名",
+  "invChooseLinePhotoTitle": "Choose photo for the PDF",
+  "invChooseNewPhoto": "Choose another file…",
+  "invNoPhoto": "No photo"
 }

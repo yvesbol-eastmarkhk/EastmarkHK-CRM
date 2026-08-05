@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 
+import '../core/utils/responsive_layout.dart';
 import '../theme/app_theme.dart';
 import '../theme/crm_tokens.dart';
 
 /// En-tête de page unifié — titre à gauche, actions à droite (Linear-style).
+/// Sur téléphone : titre + actions empilés (évite le texte vertical 1 caractère
+/// quand les boutons écrasent le titre).
 class CrmPage extends StatelessWidget {
   const CrmPage({
     super.key,
@@ -27,21 +30,62 @@ class CrmPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    // Écran poussé via Navigator.push (pas la nav principale du workspace) :
-    // on ajoute nous-mêmes une flèche retour, CrmPage ne passant pas par un
-    // AppBar (qui l'aurait fournie automatiquement).
     final canPop = showBackButton && Navigator.canPop(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+    final phone = CrmLayout.isPhone(context);
+
+    final titleBlock = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(
-            CrmTokens.pagePadding,
-            20,
-            CrmTokens.pagePadding,
-            0,
+        Text(
+          title,
+          style: Theme.of(context).textTheme.displaySmall,
+          softWrap: true,
+        ),
+        if (subtitle != null) ...[
+          const SizedBox(height: 4),
+          Text(
+            subtitle!,
+            style: TextStyle(
+              fontSize: CrmTokens.bodySize,
+              color: scheme.onSurfaceVariant,
+            ),
+            softWrap: true,
           ),
-          child: Row(
+        ],
+      ],
+    );
+
+    final header = phone
+        ? Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (canPop) ...[
+                    IconButton(
+                      onPressed: () => Navigator.maybePop(context),
+                      icon: const Icon(Icons.arrow_back),
+                      tooltip:
+                          MaterialLocalizations.of(context).backButtonTooltip,
+                      visualDensity: VisualDensity.compact,
+                    ),
+                    const SizedBox(width: 4),
+                  ],
+                  Expanded(child: titleBlock),
+                ],
+              ),
+              if (actions.isNotEmpty) ...[
+                const SizedBox(height: 12),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: actions,
+                ),
+              ],
+            ],
+          )
+        : Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               if (canPop) ...[
@@ -53,30 +97,22 @@ class CrmPage extends StatelessWidget {
                 ),
                 const SizedBox(width: 4),
               ],
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: Theme.of(context).textTheme.displaySmall,
-                    ),
-                    if (subtitle != null) ...[
-                      const SizedBox(height: 4),
-                      Text(
-                        subtitle!,
-                        style: TextStyle(
-                          fontSize: CrmTokens.bodySize,
-                          color: scheme.onSurfaceVariant,
-                        ),
-                      ),
-                    ],
-                  ],
-                ),
-              ),
+              Expanded(child: titleBlock),
               ...actions,
             ],
+          );
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(
+            CrmTokens.pagePadding,
+            20,
+            CrmTokens.pagePadding,
+            0,
           ),
+          child: header,
         ),
         if (toolbar != null)
           Padding(

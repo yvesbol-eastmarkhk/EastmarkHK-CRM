@@ -1553,5 +1553,8 @@
     }
   },
   "bannerSyncIdleTooltip": "Sincronizar",
-  "bannerCompanyPlaceholder": "A sua empresa"
+  "bannerCompanyPlaceholder": "A sua empresa",
+  "invChooseLinePhotoTitle": "Choose photo for the PDF",
+  "invChooseNewPhoto": "Choose another file…",
+  "invNoPhoto": "No photo"
 }

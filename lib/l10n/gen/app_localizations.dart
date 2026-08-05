@@ -5611,6 +5611,24 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Démarrage de la dictée…'**
   String get dictationStarting;
+
+  /// No description provided for @invChooseLinePhotoTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisir la photo pour le PDF'**
+  String get invChooseLinePhotoTitle;
+
+  /// No description provided for @invChooseNewPhoto.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisir un autre fichier…'**
+  String get invChooseNewPhoto;
+
+  /// No description provided for @invNoPhoto.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sans photo'**
+  String get invNoPhoto;
 }
 
 class _AppLocalizationsDelegate

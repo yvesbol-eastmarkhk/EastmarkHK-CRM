@@ -3115,4 +3115,13 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get dictationStarting => 'डिक्टेशन शुरू हो रहा है…';
+
+  @override
+  String get invChooseLinePhotoTitle => 'Choose photo for the PDF';
+
+  @override
+  String get invChooseNewPhoto => 'Choose another file…';
+
+  @override
+  String get invNoPhoto => 'No photo';
 }

@@ -3127,4 +3127,13 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get dictationStarting => 'Démarrage de la dictée…';
+
+  @override
+  String get invChooseLinePhotoTitle => 'Choisir la photo pour le PDF';
+
+  @override
+  String get invChooseNewPhoto => 'Choisir un autre fichier…';
+
+  @override
+  String get invNoPhoto => 'Sans photo';
 }

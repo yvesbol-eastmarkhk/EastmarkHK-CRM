@@ -123,12 +123,34 @@ function crm_sync_db(array $config): PDO
         deleted_at TEXT
     )");
 
+    // Profil entreprise de l'utilisateur CRM (pas les clients) — singleton id.
+    $pdo->exec("CREATE TABLE IF NOT EXISTS company_profile (
+        id TEXT PRIMARY KEY,
+        name TEXT,
+        country TEXT,
+        tax_id TEXT,
+        address TEXT,
+        district TEXT,
+        zip TEXT,
+        city TEXT,
+        state TEXT,
+        phone TEXT,
+        phone_country TEXT,
+        email TEXT,
+        logo_base64 TEXT,
+        logo_ext TEXT,
+        created_at TEXT,
+        updated_at TEXT,
+        deleted_at TEXT
+    )");
+
     $pdo->exec('CREATE INDEX IF NOT EXISTS idx_companies_updated ON companies(updated_at)');
     $pdo->exec('CREATE INDEX IF NOT EXISTS idx_contacts_updated ON contacts(updated_at)');
     $pdo->exec('CREATE INDEX IF NOT EXISTS idx_opportunities_updated ON opportunities(updated_at)');
     $pdo->exec('CREATE INDEX IF NOT EXISTS idx_activities_updated ON activities(updated_at)');
     $pdo->exec('CREATE INDEX IF NOT EXISTS idx_tasks_updated ON tasks(updated_at)');
     $pdo->exec('CREATE INDEX IF NOT EXISTS idx_user_profiles_updated ON user_profiles(updated_at)');
+    $pdo->exec('CREATE INDEX IF NOT EXISTS idx_company_profile_updated ON company_profile(updated_at)');
 
     return $pdo;
 }

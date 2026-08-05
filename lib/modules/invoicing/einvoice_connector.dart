@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -57,7 +58,8 @@ class EInvoiceConnector {
 
   Future<String?> _dbPath() async {
     if (_cachedDbPath != null) return _cachedDbPath;
-    if (kIsWeb || !Platform.isMacOS) return null;
+    // App Group partagé avec e-Invoicing — macOS et iOS.
+    if (kIsWeb || !(Platform.isMacOS || Platform.isIOS)) return null;
     if (await EinvoicingLicenseBridge.isRemoteModeActive()) return null;
     String? groupPath;
     try {
@@ -76,23 +78,26 @@ class EInvoiceConnector {
     // Importe les identifiants remote si absents (e-Invoicing en mode distant).
     await EinvoiceRemoteConfig.importFromEinvoicingIfNeeded();
     if (await _dbPath() != null) return EiMode.local;
-    if (await EinvoicingLicenseBridge.isRemoteModeActive()) {
-      if (await EInvoiceRemoteApi.instance.isConfigured()) return EiMode.remote;
-    }
+    // Mobile / Windows : pas de SQLite e-Invoicing → remote dès que configuré.
+    if (await EInvoiceRemoteApi.instance.isConfigured()) return EiMode.remote;
     return EiMode.unavailable;
   }
 
   /// true si utilisable (local ou remote configuré) pour créer/lire des documents.
   Future<bool> isAvailable() async => await resolveMode() != EiMode.unavailable;
 
-  /// true si e-Invoicing est en mode Remote mais que les identifiants API ne
-  /// sont pas encore renseignés côté CRM — état actionnable (bouton
-  /// « Configurer ») plutôt qu'un simple blocage.
+  /// true si e-Invoicing distant / multi-plateforme nécessite encore les
+  /// identifiants API — état actionnable (bouton « Configurer »).
   Future<bool> needsRemoteSetup() async {
-    if (kIsWeb || !Platform.isMacOS) return false;
     if (await _dbPath() != null) return false;
-    if (!await EinvoicingLicenseBridge.isRemoteModeActive()) return false;
-    return !await EInvoiceRemoteApi.instance.isConfigured();
+    if (await EInvoiceRemoteApi.instance.isConfigured()) return false;
+    if (await EinvoicingLicenseBridge.isRemoteModeActive()) return true;
+    // iOS / Android / Windows : remote est le seul chemin sans app sœur locale.
+    if (!kIsWeb &&
+        (Platform.isIOS || Platform.isAndroid || Platform.isWindows)) {
+      return true;
+    }
+    return false;
   }
 
   /// L'app e-Invoicing est-elle installée (App Store) ?
@@ -1439,11 +1444,64 @@ class EInvoiceConnector {
     });
   }
 
-  /// Dossier assets e-Invoicing (à côté de la SQLite App Group), si dispo.
+  /// Produit catalogue par uuid / id (pour choix photo ligne devis/facture).
+  Future<EiProduct?> findProduct({int? id, String? uuid}) async {
+    final u = (uuid ?? '').trim();
+    if (u.isNotEmpty) {
+      final hits = await listProducts(search: u);
+      for (final p in hits) {
+        if (p.uuid == u) return p;
+      }
+    }
+    if (id != null) {
+      final all = await listProducts();
+      for (final p in all) {
+        if (p.id == id) return p;
+      }
+    }
+    return null;
+  }
+
+  /// Dossier e-Invoicing partagé (App Group `…/einvoicing`), indépendant du
+  /// mode local/remote et de la présence de la SQLite. Même répertoire que
+  /// l'app e-Invoicing pour `product_photos/` / `line_photos/`.
+  Future<String?> _sharedEinvoicingDir() async {
+    if (kIsWeb) return null;
+    if (!(Platform.isMacOS || Platform.isIOS)) return null;
+    try {
+      final groupPath = await _channel.invokeMethod<String>('path');
+      if (groupPath == null || groupPath.isEmpty) return null;
+      final dir = Directory(p.join(groupPath, 'einvoicing'));
+      await dir.create(recursive: true);
+      return dir.path;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Racine assets photos (= dossier e-Invoicing). App Group si possible,
+  /// sinon Application Support, sinon Documents (Android / Windows / Linux).
   Future<String?> _assetsRoot() async {
-    final dbPath = await _dbPath();
-    if (dbPath == null) return null;
-    return p.dirname(dbPath);
+    final shared = await _sharedEinvoicingDir();
+    if (shared != null) return shared;
+    if (kIsWeb) return null;
+    try {
+      final support = await getApplicationSupportDirectory();
+      final dir = Directory(p.join(support.path, 'eastmarkhk_einvoicing'));
+      await dir.create(recursive: true);
+      return dir.path;
+    } catch (e) {
+      debugPrint('_assetsRoot support: $e');
+    }
+    try {
+      final docs = await getApplicationDocumentsDirectory();
+      final dir = Directory(p.join(docs.path, 'eastmarkhk_einvoicing'));
+      await dir.create(recursive: true);
+      return dir.path;
+    } catch (e) {
+      debugPrint('_assetsRoot documents: $e');
+      return null;
+    }
   }
 
   /// Copie une image vers `product_photos/` (local) ou prépare le chemin
@@ -1469,26 +1527,17 @@ class EInvoiceConnector {
     final base =
         'line_${DateTime.now().microsecondsSinceEpoch}${compressed.extension}';
     final rel = 'line_photos/$base';
-    final root = await _assetsRoot();
-    if (root != null) {
-      final dir = Directory(p.join(root, 'line_photos'));
-      await dir.create(recursive: true);
-      await File(p.join(root, 'line_photos', base))
-          .writeAsBytes(compressed.bytes, flush: true);
-    }
-    final mode = await resolveMode();
-    if (mode == EiMode.remote) {
-      await EInvoiceRemoteApi.instance.uploadMediaBytes(
-        relativePath: rel,
-        bytes: compressed.bytes,
-      );
-    }
-    return rel;
+    final ok = await _persistMediaBytes(relativePath: rel, bytes: compressed.bytes);
+    return ok ? rel : '';
   }
 
   /// Enregistre des octets image dans le catalogue (drag & drop / appareil photo).
   /// Redimensionne (max [EiProductPhotoCompress.maxSide]) puis WebP ou JPEG
   /// selon le plus compact — Flutter affiche les deux, y compris au zoom.
+  ///
+  /// Écrit toujours dans le dossier partagé e-Invoicing (`product_photos/`)
+  /// quand disponible, et uploade aussi en mode remote. Ne renvoie un chemin
+  /// que si au moins une persistance a réussi.
   Future<String> importCatalogPhotoBytes(
     List<int> bytes, {
     String fileName = 'photo.jpg',
@@ -1499,44 +1548,104 @@ class EInvoiceConnector {
     final base =
         'product_${DateTime.now().microsecondsSinceEpoch}${compressed.extension}';
     final rel = 'product_photos/$base';
-    final root = await _assetsRoot();
-    if (root != null) {
-      final dir = Directory(p.join(root, 'product_photos'));
-      await dir.create(recursive: true);
-      await File(p.join(root, 'product_photos', base))
-          .writeAsBytes(compressed.bytes, flush: true);
+    final ok = await _persistMediaBytes(relativePath: rel, bytes: compressed.bytes);
+    return ok ? rel : '';
+  }
+
+  /// Écrit sous [_assetsRoot] (même dossier que e-Invoicing) et/ou uploade
+  /// vers `/media` en remote. Retourne false si aucune des deux n'a réussi.
+  Future<bool> _persistMediaBytes({
+    required String relativePath,
+    required List<int> bytes,
+  }) async {
+    var wroteLocal = false;
+    final roots = <String>[];
+    final primary = await _assetsRoot();
+    if (primary != null) roots.add(primary);
+    // Repli supplémentaire si l'écriture App Group échoue (sandbox / provisioning).
+    if (!kIsWeb) {
+      try {
+        final support = await getApplicationSupportDirectory();
+        final alt = p.join(support.path, 'eastmarkhk_einvoicing');
+        if (primary == null || !p.equals(primary, alt)) roots.add(alt);
+      } catch (_) {}
     }
+
+    for (final root in roots) {
+      try {
+        final localPath = p.join(root, relativePath);
+        await Directory(p.dirname(localPath)).create(recursive: true);
+        await File(localPath).writeAsBytes(bytes, flush: true);
+        if (await File(localPath).exists()) {
+          wroteLocal = true;
+          break;
+        }
+      } catch (e) {
+        debugPrint('_persistMediaBytes write $root: $e');
+      }
+    }
+
+    var uploaded = false;
     final mode = await resolveMode();
-    if (mode == EiMode.remote) {
-      await EInvoiceRemoteApi.instance.uploadMediaBytes(
-        relativePath: rel,
-        bytes: compressed.bytes,
-      );
+    final remoteOk = mode == EiMode.remote ||
+        await EInvoiceRemoteApi.instance.isConfigured();
+    if (remoteOk) {
+      try {
+        await EInvoiceRemoteApi.instance.uploadMediaBytes(
+          relativePath: relativePath.replaceAll('\\', '/'),
+          bytes: bytes,
+        );
+        uploaded = true;
+      } catch (e) {
+        debugPrint('_persistMediaBytes upload: $e');
+        if (!wroteLocal) rethrow;
+      }
     }
-    return rel;
+
+    return wroteLocal || uploaded;
   }
 
   /// Supprime un fichier photo catalogue (local + remote si configuré).
   Future<void> deleteCatalogPhoto(String storedPath) async {
     final t = storedPath.trim().replaceAll('\\', '/');
     if (t.isEmpty) return;
-    final local = await resolvePhotoPath(t);
-    if (local != null) {
-      try {
-        final f = File(local);
-        if (await f.exists()) await f.delete();
-      } catch (_) {}
-    }
     final rel = t.contains('product_photos/')
         ? t.substring(t.indexOf('product_photos/'))
-        : 'product_photos/${p.basename(t)}';
+        : t.contains('line_photos/')
+            ? t.substring(t.indexOf('line_photos/'))
+            : 'product_photos/${p.basename(t)}';
+    final base = p.basename(rel);
+
+    // Tous les emplacements locaux possibles (App Group, Documents, cache).
+    final candidates = <String>{};
+    final resolved = await resolvePhotoPath(t);
+    if (resolved != null) candidates.add(resolved);
+    if (p.isAbsolute(t)) candidates.add(t);
+    final root = await _assetsRoot();
+    if (root != null) {
+      candidates.add(p.join(root, rel));
+      candidates.add(p.join(root, 'product_photos', base));
+      candidates.add(p.join(root, 'line_photos', base));
+    }
+    candidates.add(p.join(Directory.systemTemp.path, 'emhk_crm_media', base));
+
+    for (final path in candidates) {
+      try {
+        final f = File(path);
+        if (await f.exists()) await f.delete();
+      } catch (e) {
+        debugPrint('deleteCatalogPhoto local $path: $e');
+      }
+    }
+
     try {
-      final mode = await resolveMode();
-      if (mode == EiMode.remote) {
+      final remoteOk = await resolveMode() == EiMode.remote ||
+          await EInvoiceRemoteApi.instance.isConfigured();
+      if (remoteOk) {
         await EInvoiceRemoteApi.instance.deleteMedia(rel);
       }
     } catch (e) {
-      debugPrint('deleteCatalogPhoto: $e');
+      debugPrint('deleteCatalogPhoto remote: $e');
     }
   }
 

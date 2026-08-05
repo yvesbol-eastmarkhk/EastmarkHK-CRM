@@ -145,7 +145,8 @@ class RemoteCrmSyncService extends ChangeNotifier {
 
   static const _dataTables = ['companies', 'contacts', 'opportunities', 'activities', 'tasks'];
   static const _profileTable = 'user_profiles';
-  static const _allTables = [..._dataTables, _profileTable];
+  static const _companyProfileTable = 'company_profile';
+  static const _allTables = [..._dataTables, _profileTable, _companyProfileTable];
 
   static const _storage = FlutterSecureStorage(
     mOptions: MacOsOptions(usesDataProtectionKeychain: false),
@@ -641,6 +642,18 @@ class RemoteCrmSyncService extends ChangeNotifier {
     push[_profileTable] = stampedProfiles;
     pushed += stampedProfiles.length;
 
+    final companyRow = await db.companyProfileRowForPush(sincePush);
+    if (companyRow != null) {
+      final stampedCompany = Map<String, Object?>.from(companyRow)
+        ..['updated_at'] = stamp;
+      // Aligne le stamp local avec celui poussé (LWW).
+      await db.setSetting(AppDatabase.companyProfileUpdatedAtKey, stamp);
+      push[_companyProfileTable] = [stampedCompany];
+      pushed += 1;
+    } else {
+      push[_companyProfileTable] = const [];
+    }
+
     if (pushed == 0) {
       return (ok: true, message: '', pushed: 0);
     }
@@ -678,6 +691,15 @@ class RemoteCrmSyncService extends ChangeNotifier {
     for (final row in profileRows) {
       if (row is! Map) continue;
       final merged = await AppDatabase.instance.mergeUserProfileFromSync(
+        Map<String, Object?>.from(row),
+      );
+      if (merged) applied++;
+    }
+
+    final companyRows = (pull[_companyProfileTable] as List?) ?? const [];
+    for (final row in companyRows) {
+      if (row is! Map) continue;
+      final merged = await AppDatabase.instance.mergeCompanyProfileFromSync(
         Map<String, Object?>.from(row),
       );
       if (merged) applied++;

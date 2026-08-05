@@ -69,8 +69,19 @@ class _EiProductsScreenState extends State<EiProductsScreen> {
       final list = await EInvoiceConnector.instance.listProducts();
       if (!mounted || gen != _loadGen) return;
       final same = list.length == _products.length &&
-          list.every((p) => _products.any((x) => x.uuid == p.uuid));
+          List.generate(list.length, (i) {
+            final a = list[i];
+            final b = _products[i];
+            return a.uuid == b.uuid &&
+                a.name == b.name &&
+                a.ref == b.ref &&
+                a.salePrice == b.salePrice &&
+                a.mainPhotoPath == b.mainPhotoPath &&
+                a.photoPaths.length == b.photoPaths.length;
+          }).every((ok) => ok);
       if (same) return;
+      // Chemins photo peuvent avoir changé — invalide le cache vignettes.
+      _resolved.clear();
       setState(() => _products = list);
       await _resolveThumbs(list, gen);
     } catch (_) {}
@@ -403,23 +414,97 @@ class _PhotoThumb extends StatefulWidget {
   State<_PhotoThumb> createState() => _PhotoThumbState();
 }
 
+/// Carrousel produit — même comportement que e-Invoicing (drag souris,
+/// flèches, autoplay). Le ListView/GridView parent ne vole plus le swipe.
 class _PhotoThumbState extends State<_PhotoThumb> {
-  late final PageController _controller = PageController();
-  int _page = 0;
+  static const _autoInterval = Duration(seconds: 2);
 
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
+  late final PageController _controller = PageController();
+  final Map<String, String> _extraResolved = {};
+  int _page = 0;
+  Timer? _auto;
 
   List<String> get _locals {
     final out = <String>[];
     for (final p in widget.paths) {
-      final local = widget.resolved[p];
+      final local = widget.resolved[p] ?? _extraResolved[p];
       if (local != null && File(local).existsSync()) out.add(local);
     }
     return out;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _ensureResolved();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _restartAuto());
+  }
+
+  @override
+  void didUpdateWidget(covariant _PhotoThumb oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (!_samePaths(oldWidget.paths, widget.paths)) {
+      _page = 0;
+      if (_controller.hasClients) _controller.jumpToPage(0);
+      _ensureResolved();
+      _restartAuto();
+    } else if (oldWidget.resolved != widget.resolved) {
+      _restartAuto();
+    }
+  }
+
+  @override
+  void dispose() {
+    _auto?.cancel();
+    _controller.dispose();
+    super.dispose();
+  }
+
+  bool _samePaths(List<String> a, List<String> b) {
+    if (a.length != b.length) return false;
+    for (var i = 0; i < a.length; i++) {
+      if (a[i] != b[i]) return false;
+    }
+    return true;
+  }
+
+  Future<void> _ensureResolved() async {
+    final pending = <String>[
+      for (final p in widget.paths)
+        if (p.isNotEmpty &&
+            !widget.resolved.containsKey(p) &&
+            !_extraResolved.containsKey(p))
+          p,
+    ];
+    if (pending.isEmpty) return;
+    final got = await EInvoiceConnector.instance.resolvePhotoPaths(pending);
+    if (!mounted || got.isEmpty) return;
+    setState(() => _extraResolved.addAll(got));
+    _restartAuto();
+  }
+
+  void _restartAuto() {
+    _auto?.cancel();
+    if (_locals.length < 2) return;
+    _auto = Timer.periodic(_autoInterval, (_) {
+      if (!mounted || !_controller.hasClients || _locals.length < 2) return;
+      final next = (_page + 1) % _locals.length;
+      _controller.animateToPage(
+        next,
+        duration: const Duration(milliseconds: 350),
+        curve: Curves.easeInOut,
+      );
+    });
+  }
+
+  void _goTo(int index) {
+    if (!_controller.hasClients) return;
+    _controller.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 250),
+      curve: Curves.easeOut,
+    );
+    _restartAuto();
   }
 
   Widget _placeholder() => Container(
@@ -437,33 +522,46 @@ class _PhotoThumbState extends State<_PhotoThumb> {
         errorBuilder: (_, _, _) => _placeholder(),
       );
 
-  Widget _dots(int count) {
-    final pad = widget.expand ? 8.0 : 3.0;
-    final activeSize = widget.expand ? 8.0 : 5.0;
-    final idleSize = widget.expand ? 6.0 : 4.0;
+  Widget _navButton({
+    required IconData icon,
+    required VoidCallback onPressed,
+    required bool compact,
+  }) {
+    return Material(
+      color: Colors.black45,
+      shape: const CircleBorder(),
+      child: InkWell(
+        customBorder: const CircleBorder(),
+        onTap: onPressed,
+        child: Padding(
+          padding: EdgeInsets.all(compact ? 2 : 4),
+          child: Icon(icon, size: compact ? 14 : 18, color: Colors.white),
+        ),
+      ),
+    );
+  }
+
+  Widget _dots(int count, {required bool compact}) {
     return Positioned(
       left: 0,
       right: 0,
-      bottom: pad,
+      bottom: compact ? 3 : 8,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: List.generate(count, (i) {
           final active = i == _page;
-          return Container(
-            margin: const EdgeInsets.symmetric(horizontal: 1.5),
-            width: active ? activeSize : idleSize,
-            height: active ? activeSize : idleSize,
+          return AnimatedContainer(
+            duration: const Duration(milliseconds: 180),
+            margin: const EdgeInsets.symmetric(horizontal: 2),
+            width: active ? (compact ? 6 : 8) : (compact ? 5 : 6),
+            height: active ? (compact ? 6 : 8) : (compact ? 5 : 6),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: active
                   ? Colors.white
                   : Colors.white.withValues(alpha: 0.55),
               boxShadow: const [
-                BoxShadow(
-                  color: Color(0x66000000),
-                  blurRadius: 2,
-                  offset: Offset(0, 1),
-                ),
+                BoxShadow(color: Color(0x88000000), blurRadius: 2),
               ],
             ),
           );
@@ -475,45 +573,75 @@ class _PhotoThumbState extends State<_PhotoThumb> {
   @override
   Widget build(BuildContext context) {
     final photos = _locals;
+    final multi = photos.length > 1;
+    final compact = !widget.expand;
+
     late final Widget child;
     if (photos.isEmpty) {
       child = GestureDetector(onTap: widget.onTap, child: _placeholder());
-    } else if (photos.length == 1) {
+    } else if (!multi) {
       child = GestureDetector(onTap: widget.onTap, child: _image(photos.first));
     } else {
-      child = ScrollConfiguration(
-        behavior: ScrollConfiguration.of(context).copyWith(
-          dragDevices: {
-            PointerDeviceKind.touch,
-            PointerDeviceKind.mouse,
-            PointerDeviceKind.trackpad,
-          },
-          // Évite que le ListView parent vole le swipe horizontal.
-          scrollbars: false,
-        ),
-        child: PageView.builder(
-          controller: _controller,
-          itemCount: photos.length,
-          onPageChanged: (i) => setState(() => _page = i),
-          itemBuilder: (_, i) =>
-              GestureDetector(onTap: widget.onTap, child: _image(photos[i])),
-        ),
+      child = Stack(
+        fit: StackFit.expand,
+        children: [
+          NotificationListener<ScrollNotification>(
+            // Empêche le ListView/GridView parent d'avaler le swipe horizontal.
+            onNotification: (n) => true,
+            child: ScrollConfiguration(
+              behavior: ScrollConfiguration.of(context).copyWith(
+                dragDevices: {
+                  PointerDeviceKind.touch,
+                  PointerDeviceKind.mouse,
+                  PointerDeviceKind.trackpad,
+                  PointerDeviceKind.stylus,
+                },
+                scrollbars: false,
+              ),
+              child: PageView.builder(
+                controller: _controller,
+                itemCount: photos.length,
+                onPageChanged: (i) => setState(() => _page = i),
+                itemBuilder: (_, i) =>
+                    GestureDetector(onTap: widget.onTap, child: _image(photos[i])),
+              ),
+            ),
+          ),
+          Positioned(
+            left: compact ? 2 : 6,
+            top: 0,
+            bottom: 0,
+            child: Center(
+              child: _navButton(
+                icon: Icons.chevron_left,
+                compact: compact,
+                onPressed: () =>
+                    _goTo((_page - 1 + photos.length) % photos.length),
+              ),
+            ),
+          ),
+          Positioned(
+            right: compact ? 2 : 6,
+            top: 0,
+            bottom: 0,
+            child: Center(
+              child: _navButton(
+                icon: Icons.chevron_right,
+                compact: compact,
+                onPressed: () => _goTo((_page + 1) % photos.length),
+              ),
+            ),
+          ),
+          _dots(photos.length, compact: compact),
+        ],
       );
     }
 
-    final stack = Stack(
-      fit: StackFit.expand,
-      children: [
-        child,
-        if (photos.length > 1) _dots(photos.length),
-      ],
-    );
-
-    if (widget.expand) return stack;
+    if (widget.expand) return child;
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(8),
-      child: SizedBox(width: widget.size, height: widget.size, child: stack),
+      child: SizedBox(width: widget.size, height: widget.size, child: child),
     );
   }
 }
@@ -530,8 +658,10 @@ class _EiProductEditScreen extends StatefulWidget {
 class _EiProductEditScreenState extends State<_EiProductEditScreen> {
   final _formKey = GlobalKey<FormState>();
   final _descriptionKey = GlobalKey<JoditEditorState>();
+  final _scrollController = ScrollController();
   late final TextEditingController _notesCtrl;
   bool _saving = false;
+  bool _photosBusy = false;
   bool _ready = false;
   String _sellerCountry = 'BE';
 
@@ -573,6 +703,7 @@ class _EiProductEditScreenState extends State<_EiProductEditScreen> {
   @override
   void dispose() {
     _notesCtrl.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -591,7 +722,20 @@ class _EiProductEditScreenState extends State<_EiProductEditScreen> {
 
   Future<void> _save() async {
     final l10n = AppLocalizations.of(context);
-    if (!_formKey.currentState!.validate()) return;
+    if (_photosBusy) return;
+    if (!_formKey.currentState!.validate()) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.eiNameRequired)),
+      );
+      if (_scrollController.hasClients) {
+        await _scrollController.animateTo(
+          0,
+          duration: const Duration(milliseconds: 280),
+          curve: Curves.easeOut,
+        );
+      }
+      return;
+    }
     _formKey.currentState!.save();
     setState(() => _saving = true);
     try {
@@ -744,6 +888,7 @@ class _EiProductEditScreenState extends State<_EiProductEditScreen> {
         body: Form(
           key: _formKey,
           child: ListView(
+            controller: _scrollController,
             padding: const EdgeInsets.fromLTRB(20, 16, 20, 40),
             children: [
               SectionCard(
@@ -992,6 +1137,8 @@ class _EiProductEditScreenState extends State<_EiProductEditScreen> {
                   EiProductPhotosPicker(
                     photoPaths: _photos,
                     onChanged: (paths) => setState(() => _photos = paths),
+                    onBusyChanged: (busy) =>
+                        setState(() => _photosBusy = busy),
                   ),
                 ],
               ),
@@ -1023,8 +1170,8 @@ class _EiProductEditScreenState extends State<_EiProductEditScreen> {
                       backgroundColor: teal,
                       foregroundColor: Colors.white,
                     ),
-                    onPressed: _saving ? null : _save,
-                    icon: _saving
+                    onPressed: (_saving || _photosBusy) ? null : _save,
+                    icon: (_saving || _photosBusy)
                         ? const SizedBox(
                             width: 16,
                             height: 16,

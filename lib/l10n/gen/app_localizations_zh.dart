@@ -3082,4 +3082,13 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get dictationStarting => '正在启动听写…';
+
+  @override
+  String get invChooseLinePhotoTitle => 'Choose photo for the PDF';
+
+  @override
+  String get invChooseNewPhoto => 'Choose another file…';
+
+  @override
+  String get invNoPhoto => 'No photo';
 }

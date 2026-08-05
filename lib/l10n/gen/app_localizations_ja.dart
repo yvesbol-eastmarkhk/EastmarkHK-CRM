@@ -3092,4 +3092,13 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get dictationStarting => '音声入力を開始しています…';
+
+  @override
+  String get invChooseLinePhotoTitle => 'Choose photo for the PDF';
+
+  @override
+  String get invChooseNewPhoto => 'Choose another file…';
+
+  @override
+  String get invNoPhoto => 'No photo';
 }

@@ -39,6 +39,9 @@ const TABLES = [
     'tasks' => ['id', 'company_id', 'contact_id', 'opportunity_id', 'title', 'due_date',
         'done_at', 'notes', 'assigned_to', 'created_at', 'updated_at', 'deleted_at'],
     'user_profiles' => ['id', 'username', 'display_name', 'role', 'created_at', 'updated_at', 'deleted_at'],
+    'company_profile' => ['id', 'name', 'country', 'tax_id', 'address', 'district', 'zip',
+        'city', 'state', 'phone', 'phone_country', 'email', 'logo_base64', 'logo_ext',
+        'created_at', 'updated_at', 'deleted_at'],
 ];
 
 const PULL_LIMIT = 5000;
@@ -171,6 +174,27 @@ try {
             // Tampon serveur APRÈS acceptation — les autres appareils
             // (since = last_sync_at) reçoivent bien la ligne au prochain pull.
             $row['updated_at'] = $serverTime;
+
+            // company_profile : un appareil sans logo local ne doit jamais
+            // effacer le logo déjà stocké — sauf demande explicite (.cleared).
+            if ($table === 'company_profile' && $existing !== false) {
+                $incomingExt = (string) ($row['logo_ext'] ?? '');
+                $incomingB64 = trim((string) ($row['logo_base64'] ?? ''));
+                if ($incomingExt === '.cleared' || $incomingExt === '__none__') {
+                    $row['logo_base64'] = '';
+                    $row['logo_ext'] = '';
+                } elseif ($incomingB64 === '') {
+                    $keepLogo = $pdo->prepare(
+                        'SELECT logo_base64, logo_ext FROM company_profile WHERE id = ?'
+                    );
+                    $keepLogo->execute([$row['id']]);
+                    $prev = $keepLogo->fetch(PDO::FETCH_ASSOC);
+                    if (is_array($prev)) {
+                        $row['logo_base64'] = $prev['logo_base64'] ?? '';
+                        $row['logo_ext'] = $prev['logo_ext'] ?? '';
+                    }
+                }
+            }
 
             $values = [];
             foreach ($columns as $col) {

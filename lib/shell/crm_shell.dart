@@ -731,6 +731,23 @@ class _RailButtonState extends State<_RailButton> {
 /// Barre de nav mobile maison — remplace `NavigationBar` (Material) dont le
 /// libellé (`Text` sans `maxLines`) casse sur 2 lignes pour les traductions
 /// à plusieurs mots (ex. « Tableau de bord »), au lieu de tronquer avec « … ».
+///
+/// Sur iPhone : CRM + modules (e-Invoicing, Produits…) — scroll horizontal
+/// dès qu’il y a plus de 5 onglets (même accès que le rail iPad/Mac).
+class _MobileNavEntry {
+  const _MobileNavEntry({
+    required this.icon,
+    required this.label,
+    this.section,
+    this.moduleId,
+  }) : assert(section != null || moduleId != null);
+
+  final IconData icon;
+  final String label;
+  final CrmSection? section;
+  final String? moduleId;
+}
+
 class _MobileNavItem {
   const _MobileNavItem(this.icon, this.label);
   final IconData icon;
@@ -739,36 +756,52 @@ class _MobileNavItem {
 
 class _MobileNavBar extends StatelessWidget {
   const _MobileNavBar({
-    required this.items,
+    required this.entries,
     required this.selectedIndex,
     required this.onSelected,
   });
 
-  final List<_MobileNavItem> items;
+  final List<_MobileNavEntry> entries;
   final int selectedIndex;
   final ValueChanged<int> onSelected;
+
+  static const _itemWidth = 76.0;
 
   @override
   Widget build(BuildContext context) {
     final border = Theme.of(context).crmBorder;
+    final scrollable = entries.length > 5;
+
+    Widget button(int i) => _MobileNavButton(
+          item: _MobileNavItem(entries[i].icon, entries[i].label),
+          selected: i == selectedIndex,
+          onTap: () => onSelected(i),
+        );
+
     return Material(
       color: Theme.of(context).colorScheme.surface,
       child: SafeArea(
         top: false,
         child: Container(
-          decoration: BoxDecoration(border: Border(top: BorderSide(color: border))),
-          child: Row(
-            children: [
-              for (var i = 0; i < items.length; i++)
-                Expanded(
-                  child: _MobileNavButton(
-                    item: items[i],
-                    selected: i == selectedIndex,
-                    onTap: () => onSelected(i),
+          decoration:
+              BoxDecoration(border: Border(top: BorderSide(color: border))),
+          child: scrollable
+              ? SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  physics: const BouncingScrollPhysics(),
+                  child: Row(
+                    children: [
+                      for (var i = 0; i < entries.length; i++)
+                        SizedBox(width: _itemWidth, child: button(i)),
+                    ],
                   ),
+                )
+              : Row(
+                  children: [
+                    for (var i = 0; i < entries.length; i++)
+                      Expanded(child: button(i)),
+                  ],
                 ),
-            ],
-          ),
         ),
       ),
     );
@@ -848,7 +881,11 @@ class _MobileShell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
-      listenable: Listenable.merge([workspace, RemoteCrmSyncService.instance]),
+      listenable: Listenable.merge([
+        workspace,
+        RemoteCrmSyncService.instance,
+        ModuleRegistry.instance,
+      ]),
       builder: (context, _) {
         final l10n = AppLocalizations.of(context);
         final sync = RemoteCrmSyncService.instance;
@@ -857,10 +894,57 @@ class _MobileShell extends StatelessWidget {
           workspace.selectedTaskId,
           workspace.todayFullRecord,
         );
-        final hasDetail = workspace.selectedCompanyId != null &&
+        final hasDetail = workspace.activeModuleId == null &&
+            workspace.selectedCompanyId != null &&
             !hasTaskPanel;
         final hasTodayPanel = hasTaskPanel;
         final scheme = Theme.of(context).colorScheme;
+
+        final entries = <_MobileNavEntry>[
+          _MobileNavEntry(
+            icon: Icons.dashboard_outlined,
+            label: l10n.shellDashboard,
+            section: CrmSection.dashboard,
+          ),
+          _MobileNavEntry(
+            icon: Icons.calendar_month_outlined,
+            label: l10n.shellAgendaLabel,
+            section: CrmSection.today,
+          ),
+          _MobileNavEntry(
+            icon: Icons.business_outlined,
+            label: l10n.shellClientsLabel,
+            section: CrmSection.clients,
+          ),
+          _MobileNavEntry(
+            icon: Icons.view_kanban_outlined,
+            label: l10n.pipelineTitle,
+            section: CrmSection.pipeline,
+          ),
+          _MobileNavEntry(
+            icon: Icons.task_alt_outlined,
+            label: l10n.shellTasksLabel,
+            section: CrmSection.tasks,
+          ),
+          for (final dest in ModuleRegistry.instance.navDestinations(context))
+            _MobileNavEntry(
+              icon: dest.icon,
+              label: dest.title,
+              moduleId: dest.id,
+            ),
+        ];
+
+        var selectedIndex = 0;
+        final activeModule = workspace.activeModuleId;
+        if (activeModule != null) {
+          final mi = entries.indexWhere((e) => e.moduleId == activeModule);
+          if (mi >= 0) selectedIndex = mi;
+        } else {
+          final si =
+              entries.indexWhere((e) => e.section == workspace.section);
+          if (si >= 0) selectedIndex = si;
+        }
+
         return Scaffold(
           body: SafeArea(
             bottom: false,
@@ -883,10 +967,12 @@ class _MobileShell extends StatelessWidget {
                     color: scheme.errorContainer,
                     child: ListTile(
                       dense: true,
-                      leading: Icon(Icons.cloud_off_outlined, color: scheme.onErrorContainer),
+                      leading: Icon(Icons.cloud_off_outlined,
+                          color: scheme.onErrorContainer),
                       title: Text(
                         l10n.shellSyncNeedsPassword,
-                        style: TextStyle(color: scheme.onErrorContainer, fontSize: 13),
+                        style: TextStyle(
+                            color: scheme.onErrorContainer, fontSize: 13),
                       ),
                       trailing: TextButton(
                         onPressed: onSettings,
@@ -904,15 +990,16 @@ class _MobileShell extends StatelessWidget {
               const EmhkAppFooter(),
               if (!hasDetail && !hasTodayPanel)
                 _MobileNavBar(
-                  selectedIndex: workspace.section.index.clamp(0, 4),
-                  onSelected: (i) => workspace.goTo(CrmSection.values[i]),
-                  items: [
-                    _MobileNavItem(Icons.dashboard_outlined, l10n.shellDashboard),
-                    _MobileNavItem(Icons.calendar_month_outlined, l10n.shellAgendaLabel),
-                    _MobileNavItem(Icons.business_outlined, l10n.shellClientsLabel),
-                    _MobileNavItem(Icons.view_kanban_outlined, l10n.pipelineTitle),
-                    _MobileNavItem(Icons.task_alt_outlined, l10n.shellTasksLabel),
-                  ],
+                  entries: entries,
+                  selectedIndex: selectedIndex,
+                  onSelected: (i) {
+                    final e = entries[i];
+                    if (e.moduleId != null) {
+                      workspace.goToModule(e.moduleId!);
+                    } else if (e.section != null) {
+                      workspace.goTo(e.section!);
+                    }
+                  },
                 ),
             ],
           ),

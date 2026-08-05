@@ -1553,5 +1553,8 @@
     }
   },
   "bannerSyncIdleTooltip": "同步",
-  "bannerCompanyPlaceholder": "您的公司"
+  "bannerCompanyPlaceholder": "您的公司",
+  "invChooseLinePhotoTitle": "Choose photo for the PDF",
+  "invChooseNewPhoto": "Choose another file…",
+  "invNoPhoto": "No photo"
 }

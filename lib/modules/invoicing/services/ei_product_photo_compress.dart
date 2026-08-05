@@ -21,7 +21,12 @@ class EiProductPhotoCompress {
     if (bytes.isEmpty) {
       return (bytes: bytes, extension: '.jpg');
     }
-    return compute(_compressIsolate, bytes);
+    try {
+      return await compute(_compressIsolate, bytes);
+    } catch (e) {
+      debugPrint('EiProductPhotoCompress.compress: $e');
+      return (bytes: bytes, extension: _guessExt(bytes));
+    }
   }
 
   static ({Uint8List bytes, String extension}) _compressIsolate(

@@ -3093,4 +3093,13 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get dictationStarting => '받아쓰기 시작 중…';
+
+  @override
+  String get invChooseLinePhotoTitle => 'Choose photo for the PDF';
+
+  @override
+  String get invChooseNewPhoto => 'Choose another file…';
+
+  @override
+  String get invNoPhoto => 'No photo';
 }

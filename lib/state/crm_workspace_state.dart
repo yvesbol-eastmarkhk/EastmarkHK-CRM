@@ -46,6 +46,7 @@ class CrmWorkspaceState extends ChangeNotifier {
 
   void goToModule(String moduleId) {
     activeModuleId = moduleId;
+    selectedCompanyId = null;
     selectedTaskId = null;
     selectedOpportunityId = null;
     todayFullRecord = false;

@@ -1553,5 +1553,8 @@
   "activityTaskCreated": "Task created",
   "dictationOfflineTip": "Offline dictation — it often picks up noise (TV) instead of your voice. Turn ON “Online speech recognition” in Windows Settings → Privacy → Speech, reduce background noise, then try again.",
   "dictationLanguageFallbackTip": "This language variant is not installed on Windows — a close match is used. Install the desired speech pack in Settings → Time & language → Speech.",
-  "dictationStarting": "Starting dictation…"
+  "dictationStarting": "Starting dictation…",
+  "invChooseLinePhotoTitle": "Choose photo for the PDF",
+  "invChooseNewPhoto": "Choose another file…",
+  "invNoPhoto": "No photo"
 }
