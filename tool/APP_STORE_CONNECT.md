@@ -32,22 +32,26 @@ Une seule app ASC couvre **iOS App** + **macOS App** (même Bundle ID).
 
 Dans Xcode : **Product → Xcode Cloud → Create Workflow** (ou ASC → Xcode Cloud).
 
+**Important :** ce projet n’a **pas** de `Podfile` — plugins via **Swift Package Manager**.
+Les scripts `ci_post_clone` font `flutter build … --config-only` (pas `pod install`).
+
+### Déclenchement
+Préférer **Start Build manuel** (pas de start condition sur chaque push), pour pouvoir committer souvent.
+
 ### Workflow iOS
-- Product : `ios/Runner.xcodeproj` → scheme **Runner**
+- Product : `ios/Runner.xcworkspace` → scheme **Runner**
 - Archive → **App Store Connect** (TestFlight / Submit)
-- Start condition : push sur `main` (ou tag `ios-*`)
 - Environment : macOS + latest Xcode ; **Clone Depth = Full**
-- Script auto : `ios/ci_scripts/ci_post_clone.sh` (déjà dans le repo)
+- Script : `ios/ci_scripts/ci_post_clone.sh`
 
 ### Workflow macOS
-- Product : `macos/Runner.xcodeproj` → scheme **Runner**
-- Même cible App Store Connect (même app)
+- Product : `macos/Runner.xcworkspace` → scheme **Runner**
 - Script : `macos/ci_scripts/ci_post_clone.sh`
-- Signing : Developer ID / Mac App Store selon distribution ; pour ASC Mac = **Mac App Store** certificates via automatic signing in Cloud
+- Même app ASC
 
 ### Permissions
-- Lier le repo GitHub `yvesbol-eastmarkhk/EastmarkHK-CRM` dans Xcode Cloud.
-- Accès App Store Connect pour l’équipe EastmarkHK.
+- Repo GitHub **public** : `yvesbol-eastmarkhk/EastmarkHK-CRM`
+- Lier le repo dans Xcode Cloud / GitHub App « Xcode Cloud »
 
 ## Builds locaux (sans Xcode Cloud)
 
