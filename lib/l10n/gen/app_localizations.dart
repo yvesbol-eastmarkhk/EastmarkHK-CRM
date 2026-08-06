@@ -297,6 +297,12 @@ abstract class AppLocalizations {
   /// **'Déverrouiller avec Touch ID'**
   String get loginUnlockTouchId;
 
+  /// No description provided for @loginUnlockWindowsHello.
+  ///
+  /// In fr, this message translates to:
+  /// **'Déverrouiller avec Windows Hello'**
+  String get loginUnlockWindowsHello;
+
   /// No description provided for @loginOr.
   ///
   /// In fr, this message translates to:
@@ -332,6 +338,60 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Revenir au compte mémorisé'**
   String get loginUseSavedAccount;
+
+  /// No description provided for @loginEnableBiometricsTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Déverrouillage par empreinte ?'**
+  String get loginEnableBiometricsTitle;
+
+  /// No description provided for @loginEnableBiometricsDetail.
+  ///
+  /// In fr, this message translates to:
+  /// **'Voulez-vous utiliser l’empreinte / Windows Hello pour ouvrir le CRM sans retaper le mot de passe sur cet appareil ?'**
+  String get loginEnableBiometricsDetail;
+
+  /// No description provided for @loginEnableBiometricsYes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Oui, activer'**
+  String get loginEnableBiometricsYes;
+
+  /// No description provided for @loginEnableBiometricsNo.
+  ///
+  /// In fr, this message translates to:
+  /// **'Non, merci'**
+  String get loginEnableBiometricsNo;
+
+  /// No description provided for @loginEnableBiometricsButton.
+  ///
+  /// In fr, this message translates to:
+  /// **'Activer l’empreinte'**
+  String get loginEnableBiometricsButton;
+
+  /// No description provided for @loginDisableBiometricsButton.
+  ///
+  /// In fr, this message translates to:
+  /// **'Désactiver l’empreinte'**
+  String get loginDisableBiometricsButton;
+
+  /// No description provided for @loginBiometricsUnavailable.
+  ///
+  /// In fr, this message translates to:
+  /// **'Windows Hello / empreinte non disponible. Activez un PIN ou une empreinte dans les paramètres Windows.'**
+  String get loginBiometricsUnavailable;
+
+  /// No description provided for @loginBiometricsEnabled.
+  ///
+  /// In fr, this message translates to:
+  /// **'Empreinte activée pour ce compte.'**
+  String get loginBiometricsEnabled;
+
+  /// No description provided for @loginBiometricsDisabled.
+  ///
+  /// In fr, this message translates to:
+  /// **'Empreinte désactivée.'**
+  String get loginBiometricsDisabled;
 
   /// No description provided for @bootstrapWelcome.
   ///
@@ -1044,7 +1104,7 @@ abstract class AppLocalizations {
   /// No description provided for @usersTouchIdTitle.
   ///
   /// In fr, this message translates to:
-  /// **'Touch ID sur cet appareil'**
+  /// **'Empreinte / Windows Hello sur cet appareil'**
   String get usersTouchIdTitle;
 
   /// No description provided for @usersTouchIdSubtitle.

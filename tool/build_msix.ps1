@@ -21,8 +21,9 @@
   -Store mode does NOT sign the package: Partner Center signs on submission.
   Upload the resulting .msix in Partner Center > Packages.
 
-  Version bump: -MsixVersion 1.0.2.28 (or msix_version in pubspec.yaml).
-  The Store requires a strictly increasing version on each submission.
+  Version bump: -MsixVersion 1.0.2.0 (or msix_version in pubspec.yaml).
+  Microsoft Store REQUIRES revision (4th number) = 0, e.g. 1.0.2.0 not 1.0.2.28.
+  Each Store submission also needs a strictly increasing version.
 
   Sideload uses the msix package defaults (DigiCert timestamp). Do NOT pass
   partial --signtool-options: msix always appends /fd /td /tr and duplicates fail.
@@ -130,6 +131,21 @@ Get-ChildItem $outDir -Filter *.msix -ErrorAction SilentlyContinue |
   Sort-Object LastWriteTime -Descending |
   Select-Object -First 1 |
   ForEach-Object {
+    if ($Store) {
+      $storeDir = Join-Path $root "build\store"
+      New-Item -ItemType Directory -Path $storeDir -Force | Out-Null
+      $ver = if ($MsixVersion) { $MsixVersion } else { "store" }
+      $alias = Join-Path $storeDir "EastmarkHK-CRM-STORE-$ver.msix"
+      Copy-Item $_.FullName $alias -Force
+      Write-Host "==> STORE UPLOAD THIS FILE (not sideload):"
+      Write-Host "    $alias"
+      try {
+        $desktop = [Environment]::GetFolderPath("Desktop")
+        $deskCopy = Join-Path $desktop "EastmarkHK-CRM-STORE-$ver.msix"
+        Copy-Item $_.FullName $deskCopy -Force
+        Write-Host "    (also on Desktop: $deskCopy)"
+      } catch {}
+    }
     $mb = [math]::Round($_.Length / 1MB, 1)
     Write-Host "==> MSIX ready: $($_.FullName) ($mb MB)"
   }

@@ -127,10 +127,13 @@ flutter_launcher_icons:
 msix_config:
   display_name: EastmarkHK CRM
   publisher_display_name: EastmarkHK
-  identity_name: EastmarkHK.CRM
+  # Sideload default. Pour le Store, utiliser tool\build_msix.ps1 -Store
+  # (identity/publisher Partner Center) — ne pas committer le CN publisher.
+  identity_name: EastmarkHK.EastmarkHKCRM
   # Partner Center > Product identity > Package/Properties/Publisher :
-  # publisher: CN=XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
-  msix_version: 1.0.2.28
+  # publisher: CN=212682DE-ED59-450E-8549-6B3A3B441865
+  # Store: le 4e chiffre (revision) DOIT être 0 (ex. 1.0.2.0, pas 1.0.2.28).
+  msix_version: 1.0.3.0
   logo_path: assets/branding/app_icon_v3.png
   capabilities: internetClient, microphone
   languages: en-us, fr-fr, nl-nl, de-de, es-es, it-it, pt-pt, pt-br, ja-jp, ko-kr, zh-cn, th-th, vi-vn, tr-tr, pl-pl, ru-ru, ar-sa, id-id, sv-se, el-gr, da-dk, fi-fi, cs-cz, sk-sk, hu-hu, ro-ro, bg-bg, hr-hr, uk-ua

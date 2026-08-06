@@ -1,9 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../core/services/secure_credential_storage.dart';
 import 'einvoicing_license_bridge.dart';
 
 /// Identifiants API distante d'EastmarkHK e-Invoicing, saisis une fois côté
@@ -15,9 +15,7 @@ class EinvoiceRemoteConfig {
   static const _kUser = 'einvoice_remote.user';
   static const _kPassword = 'einvoice_remote.password';
 
-  static const _storage = FlutterSecureStorage(
-    mOptions: MacOsOptions(usesDataProtectionKeychain: false),
-  );
+  static final _storage = createSecureCredentialStorage();
 
   static Future<EinvoiceRemoteCredentials> load() async {
     final prefs = await SharedPreferences.getInstance();

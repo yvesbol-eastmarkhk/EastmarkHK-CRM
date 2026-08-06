@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -14,6 +13,7 @@ import '../services/current_session.dart';
 import '../services/currency_settings.dart';
 import '../services/dictation_settings.dart';
 import '../services/remote_crm_sync_service.dart';
+import '../services/secure_credential_storage.dart';
 import '../utils/file_export.dart';
 import '../widgets/app_language_picker.dart';
 import '../widgets/country_flag_icon.dart';
@@ -33,9 +33,7 @@ import 'login_screen.dart';
 import 'modules_screen.dart';
 import 'users_screen.dart';
 
-const _secureStorage = FlutterSecureStorage(
-  mOptions: MacOsOptions(usesDataProtectionKeychain: false),
-);
+final _secureStorage = createSecureCredentialStorage();
 // Clé partagée avec RemoteCrmSyncService — un seul mot de passe de compte
 // de sync, saisi ici, relu par le service pour les synchronisations
 // automatiques en tâche de fond.

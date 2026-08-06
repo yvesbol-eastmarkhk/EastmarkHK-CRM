@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
@@ -10,6 +9,7 @@ import '../../l10n/gen/app_localizations.dart';
 import '../constants/sync_defaults.dart';
 import '../db/app_database.dart';
 import 'client_company_bridge.dart';
+import 'secure_credential_storage.dart';
 import 'sync_editing_guard.dart';
 
 enum SyncOutcomeKind {
@@ -148,9 +148,7 @@ class RemoteCrmSyncService extends ChangeNotifier {
   static const _companyProfileTable = 'company_profile';
   static const _allTables = [..._dataTables, _profileTable, _companyProfileTable];
 
-  static const _storage = FlutterSecureStorage(
-    mOptions: MacOsOptions(usesDataProtectionKeychain: false),
-  );
+  static final _storage = createSecureCredentialStorage();
 
   /// Incrémenté après un pull qui a modifié la base — les listes écoutent
   /// cette valeur pour se rafraîchir (comme RemoteDataSyncService.dataEpoch).

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../l10n/gen/app_localizations.dart';
@@ -45,12 +46,24 @@ class LoginPanelState extends State<LoginPanel> {
   bool get _rememberedUnlock =>
       !_switchAccount && CurrentSession.instance.user != null;
 
-  /// Passkey seulement si un jeton existe déjà (créé après un login MDP réussi).
+  /// Déverrouillage rapide seulement si un jeton existe déjà.
   bool get showPasskey =>
       _biometricsAvailable &&
       _hasPasskeyToken &&
       _rememberedUnlock &&
       CurrentSession.instance.user != null;
+
+  /// Proposer d'activer l'empreinte quand Hello est dispo mais pas encore configuré.
+  bool get showEnableBiometrics =>
+      _biometricsAvailable &&
+      !_hasPasskeyToken &&
+      _rememberedUnlock &&
+      CurrentSession.instance.user != null;
+
+  String _unlockLabel(AppLocalizations l10n) =>
+      defaultTargetPlatform == TargetPlatform.windows
+          ? l10n.loginUnlockWindowsHello
+          : l10n.loginUnlockTouchId;
 
   @override
   void initState() {
@@ -66,7 +79,8 @@ class LoginPanelState extends State<LoginPanel> {
   }
 
   void _notifyPasskeyAvailability() {
-    widget.onPasskeyAvailabilityChanged?.call(showPasskey);
+    widget.onPasskeyAvailabilityChanged
+        ?.call(showPasskey || showEnableBiometrics);
   }
 
   Future<void> _bootstrap() async {
@@ -145,23 +159,123 @@ class LoginPanelState extends State<LoginPanel> {
       });
       return;
     }
-    await _enablePasskeyByDefault();
+    await _askEnableBiometricsAfterLogin();
     if (!mounted) return;
     _enterApp();
   }
 
-  Future<void> _enablePasskeyByDefault() async {
+  /// Demande explicite Oui / Non après un login mot de passe réussi.
+  Future<void> _askEnableBiometricsAfterLogin() async {
     final user = CurrentSession.instance.user;
     if (user == null) return;
     final supported = await DevicePasskeyService.deviceSupportsBiometrics();
-    if (!supported) return;
+    if (!supported) {
+      debugPrint(
+        'DevicePasskey: biometrics/Windows Hello not available on this device',
+      );
+      return;
+    }
+    if (await DevicePasskeyService.hasToken(user.id)) {
+      if (mounted) setState(() => _hasPasskeyToken = true);
+      return;
+    }
+    if (await DevicePasskeyService.hasDeclined(user.id)) return;
+    if (!mounted) return;
+
+    final l10n = AppLocalizations.of(context);
+    final enable = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => AlertDialog(
+        icon: const Icon(Icons.fingerprint, size: 36),
+        title: Text(l10n.loginEnableBiometricsTitle),
+        content: Text(l10n.loginEnableBiometricsDetail),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(l10n.loginEnableBiometricsNo),
+          ),
+          FilledButton.icon(
+            onPressed: () => Navigator.pop(ctx, true),
+            icon: const Icon(Icons.fingerprint),
+            label: Text(l10n.loginEnableBiometricsYes),
+          ),
+        ],
+      ),
+    );
+    if (!mounted) return;
+    if (enable == true) {
+      await _enableBiometrics(promptAuth: true);
+    } else {
+      try {
+        await DevicePasskeyService.markDeclined(user.id);
+        user.touchIdEnabled = false;
+        await AppDatabase.instance.upsertUser(user);
+      } catch (e, st) {
+        debugPrint('DevicePasskey.markDeclined failed: $e\n$st');
+      }
+    }
+  }
+
+  Future<void> _enableBiometrics({required bool promptAuth}) async {
+    final user = CurrentSession.instance.user;
+    final l10n = AppLocalizations.of(context);
+    if (user == null) return;
+    final supported = await DevicePasskeyService.deviceSupportsBiometrics();
+    if (!supported) {
+      if (mounted) {
+        setState(() => _error = l10n.loginBiometricsUnavailable);
+      }
+      return;
+    }
+    if (promptAuth) {
+      final ok = await DevicePasskeyService.authenticate();
+      if (!mounted) return;
+      if (!ok) {
+        setState(() => _error = l10n.loginPasskeyRefused);
+        return;
+      }
+    }
     try {
       await DevicePasskeyService.createToken(user.id);
       user.touchIdEnabled = true;
       await AppDatabase.instance.upsertUser(user);
-      if (mounted) setState(() => _hasPasskeyToken = true);
+      if (!mounted) return;
+      setState(() {
+        _hasPasskeyToken = true;
+        _error = null;
+      });
+      _notifyPasskeyAvailability();
+      ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+        SnackBar(content: Text(l10n.loginBiometricsEnabled)),
+      );
     } catch (e, st) {
-      debugPrint('LoginPanel._enablePasskeyByDefault failed: $e\n$st');
+      debugPrint('DevicePasskey.createToken failed: $e\n$st');
+      if (mounted) {
+        setState(() => _error = l10n.loginBiometricsUnavailable);
+      }
+    }
+  }
+
+  Future<void> _disableBiometrics() async {
+    final user = CurrentSession.instance.user;
+    final l10n = AppLocalizations.of(context);
+    if (user == null) return;
+    try {
+      await DevicePasskeyService.markDeclined(user.id);
+      user.touchIdEnabled = false;
+      await AppDatabase.instance.upsertUser(user);
+      if (!mounted) return;
+      setState(() {
+        _hasPasskeyToken = false;
+        _error = null;
+      });
+      _notifyPasskeyAvailability();
+      ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+        SnackBar(content: Text(l10n.loginBiometricsDisabled)),
+      );
+    } catch (e, st) {
+      debugPrint('DevicePasskey.disable failed: $e\n$st');
     }
   }
 
@@ -318,7 +432,7 @@ class LoginPanelState extends State<LoginPanel> {
       _notifyPasskeyAvailability();
       return;
     }
-    await _enablePasskeyByDefault();
+    await _askEnableBiometricsAfterLogin();
     if (!mounted) return;
     _enterApp();
   }
@@ -326,25 +440,55 @@ class LoginPanelState extends State<LoginPanel> {
   /// Bouton passkey — à placer au-dessus de la carte login.
   Widget buildPasskeyButton(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    if (!showPasskey) return const SizedBox.shrink();
+    if (!showPasskey && !showEnableBiometrics) {
+      return const SizedBox.shrink();
+    }
     return SizedBox(
       width: 380,
-      child: FilledButton.icon(
-        style: FilledButton.styleFrom(
-          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-          textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-        ),
-        onPressed: _saving ? null : tryPasskey,
-        icon: _saving
-            ? const SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
-              )
-            : const Icon(Icons.fingerprint, size: 28),
-        label: Text(
-          _saving ? l10n.loginVerifying : l10n.loginUnlockTouchId,
-        ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (showPasskey)
+            FilledButton.icon(
+              style: FilledButton.styleFrom(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+                textStyle:
+                    const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              ),
+              onPressed: _saving ? null : tryPasskey,
+              icon: _saving
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Colors.white,
+                      ),
+                    )
+                  : const Icon(Icons.fingerprint, size: 28),
+              label: Text(_saving ? l10n.loginVerifying : _unlockLabel(l10n)),
+            ),
+          if (showEnableBiometrics)
+            FilledButton.tonalIcon(
+              style: FilledButton.styleFrom(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+                textStyle:
+                    const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              ),
+              onPressed: _saving
+                  ? null
+                  : () => _enableBiometrics(promptAuth: true),
+              icon: const Icon(Icons.fingerprint, size: 28),
+              label: Text(l10n.loginEnableBiometricsButton),
+            ),
+          if (showPasskey)
+            TextButton(
+              onPressed: _saving ? null : _disableBiometrics,
+              child: Text(l10n.loginDisableBiometricsButton),
+            ),
+        ],
       ),
     );
   }
@@ -359,7 +503,8 @@ class LoginPanelState extends State<LoginPanel> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (widget.embedPasskey && showPasskey) ...[
+          if (widget.embedPasskey &&
+              (showPasskey || showEnableBiometrics)) ...[
             buildPasskeyButton(context),
             const SizedBox(height: 16),
             Row(

@@ -68,6 +68,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get loginUnlockTouchId => 'Déverrouiller avec Touch ID';
 
   @override
+  String get loginUnlockWindowsHello => 'Déverrouiller avec Windows Hello';
+
+  @override
   String get loginOr => 'ou';
 
   @override
@@ -84,6 +87,35 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get loginUseSavedAccount => 'Revenir au compte mémorisé';
+
+  @override
+  String get loginEnableBiometricsTitle => 'Déverrouillage par empreinte ?';
+
+  @override
+  String get loginEnableBiometricsDetail =>
+      'Voulez-vous utiliser l’empreinte / Windows Hello pour ouvrir le CRM sans retaper le mot de passe sur cet appareil ?';
+
+  @override
+  String get loginEnableBiometricsYes => 'Oui, activer';
+
+  @override
+  String get loginEnableBiometricsNo => 'Non, merci';
+
+  @override
+  String get loginEnableBiometricsButton => 'Activer l’empreinte';
+
+  @override
+  String get loginDisableBiometricsButton => 'Désactiver l’empreinte';
+
+  @override
+  String get loginBiometricsUnavailable =>
+      'Windows Hello / empreinte non disponible. Activez un PIN ou une empreinte dans les paramètres Windows.';
+
+  @override
+  String get loginBiometricsEnabled => 'Empreinte activée pour ce compte.';
+
+  @override
+  String get loginBiometricsDisabled => 'Empreinte désactivée.';
 
   @override
   String get bootstrapWelcome => 'Bienvenue';
@@ -482,7 +514,7 @@ class AppLocalizationsFr extends AppLocalizations {
       'Nouveau mot de passe (laisser vide pour ne pas changer)';
 
   @override
-  String get usersTouchIdTitle => 'Touch ID sur cet appareil';
+  String get usersTouchIdTitle => 'Empreinte / Windows Hello sur cet appareil';
 
   @override
   String get usersTouchIdSubtitle =>

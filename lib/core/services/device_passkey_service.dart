@@ -12,6 +12,9 @@ import 'package:path_provider/path_provider.dart';
 /// Déverrouillage rapide par biométrie / Windows Hello, lié à un jeton
 /// d'appareil aléatoire — jamais dans la base SQLite.
 ///
+/// - macOS / iOS : Touch ID / Face ID (+ code appareil)
+/// - Windows : Windows Hello (PIN / empreinte / visage)
+///
 /// ⚠️ Ce n'est PAS un passkey WebAuthn/FIDO2 portable (qui nécessite un
 /// relying party serveur et une cérémonie d'attestation). C'est un secret
 /// local, propre à cet appareil : pratique pour éviter de retaper son mot
@@ -38,6 +41,7 @@ class DevicePasskeyService {
   static final LocalAuthentication _auth = LocalAuthentication();
 
   static String _key(String userId) => 'device_passkey_$userId';
+  static String _declinedKey(String userId) => 'device_passkey_declined_$userId';
 
   static String _randomToken() {
     final rnd = Random.secure();
@@ -53,6 +57,7 @@ class DevicePasskeyService {
     var secureOk = false;
     try {
       await _storage.write(key: _key(userId), value: token);
+      await _storage.delete(key: _declinedKey(userId));
       secureOk = true;
     } catch (e, st) {
       debugPrint('DevicePasskeyService secure write failed: $e\n$st');
@@ -60,6 +65,7 @@ class DevicePasskeyService {
     // Toujours écrire le fallback : sur Windows le Credential Locker peut
     // réussir à l'écriture puis échouer à la lecture (identité MSIX).
     await _writeFallback(userId, token);
+    await _deleteDeclinedFallback(userId);
     if (!secureOk) {
       debugPrint(
         'DevicePasskeyService: token kept in Application Support fallback '
@@ -83,6 +89,24 @@ class DevicePasskeyService {
     await _deleteFallback(userId);
   }
 
+  static Future<void> markDeclined(String userId) async {
+    try {
+      await _storage.write(key: _declinedKey(userId), value: '1');
+    } catch (e) {
+      debugPrint('DevicePasskeyService markDeclined secure failed: $e');
+    }
+    await _writeDeclinedFallback(userId);
+    await removeToken(userId);
+  }
+
+  static Future<bool> hasDeclined(String userId) async {
+    try {
+      final v = await _storage.read(key: _declinedKey(userId));
+      if (v != null) return true;
+    } catch (_) {}
+    return _hasDeclinedFallback(userId);
+  }
+
   static Future<bool> deviceSupportsBiometrics() async {
     try {
       final supported = await _auth.isDeviceSupported();
@@ -92,25 +116,33 @@ class DevicePasskeyService {
       // Windows Hello : canCheckBiometrics == isDeviceSupported ; la liste
       // peut être vide selon le plugin — on accepte `supported` seul.
       return canCheck || biometrics.isNotEmpty || supported;
-    } catch (e) {
-      debugPrint('DevicePasskeyService.deviceSupportsBiometrics: $e');
+    } catch (e, st) {
+      debugPrint('DevicePasskeyService.deviceSupportsBiometrics: $e\n$st');
       return false;
     }
   }
 
-  /// Demande Touch ID / Face ID / Windows Hello / code appareil.
+  /// Demande Touch ID / Face ID / Windows Hello / code appareil
   /// (`biometricOnly: false` pour autoriser le code de secours).
   static Future<bool> unlock(String userId) async {
     final hasStoredToken = await hasToken(userId);
     if (!hasStoredToken) return false;
+    return authenticate();
+  }
+
+  /// Prompt Windows Hello / Touch ID sans exiger un jeton (pour activer).
+  static Future<bool> authenticate() async {
     try {
+      final reason = defaultTargetPlatform == TargetPlatform.windows
+          ? 'Unlock EastmarkHK CRM with Windows Hello'
+          : 'Déverrouiller EastmarkHK CRM';
       return await _auth.authenticate(
-        localizedReason: 'Unlock EastmarkHK CRM',
+        localizedReason: reason,
         biometricOnly: false,
         persistAcrossBackgrounding: true,
       );
-    } catch (e) {
-      debugPrint('DevicePasskeyService.unlock failed: $e');
+    } catch (e, st) {
+      debugPrint('DevicePasskeyService.authenticate: $e\n$st');
       return false;
     }
   }
@@ -129,12 +161,24 @@ class DevicePasskeyService {
     return _readFallback(userId);
   }
 
-  static Future<File> _fallbackFile(String userId) async {
+  static Future<Directory> _passkeyDir() async {
     final dir = await getApplicationSupportDirectory();
-    final safeId = userId.replaceAll(RegExp(r'[^A-Za-z0-9_-]'), '_');
     final folder = Directory(p.join(dir.path, 'passkeys'));
     await folder.create(recursive: true);
-    return File(p.join(folder.path, '$safeId.token'));
+    return folder;
+  }
+
+  static String _safeId(String userId) =>
+      userId.replaceAll(RegExp(r'[^A-Za-z0-9_-]'), '_');
+
+  static Future<File> _fallbackFile(String userId) async {
+    final folder = await _passkeyDir();
+    return File(p.join(folder.path, '${_safeId(userId)}.token'));
+  }
+
+  static Future<File> _declinedFallbackFile(String userId) async {
+    final folder = await _passkeyDir();
+    return File(p.join(folder.path, '${_safeId(userId)}.declined'));
   }
 
   static Future<void> _writeFallback(String userId, String token) async {
@@ -162,6 +206,29 @@ class DevicePasskeyService {
   static Future<void> _deleteFallback(String userId) async {
     try {
       final file = await _fallbackFile(userId);
+      if (await file.exists()) await file.delete();
+    } catch (_) {}
+  }
+
+  static Future<void> _writeDeclinedFallback(String userId) async {
+    try {
+      final file = await _declinedFallbackFile(userId);
+      await file.writeAsString('1', flush: true);
+    } catch (_) {}
+  }
+
+  static Future<bool> _hasDeclinedFallback(String userId) async {
+    try {
+      final file = await _declinedFallbackFile(userId);
+      return await file.exists();
+    } catch (_) {
+      return false;
+    }
+  }
+
+  static Future<void> _deleteDeclinedFallback(String userId) async {
+    try {
+      final file = await _declinedFallbackFile(userId);
       if (await file.exists()) await file.delete();
     } catch (_) {}
   }

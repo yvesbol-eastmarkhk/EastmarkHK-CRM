@@ -68,6 +68,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loginUnlockTouchId => 'Unlock with Touch ID';
 
   @override
+  String get loginUnlockWindowsHello => 'Unlock with Windows Hello';
+
+  @override
   String get loginOr => 'or';
 
   @override
@@ -84,6 +87,36 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get loginUseSavedAccount => 'Back to saved account';
+
+  @override
+  String get loginEnableBiometricsTitle => 'Enable fingerprint unlock?';
+
+  @override
+  String get loginEnableBiometricsDetail =>
+      'Do you want to use fingerprint / Windows Hello to open the CRM without retyping your password on this device?';
+
+  @override
+  String get loginEnableBiometricsYes => 'Yes, enable';
+
+  @override
+  String get loginEnableBiometricsNo => 'No thanks';
+
+  @override
+  String get loginEnableBiometricsButton => 'Enable fingerprint';
+
+  @override
+  String get loginDisableBiometricsButton => 'Disable fingerprint';
+
+  @override
+  String get loginBiometricsUnavailable =>
+      'Windows Hello / fingerprint unavailable. Set up a PIN or fingerprint in Windows settings.';
+
+  @override
+  String get loginBiometricsEnabled =>
+      'Fingerprint unlock enabled for this account.';
+
+  @override
+  String get loginBiometricsDisabled => 'Fingerprint unlock disabled.';
 
   @override
   String get bootstrapWelcome => 'Welcome';
@@ -478,7 +511,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'New password (leave blank to keep unchanged)';
 
   @override
-  String get usersTouchIdTitle => 'Touch ID on this device';
+  String get usersTouchIdTitle => 'Fingerprint / Windows Hello on this device';
 
   @override
   String get usersTouchIdSubtitle =>
