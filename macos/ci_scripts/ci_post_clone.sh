@@ -1,12 +1,12 @@
 #!/bin/sh
 # Xcode Cloud — after clone (macOS).
 # Ce projet utilise Swift Package Manager (pas de Podfile / CocoaPods).
-# Aligné Flutter local : 3.47.0-0.3.pre (channel beta).
+# Aligné Flutter local : 3.47.0-0.4.pre (channel beta).
 set -euo pipefail
 
 cd "$CI_PRIMARY_REPOSITORY_PATH"
 
-FLUTTER_VERSION="${FLUTTER_VERSION:-3.47.0-0.3.pre}"
+FLUTTER_VERSION="${FLUTTER_VERSION:-3.47.0-0.4.pre}"
 FLUTTER_ZIP="flutter_macos_arm64_${FLUTTER_VERSION}-beta.zip"
 FLUTTER_URL="https://storage.googleapis.com/flutter_infra_release/releases/beta/macos/${FLUTTER_ZIP}"
 

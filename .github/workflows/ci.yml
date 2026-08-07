@@ -16,7 +16,7 @@ concurrency:
 
 env:
   # Doit rester alignée avec la version utilisée en local (voir `flutter --version`).
-  FLUTTER_VERSION: 3.47.0-0.3.pre
+  FLUTTER_VERSION: 3.47.0-0.4.pre
   FLUTTER_CHANNEL: beta
 
 jobs:
