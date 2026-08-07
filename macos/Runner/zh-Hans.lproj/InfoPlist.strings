@@ -1,0 +1,6 @@
+/* Permission usage — device language (matches all CRM UI locales) */
+"NSMicrophoneUsageDescription" = "语音听写可将您的语音转为笔记和任务。";
+"NSSpeechRecognitionUsageDescription" = "转录在本机完成，您的音频保持私密。";
+"NSFaceIDUsageDescription" = "使用面容 ID 或触控 ID 快速解锁 CRM。";
+"NSCameraUsageDescription" = "拍摄产品照片用于报价和发票。";
+"NSPhotoLibraryUsageDescription" = "选择照片作为公司徽标和产品目录。";

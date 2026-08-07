@@ -1,0 +1,6 @@
+/* Permission usage — device language (matches all CRM UI locales) */
+"NSMicrophoneUsageDescription" = "A hangos diktálás a beszédet jegyzetekké és feladatokká alakítja.";
+"NSSpeechRecognitionUsageDescription" = "Az átírás az eszközön történik; a hanganyag privát marad.";
+"NSFaceIDUsageDescription" = "Oldja fel gyorsan a CRM-et Face ID-val vagy Touch ID-val.";
+"NSCameraUsageDescription" = "Készítsen termékfotókat árajánlatokhoz és számlákhoz.";
+"NSPhotoLibraryUsageDescription" = "Válasszon fényképeket a céglogóhoz és a termékkatalógushoz.";

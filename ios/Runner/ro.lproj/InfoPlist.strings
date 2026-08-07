@@ -1,0 +1,6 @@
+/* Permission usage — device language (matches all CRM UI locales) */
+"NSMicrophoneUsageDescription" = "Dictarea vocală transformă vorbirea în note și sarcini.";
+"NSSpeechRecognitionUsageDescription" = "Transcrierea se face pe dispozitiv; sunetul rămâne privat.";
+"NSFaceIDUsageDescription" = "Deblocați rapid CRM-ul cu Face ID sau Touch ID.";
+"NSCameraUsageDescription" = "Fotografiați produse pentru oferte și facturi.";
+"NSPhotoLibraryUsageDescription" = "Alegeți fotografii pentru logo-ul companiei și catalogul de produse.";

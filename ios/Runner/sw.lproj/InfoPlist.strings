@@ -1,0 +1,6 @@
+/* Permission usage — device language (matches all CRM UI locales) */
+"NSMicrophoneUsageDescription" = "Kuamuru kwa sauti hugeuza usemi wako kuwa madokezo na kazi.";
+"NSSpeechRecognitionUsageDescription" = "Uandishi unafanyika kwenye kifaa chako; sauti inabaki faragha.";
+"NSFaceIDUsageDescription" = "Fungua CRM haraka kwa Face ID au Touch ID.";
+"NSCameraUsageDescription" = "Piga picha za bidhaa kwa nukuu na ankara.";
+"NSPhotoLibraryUsageDescription" = "Chagua picha kwa nembo ya kampuni na katalogi ya bidhaa.";

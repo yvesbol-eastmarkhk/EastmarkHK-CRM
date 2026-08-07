@@ -1,0 +1,6 @@
+/* Permission usage — device language (matches all CRM UI locales) */
+"NSMicrophoneUsageDescription" = "음성 받아쓰기가 음성을 메모와 작업으로 변환합니다.";
+"NSSpeechRecognitionUsageDescription" = "전사(받아쓰기)는 기기에서 처리되며 오디오는 비공개로 유지됩니다.";
+"NSFaceIDUsageDescription" = "Face ID 또는 Touch ID로 CRM을 빠르게 잠금 해제합니다.";
+"NSCameraUsageDescription" = "견적서와 청구서용 제품 사진을 촬영합니다.";
+"NSPhotoLibraryUsageDescription" = "회사 로고와 제품 카탈로그용 사진을 선택합니다.";

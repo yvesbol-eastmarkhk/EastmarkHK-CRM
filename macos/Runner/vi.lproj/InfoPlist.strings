@@ -1,0 +1,6 @@
+/* Permission usage — device language (matches all CRM UI locales) */
+"NSMicrophoneUsageDescription" = "Chính tả bằng giọng nói chuyển lời nói thành ghi chú và công việc.";
+"NSSpeechRecognitionUsageDescription" = "Phiên âm chạy trên thiết bị; âm thanh của bạn được giữ riêng tư.";
+"NSFaceIDUsageDescription" = "Mở khóa CRM nhanh chóng bằng Face ID hoặc Touch ID.";
+"NSCameraUsageDescription" = "Chụp ảnh sản phẩm cho báo giá và hóa đơn.";
+"NSPhotoLibraryUsageDescription" = "Chọn ảnh cho logo công ty và danh mục sản phẩm.";

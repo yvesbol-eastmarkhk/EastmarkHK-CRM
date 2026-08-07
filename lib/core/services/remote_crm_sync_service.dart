@@ -861,20 +861,18 @@ class RemoteCrmSyncService extends ChangeNotifier {
     var account = (values['sync_account'] ?? '').trim();
     // Migration silencieuse ancien sous-domaine → emhk (sans attendre Réglages).
     if (server.contains('crm.eastmarkhk.com')) {
-      server = SyncDefaults.serverUrl;
+      server = SyncDefaults.legacyMigratedServerUrl;
       await db.setSetting('sync_server', server);
     }
     if (account == 'crm@eastmarkhk.com') {
-      account = SyncDefaults.account;
+      account = SyncDefaults.legacyMigratedAccount;
       await db.setSetting('sync_account', account);
     }
-    if (server.isEmpty) {
-      server = SyncDefaults.serverUrl;
-      await db.setSetting('sync_server', server);
-    }
-    if (account.isEmpty) {
-      account = SyncDefaults.account;
-      await db.setSetting('sync_account', account);
+    // Nouvelle install : ne pas injecter d'identifiants EastmarkHK —
+    // l'utilisateur saisit serveur / compte / mot de passe dans Réglages.
+    if (server.isEmpty || account.isEmpty) {
+      _setCredentialsIncomplete(true);
+      return null;
     }
     String? password;
     try {

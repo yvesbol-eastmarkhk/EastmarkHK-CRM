@@ -1,0 +1,6 @@
+/* Permission usage — device language (matches all CRM UI locales) */
+"NSMicrophoneUsageDescription" = "Spraakdictaat zet uw stem om in notities en taken.";
+"NSSpeechRecognitionUsageDescription" = "Transcriptie gebeurt op uw apparaat; uw audio blijft privé.";
+"NSFaceIDUsageDescription" = "Ontgrendel de CRM snel met Face ID of Touch ID.";
+"NSCameraUsageDescription" = "Maak foto's van producten voor offertes en facturen.";
+"NSPhotoLibraryUsageDescription" = "Kies foto's voor uw bedrijfslogo en productcatalogus.";

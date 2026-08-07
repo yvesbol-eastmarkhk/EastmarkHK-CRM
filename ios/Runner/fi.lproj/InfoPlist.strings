@@ -1,0 +1,6 @@
+/* Permission usage — device language (matches all CRM UI locales) */
+"NSMicrophoneUsageDescription" = "Äänen sanele muuntaa puheesi muistiinpanoiksi ja tehtäviksi.";
+"NSSpeechRecognitionUsageDescription" = "Litterointi tapahtuu laitteellasi; äänesi pysyy yksityisenä.";
+"NSFaceIDUsageDescription" = "Avaa CRM nopeasti Face ID:llä tai Touch ID:llä.";
+"NSCameraUsageDescription" = "Ota tuotekuvia tarjouksia ja laskuja varten.";
+"NSPhotoLibraryUsageDescription" = "Valitse kuvia yrityksen logoon ja tuoteluetteloon.";

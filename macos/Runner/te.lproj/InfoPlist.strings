@@ -1,0 +1,6 @@
+/* Permission usage — device language (matches all CRM UI locales) */
+"NSMicrophoneUsageDescription" = "వాయిస్ డిక్టేషన్ మీ మాటను నోట్స్ మరియు పనులుగా మారుస్తుంది.";
+"NSSpeechRecognitionUsageDescription" = "ట్రాన్స్‌క్రిప్షన్ మీ పరికరంలో జరుగుతుంది; ఆడియో గోప్యంగా ఉంటుంది.";
+"NSFaceIDUsageDescription" = "Face ID లేదా Touch IDతో CRMని త్వరగా అన్‌లాక్ చేయండి.";
+"NSCameraUsageDescription" = "కోట్‌లు మరియు ఇన్‌వాయిస్‌ల కోసం ఉత్పత్తి ఫోటోలు తీయండి.";
+"NSPhotoLibraryUsageDescription" = "కంపెనీ లోగో మరియు ఉత్పత్తి కేటలాగ్ కోసం ఫోటోలు ఎంచుకోండి.";

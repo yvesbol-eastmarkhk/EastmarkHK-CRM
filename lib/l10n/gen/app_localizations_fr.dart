@@ -342,7 +342,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get settingsSyncRemoteSubtitle =>
-      'HTTPS partagé : compte + mot de passe sur emhk.eastmarkhk.com/crm';
+      'Se synchronise avec un serveur PHP + SQLite (voir server/crm-sync/)';
 
   @override
   String get settingsServerLabel => 'Serveur';

@@ -31,8 +31,12 @@
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>La dictée vocale transforme votre voix en notes et tâches.</string>
+	<string>Voice dictation turns your speech into notes and tasks.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
-	<string>La transcription se fait sur l'appareil, vos données restent privées.</string>
+	<string>Transcription runs on your device; your audio stays private.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Take photos of products for quotes and invoices.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Choose photos for your company logo and product catalog.</string>
 </dict>
 </plist>

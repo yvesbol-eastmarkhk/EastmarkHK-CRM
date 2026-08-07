@@ -145,7 +145,7 @@
   "settingsSyncLocalTitle": "Standalone (local uniquement)",
   "settingsSyncLocalSubtitle": "Aucune donnée envoyée en dehors de cet appareil",
   "settingsSyncRemoteTitle": "Base partagée (remote)",
-  "settingsSyncRemoteSubtitle": "HTTPS partagé : compte + mot de passe sur emhk.eastmarkhk.com/crm",
+  "settingsSyncRemoteSubtitle": "Se synchronise avec un serveur PHP + SQLite (voir server/crm-sync/)",
   "settingsServerLabel": "Serveur",
   "settingsAccountLabel": "Compte",
   "settingsSyncPasswordHint": "Mot de passe sync (trousseau — jamais dans la base).",

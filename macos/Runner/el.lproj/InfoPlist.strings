@@ -1,0 +1,6 @@
+/* Permission usage — device language (matches all CRM UI locales) */
+"NSMicrophoneUsageDescription" = "Η υπαγόρευση φωνής μετατρέπει την ομιλία σας σε σημειώσεις και εργασίες.";
+"NSSpeechRecognitionUsageDescription" = "Η απομαγνητοφώνηση γίνεται στη συσκευή σας· ο ήχος παραμένει ιδιωτικός.";
+"NSFaceIDUsageDescription" = "Ξεκλειδώστε γρήγορα το CRM με Face ID ή Touch ID.";
+"NSCameraUsageDescription" = "Βγάλτε φωτογραφίες προϊόντων για προσφορές και τιμολόγια.";
+"NSPhotoLibraryUsageDescription" = "Επιλέξτε φωτογραφίες για το λογότυπο της εταιρείας και τον κατάλογο προϊόντων.";

@@ -341,7 +341,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsSyncRemoteSubtitle =>
-      'Shared HTTPS: account + password on emhk.eastmarkhk.com/crm';
+      'Syncs with a PHP + SQLite server (see server/crm-sync/)';
 
   @override
   String get settingsServerLabel => 'Server';

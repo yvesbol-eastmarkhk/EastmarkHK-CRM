@@ -1,7 +1,7 @@
 name: eastmarkhk_crm
 description: EastmarkHK CRM — contacts, pipeline, tâches, dictée, modules (facturation, scanner, stock, leads, IA, sync)
 publish_to: 'none'
-version: 1.0.2+28
+version: 1.0.2+29
 
 environment:
   sdk: ^3.12.2

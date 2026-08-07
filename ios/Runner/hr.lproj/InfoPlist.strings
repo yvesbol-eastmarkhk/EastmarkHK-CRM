@@ -1,0 +1,6 @@
+/* Permission usage — device language (matches all CRM UI locales) */
+"NSMicrophoneUsageDescription" = "Glasovno diktiranje pretvara govor u bilješke i zadatke.";
+"NSSpeechRecognitionUsageDescription" = "Transkripcija se izvodi na uređaju; zvuk ostaje privatan.";
+"NSFaceIDUsageDescription" = "Brzo otključajte CRM pomoću Face ID-a ili Touch ID-a.";
+"NSCameraUsageDescription" = "Fotografirajte proizvode za ponude i račune.";
+"NSPhotoLibraryUsageDescription" = "Odaberite fotografije za logo tvrtke i katalog proizvoda.";

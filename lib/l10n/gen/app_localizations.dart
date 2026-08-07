@@ -804,7 +804,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsSyncRemoteSubtitle.
   ///
   /// In fr, this message translates to:
-  /// **'HTTPS partagé : compte + mot de passe sur emhk.eastmarkhk.com/crm'**
+  /// **'Se synchronise avec un serveur PHP + SQLite (voir server/crm-sync/)'**
   String get settingsSyncRemoteSubtitle;
 
   /// No description provided for @settingsServerLabel.

@@ -53,8 +53,8 @@ enum _SyncMode { local, remote }
 
 class _SettingsScreenState extends State<SettingsScreen> {
   final _companyName = TextEditingController();
-  final _syncServer = TextEditingController(text: SyncDefaults.serverUrl);
-  final _syncAccount = TextEditingController(text: SyncDefaults.account);
+  final _syncServer = TextEditingController();
+  final _syncAccount = TextEditingController();
   final _syncPassword = TextEditingController();
 
   String _country = 'BE';
@@ -134,9 +134,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
       }
       if (values['sync_server']?.isNotEmpty ?? false) {
         var server = values['sync_server']!;
-        // Migration crm.* → domaine unifié /crm.
+        // Migration crm.* → domaine unifié /crm (configs déjà enregistrées).
         if (server.contains('crm.eastmarkhk.com')) {
-          server = SyncDefaults.serverUrl;
+          server = SyncDefaults.legacyMigratedServerUrl;
           // Persister tout de suite — sinon sync reste sur DNS mort.
           // ignore: discarded_futures
           AppDatabase.instance.setSetting('sync_server', server);
@@ -146,7 +146,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       if (values['sync_account']?.isNotEmpty ?? false) {
         var account = values['sync_account']!;
         if (account == 'crm@eastmarkhk.com') {
-          account = SyncDefaults.account;
+          account = SyncDefaults.legacyMigratedAccount;
           // ignore: discarded_futures
           AppDatabase.instance.setSetting('sync_account', account);
         }
@@ -380,7 +380,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           decoration: InputDecoration(
                             labelText: l10n.settingsServerLabel,
                             border: const OutlineInputBorder(),
-                            hintText: SyncDefaults.serverUrl,
+                            hintText: SyncDefaults.serverUrlHint,
                           ),
                           keyboardType: TextInputType.url,
                           enabled: remote,
@@ -390,7 +390,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           decoration: InputDecoration(
                             labelText: l10n.settingsAccountLabel,
                             border: const OutlineInputBorder(),
-                            hintText: SyncDefaults.account,
+                            hintText: SyncDefaults.accountHint,
                           ),
                           keyboardType: TextInputType.emailAddress,
                           enabled: remote,

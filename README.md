@@ -30,13 +30,14 @@ L'app fait des appels réseau, utilise le trousseau et le micro (dictée). Dans
 <true/>
 ```
 
-Et dans `macos/Runner/Info.plist` + `ios/Runner/Info.plist` :
+Et dans `macos/Runner/Info.plist` + `ios/Runner/Info.plist` (English default in Info.plist; every CRM UI language has `*.lproj/InfoPlist.strings`) :
+
 
 ```xml
 <key>NSMicrophoneUsageDescription</key>
-<string>La dictée vocale transforme votre voix en notes et tâches.</string>
+<string>Voice dictation turns your speech into notes and tasks.</string>
 <key>NSSpeechRecognitionUsageDescription</key>
-<string>La transcription se fait sur l'appareil, vos données restent privées.</string>
+<string>Transcription runs on your device; your audio stays private.</string>
 ```
 
 ### Android — permissions

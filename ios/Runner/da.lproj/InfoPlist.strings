@@ -1,0 +1,6 @@
+/* Permission usage — device language (matches all CRM UI locales) */
+"NSMicrophoneUsageDescription" = "Stemmeindtastning omdanner din tale til noter og opgaver.";
+"NSSpeechRecognitionUsageDescription" = "Transskription foregår på din enhed; lyden forbliver privat.";
+"NSFaceIDUsageDescription" = "Lås CRM op hurtigt med Face ID eller Touch ID.";
+"NSCameraUsageDescription" = "Tag billeder af produkter til tilbud og fakturaer.";
+"NSPhotoLibraryUsageDescription" = "Vælg billeder til virksomhedens logo og produktkatalog.";

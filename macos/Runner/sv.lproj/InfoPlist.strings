@@ -1,0 +1,6 @@
+/* Permission usage — device language (matches all CRM UI locales) */
+"NSMicrophoneUsageDescription" = "Röstinmatning omvandlar ditt tal till anteckningar och uppgifter.";
+"NSSpeechRecognitionUsageDescription" = "Transkriptionen sker på din enhet; ljudet förblir privat.";
+"NSFaceIDUsageDescription" = "Lås upp CRM snabbt med Face ID eller Touch ID.";
+"NSCameraUsageDescription" = "Ta foton av produkter för offerter och fakturor.";
+"NSPhotoLibraryUsageDescription" = "Välj foton till företagets logotyp och produktkatalog.";

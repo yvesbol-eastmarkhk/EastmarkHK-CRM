@@ -13,14 +13,15 @@ Future<bool> showEinvoiceRemoteSettingsDialog(BuildContext context) async {
   final creds = await EinvoiceRemoteConfig.load();
   if (!context.mounted) return false;
   final l10n = AppLocalizations.of(context);
-  // Première config remote : préremplir le domaine unifié.
+  // Première config remote : champs vides + hints génériques (pas de
+  // préremplissage EastmarkHK — App Store / nouvelle install).
   final initialUrl = creds.baseUrl.trim().isEmpty
-      ? 'https://emhk.eastmarkhk.com/invoice/index.php'
+      ? ''
       : EinvoiceRemoteConfig.normalizeBaseUrl(creds.baseUrl);
   final initialUser = creds.user.trim().isEmpty ||
           creds.user == 'inv@eastmarkhk.com' ||
           creds.user == 'emhk-e-inv@eastmarkhk.com'
-      ? 'emhk@eastmarkhk.com'
+      ? ''
       : creds.user;
   final urlCtrl = TextEditingController(text: initialUrl);
   final userCtrl = TextEditingController(text: initialUser);
@@ -46,8 +47,8 @@ Future<bool> showEinvoiceRemoteSettingsDialog(BuildContext context) async {
                 controller: urlCtrl,
                 decoration: InputDecoration(
                   labelText: l10n.settingsServerLabel,
-                  hintText: 'https://emhk.eastmarkhk.com/invoice/index.php',
-                  helperText: 'Même compte / mot de passe que e-Invoicing / CRM (HTTPS)',
+                  hintText: 'https://emhk.yourwebsite.extension/invoice/index.php',
+                  helperText: 'Same account / password as e-Invoicing / CRM (HTTPS)',
                   border: const OutlineInputBorder(),
                 ),
                 keyboardType: TextInputType.url,
@@ -57,7 +58,7 @@ Future<bool> showEinvoiceRemoteSettingsDialog(BuildContext context) async {
                 controller: userCtrl,
                 decoration: InputDecoration(
                   labelText: l10n.settingsAccountLabel,
-                  hintText: 'emhk@eastmarkhk.com',
+                  hintText: 'emhk.yourwebsite.extension',
                   border: const OutlineInputBorder(),
                 ),
               ),

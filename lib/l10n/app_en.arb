@@ -103,7 +103,7 @@
   "settingsSyncLocalTitle": "Standalone (local only)",
   "settingsSyncLocalSubtitle": "No data sent outside this device",
   "settingsSyncRemoteTitle": "Shared database (remote)",
-  "settingsSyncRemoteSubtitle": "Shared HTTPS: account + password on emhk.eastmarkhk.com/crm",
+  "settingsSyncRemoteSubtitle": "Syncs with a PHP + SQLite server (see server/crm-sync/)",
   "settingsServerLabel": "Server",
   "settingsAccountLabel": "Account",
   "settingsSyncPasswordHint": "Sync password (keychain — never in the database).",

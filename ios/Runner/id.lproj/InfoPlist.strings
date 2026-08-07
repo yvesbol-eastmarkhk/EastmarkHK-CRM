@@ -1,0 +1,6 @@
+/* Permission usage — device language (matches all CRM UI locales) */
+"NSMicrophoneUsageDescription" = "Dikte suara mengubah ucapan Anda menjadi catatan dan tugas.";
+"NSSpeechRecognitionUsageDescription" = "Transkripsi berjalan di perangkat Anda; audio tetap bersifat pribadi.";
+"NSFaceIDUsageDescription" = "Buka kunci CRM dengan cepat menggunakan Face ID atau Touch ID.";
+"NSCameraUsageDescription" = "Ambil foto produk untuk penawaran dan faktur.";
+"NSPhotoLibraryUsageDescription" = "Pilih foto untuk logo perusahaan dan katalog produk.";
